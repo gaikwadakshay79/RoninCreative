@@ -26,13 +26,30 @@ npm run media      # rebuild pictures after changing media/originals/
 
 The build writes a separate `index.html` for every page and every project, each with its own title, description and share tags, so addresses such as `/about` work on any host without rewrite rules. It also writes `404.html` and `robots.txt`. `public/_redirects` covers Netlify and Cloudflare Pages.
 
+### GitHub Pages (automatic)
+
+`.github/workflows/deploy.yml` runs on every push to `main`. It lints, builds, and publishes the contents of `dist/` to the `deploy` branch. That branch holds only the built site and always has exactly one commit: each run replaces it with a force push. Never commit to `deploy` by hand.
+
+One-time setup on GitHub, after the first run has created the branch: **Settings > Pages > Build and deployment**, Source **Deploy from a branch**, Branch **deploy**, folder **/ (root)**.
+
+The workflow works out the address by itself. A project repository is built for `https://<owner>.github.io/<repo>/`, with `VITE_BASE_PATH` and `VITE_SITE_URL` set to match, so pictures, links, canonical URLs and the sitemap are right under the sub-folder. It can also be started by hand from the Actions tab.
+
+Optional repository variables (**Settings > Secrets and variables > Actions > Variables**):
+
+| Variable | Purpose |
+| --- | --- |
+| `PAGES_CUSTOM_DOMAIN` | Your own domain, for example `ronincreative.in`. The site is then built for the root of that domain and a `CNAME` file is published with it. |
+| `VITE_CONTACT_ENDPOINT` | Where the contact form posts. |
+| `VITE_API_BASE_URL` | A content API, if one is ever used. |
+
 ## Environment variables
 
 Copy `.env.example` to `.env.local`. Every value is optional.
 
 | Variable | Purpose |
 | --- | --- |
-| `VITE_SITE_URL` | Public address of the site, no trailing slash. Turns on canonical URLs, share images and `sitemap.xml`. Until it is set, none of those are written. |
+| `VITE_SITE_URL` | Public address of the site, no trailing slash, including any sub-folder. Turns on canonical URLs, share images and `sitemap.xml`. Until it is set, none of those are written. |
+| `VITE_BASE_PATH` | Folder the site is served from. Empty means the root of a domain. A GitHub Pages project site needs its repository name, for example `/RoninCreative/`. The deploy workflow sets it by itself. |
 | `VITE_API_BASE_URL` | Base URL of a future content API. Empty means content comes from `src/data`. |
 | `VITE_CONTACT_ENDPOINT` | URL that accepts the contact form as a JSON POST. Empty means the email fallback. |
 

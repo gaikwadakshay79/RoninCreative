@@ -4,6 +4,7 @@ import { pageSeo } from '@/data/seo';
 import { usePanoramas } from '@/hooks/useContent';
 import { useSeo } from '@/hooks/useSeo';
 import { listCredits } from '@/lib/media';
+import { withBase } from '@/lib/paths';
 
 const rowClass =
   'grid grid-cols-[6rem_minmax(0,1fr)] items-center gap-x-lg gap-y-xs py-md sm:grid-cols-[8rem_minmax(0,2fr)_minmax(0,1fr)]';
@@ -57,7 +58,7 @@ export function Component() {
                   <li key={panorama.id} className={rowClass}>
                     <figure className="frame aspect-[3/2]">
                       <img
-                        src={`/panoramas/${panorama.id}-poster.jpg`}
+                        src={withBase(`/panoramas/${panorama.id}-poster.jpg`)}
                         alt=""
                         width={1280}
                         height={720}

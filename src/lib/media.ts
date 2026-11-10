@@ -1,6 +1,7 @@
 import { mediaLibrary } from '@/data/media';
 import manifestJson from '@/data/media.manifest.json';
 import type { MediaDimensions, MediaItem, MediaKey } from '@/types';
+import { withBase } from './paths';
 
 const manifest = manifestJson as Record<string, MediaDimensions>;
 
@@ -27,10 +28,18 @@ export function getMedia(key: MediaKey): ResolvedMedia | null {
   return { key, ...item, ...dimensions };
 }
 
+/**
+ * Path of the 1200px JPEG from the site's own root, without the base path.
+ * Used for link previews, where it is joined to the site's public address.
+ */
+export function mediaSharePath(key: MediaKey): string {
+  return `/media/${key}-1200.jpg`;
+}
+
 /** URL of one generated file. `fallback` is the 1200px JPEG used for old browsers and link previews. */
 export function mediaUrl(key: MediaKey, variant: 'fallback' | { width: number; format: MediaFormat }): string {
-  if (variant === 'fallback') return `/media/${key}-1200.jpg`;
-  return `/media/${key}-${variant.width}.${variant.format}`;
+  if (variant === 'fallback') return withBase(mediaSharePath(key));
+  return withBase(`/media/${key}-${variant.width}.${variant.format}`);
 }
 
 export function mediaSrcSet(media: ResolvedMedia, format: MediaFormat): string {

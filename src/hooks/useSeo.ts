@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { siteConfig } from '@/config/site';
 import { formatTitle, siteName } from '@/data/seo';
-import { mediaUrl } from '@/lib/media';
+import { mediaSharePath } from '@/lib/media';
 
 export interface SeoInput {
   title: string;
@@ -60,7 +60,8 @@ export function useSeo({ title, description, path, image, type = 'website', noin
     const fullTitle = formatTitle(title);
     const base = siteConfig.url;
     const url = base ? `${base}${path === '/' ? '/' : path}` : null;
-    const imagePath = image ? mediaUrl(image, 'fallback') : null;
+    // VITE_SITE_URL already includes any sub-path, so the picture's path is taken from the site's root.
+    const imagePath = image ? mediaSharePath(image) : null;
     const imageUrl = base && imagePath ? `${base}${imagePath}` : null;
 
     document.title = fullTitle;

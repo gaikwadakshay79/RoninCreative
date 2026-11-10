@@ -2,6 +2,7 @@ import { Pause, Play } from 'lucide-react';
 import { useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { Picture } from '@/components/common/Picture';
 import { mediaUrl } from '@/lib/media';
+import { withBase } from '@/lib/paths';
 import type { MediaKey } from '@/types';
 
 interface PageHeroProps {
@@ -76,7 +77,7 @@ export function PageHero({ title, lead, media, size = 'full', video, children }:
         {showVideo && video ? (
           <video
             ref={videoRef}
-            src={video}
+            src={withBase(video)}
             poster={mediaUrl(media, 'fallback')}
             autoPlay
             muted

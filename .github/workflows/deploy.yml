@@ -1,0 +1,98 @@
+# Builds the site on every push to main and publishes the result to the
+# `deploy` branch, which holds only the built files (the contents of dist/).
+#
+# The deploy branch is rebuilt from scratch each time: it always has exactly
+# one commit, force-pushed over the previous one. Never commit to it by hand.
+#
+# One-time setup on GitHub: Settings > Pages > Build and deployment >
+# Source "Deploy from a branch", Branch "deploy", folder "/ (root)".
+#
+# Optional repository variables (Settings > Secrets and variables > Actions >
+# Variables):
+#   PAGES_CUSTOM_DOMAIN    your own domain, for example ronincreative.in.
+#                          The site is then built for the root of that domain
+#                          and a CNAME file is published with it.
+#   VITE_CONTACT_ENDPOINT  where the contact form posts (see the README).
+#   VITE_API_BASE_URL      a content API, if one is ever used (see the README).
+
+name: Publish to the deploy branch
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# A newer push replaces a build that is still running.
+concurrency:
+  group: publish-deploy-branch
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # A project site lives at https://<owner>.github.io/<repo>/, a user site
+      # (<owner>.github.io) and a custom domain live at the root.
+      - name: Work out the site's address
+        env:
+          CUSTOM_DOMAIN: ${{ vars.PAGES_CUSTOM_DOMAIN }}
+          REPO: ${{ github.event.repository.name }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          owner=$(echo "$OWNER" | tr '[:upper:]' '[:lower:]')
+          repo_lower=$(echo "$REPO" | tr '[:upper:]' '[:lower:]')
+          if [ -n "$CUSTOM_DOMAIN" ]; then
+            base="/"
+            url="https://$CUSTOM_DOMAIN"
+          elif [ "$repo_lower" = "$owner.github.io" ]; then
+            base="/"
+            url="https://$owner.github.io"
+          else
+            base="/$REPO/"
+            url="https://$owner.github.io/$REPO"
+          fi
+          echo "VITE_BASE_PATH=$base" >> "$GITHUB_ENV"
+          echo "VITE_SITE_URL=$url" >> "$GITHUB_ENV"
+          echo "Building for $url (base path $base)"
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck and build
+        env:
+          VITE_CONTACT_ENDPOINT: ${{ vars.VITE_CONTACT_ENDPOINT }}
+          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+        run: npm run build
+
+      # dist/ becomes a brand-new repository with one commit, pushed over the
+      # deploy branch. That is what keeps the branch at a single commit.
+      - name: Publish dist to the deploy branch
+        working-directory: dist
+        env:
+          CUSTOM_DOMAIN: ${{ vars.PAGES_CUSTOM_DOMAIN }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          touch .nojekyll
+          if [ -n "$CUSTOM_DOMAIN" ]; then echo "$CUSTOM_DOMAIN" > CNAME; fi
+          git init --quiet --initial-branch=deploy
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --all
+          git commit --quiet --message "Deploy ${GITHUB_SHA::7} from main"
+          git push --force "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" deploy
+          echo "Published $(git rev-list --count HEAD) commit to the deploy branch."

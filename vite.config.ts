@@ -1,10 +1,16 @@
 import { fileURLToPath, URL } from 'node:url';
-import { defineConfig, type Plugin } from 'vite';
+import { defineConfig, loadEnv, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
+/** "/" at the root of a domain, "/RoninCreative/" on a GitHub Pages project site. */
+function normaliseBase(value: string | undefined): string {
+  const trimmed = (value ?? '').trim().replace(/^\/+|\/+$/g, '');
+  return trimmed ? `/${trimmed}/` : '/';
+}
+
 /** Preloads the one font file every page paints with, so the display face never swaps late. */
-function preloadDisplayFont(): Plugin {
+function preloadDisplayFont(base: string): Plugin {
   return {
     name: 'ronin:preload-font',
     transformIndexHtml(html, ctx) {
@@ -16,7 +22,7 @@ function preloadDisplayFont(): Plugin {
         tags: [
           {
             tag: 'link',
-            attrs: { rel: 'preload', as: 'font', type: 'font/woff2', href: `/${font}`, crossorigin: '' },
+            attrs: { rel: 'preload', as: 'font', type: 'font/woff2', href: `${base}${font}`, crossorigin: '' },
             injectTo: 'head',
           },
         ],
@@ -25,14 +31,21 @@ function preloadDisplayFont(): Plugin {
   };
 }
 
-export default defineConfig({
-  plugins: [react(), tailwindcss(), preloadDisplayFont()],
-  resolve: {
-    alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
-  },
-  build: {
-    target: 'es2022',
-    cssCodeSplit: true,
-    sourcemap: false,
-  },
+export default defineConfig(({ mode }) => {
+  // VITE_BASE_PATH comes from the shell (the deploy workflow sets it) or from an .env file.
+  const env = loadEnv(mode, fileURLToPath(new URL('.', import.meta.url)), 'VITE_');
+  const base = normaliseBase(env.VITE_BASE_PATH);
+
+  return {
+    base,
+    plugins: [react(), tailwindcss(), preloadDisplayFont(base)],
+    resolve: {
+      alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
+    },
+    build: {
+      target: 'es2022',
+      cssCodeSplit: true,
+      sourcemap: false,
+    },
+  };
 });

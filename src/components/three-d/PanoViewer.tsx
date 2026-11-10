@@ -1,6 +1,7 @@
 import { Maximize2, Minimize2, Minus, Pause, Play, Plus } from 'lucide-react';
 import type { Scene, Viewer } from 'marzipano';
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { withBase } from '@/lib/paths';
 import type { Panorama } from '@/types';
 
 type Status = 'poster' | 'loading' | 'ready' | 'error';
@@ -13,8 +14,8 @@ const DEG = Math.PI / 180;
 const FULL_WIDTH = 3840;
 const SMALL_WIDTH = 1920;
 
-const posterUrl = (id: string) => `/panoramas/${id}-poster.jpg`;
-const imageUrl = (id: string, width: number) => `/panoramas/${id}-${width}.webp`;
+const posterUrl = (id: string) => withBase(`/panoramas/${id}-poster.jpg`);
+const imageUrl = (id: string, width: number) => withBase(`/panoramas/${id}-${width}.webp`);
 
 /** The widest panorama this device can hold as one texture, and should download. */
 function pickWidth(): number {
@@ -258,7 +259,7 @@ export function PanoViewer({ panoramas }: PanoViewerProps) {
 
         {isEmbed && opened ? (
           <iframe
-            src={active.embed}
+            src={active.embed ? withBase(active.embed) : undefined}
             title={active.title}
             className="absolute inset-0 h-full w-full border-0"
             allow="fullscreen; gyroscope; accelerometer; xr-spatial-tracking"

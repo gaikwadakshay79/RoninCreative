@@ -11,6 +11,7 @@ import { categoryLabels } from '@/data/projects';
 import { useProject, useProjects, useServices } from '@/hooks/useContent';
 import { useSeo } from '@/hooks/useSeo';
 import { getMedia, mediaUrl } from '@/lib/media';
+import { withBase } from '@/lib/paths';
 import type { Project } from '@/types';
 import { NotFoundContent } from './NotFound';
 
@@ -163,7 +164,7 @@ export function Component() {
           <div className="shell">
             <h2 id="film-title">{data.video.title}</h2>
             <div className="frame mt-xl aspect-[16/9]">
-              <video src={data.video.src} poster={videoPoster} controls playsInline preload="none" />
+              <video src={withBase(data.video.src)} poster={videoPoster} controls playsInline preload="none" />
             </div>
           </div>
         </section>

@@ -1,12 +1,14 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { RootLayout } from '@/components/layout/RootLayout';
 import { RouteError } from '@/components/layout/RouteError';
+import { basePath } from '@/lib/paths';
 
 /**
  * Every page is its own chunk: a visitor downloads the page they open and
  * nothing else. Each page module exports its component as `Component`.
  */
-export const router = createBrowserRouter([
+export const router = createBrowserRouter(
+  [
   {
     path: '/',
     element: <RootLayout />,
@@ -24,4 +26,7 @@ export const router = createBrowserRouter([
       { path: '*', lazy: () => import('@/pages/NotFound') },
     ],
   },
-]);
+  ],
+  // The site may live in a sub-folder (GitHub Pages project sites do); routes are relative to it.
+  { basename: basePath || '/' },
+);

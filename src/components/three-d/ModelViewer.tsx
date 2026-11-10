@@ -1,6 +1,7 @@
 import { Maximize2, Minimize2, Minus, Plus } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { getMedia, mediaUrl } from '@/lib/media';
+import { withBase } from '@/lib/paths';
 import type { ModelAsset } from '@/types';
 
 /** The parts of the <model-viewer> element this component uses. */
@@ -96,7 +97,7 @@ export function ModelViewer({ model }: ModelViewerProps) {
       {viewerMounted ? (
         <model-viewer
           ref={viewerRef}
-          src={model.src}
+          src={withBase(model.src)}
           alt={model.alt}
           poster={posterUrl}
           camera-controls
