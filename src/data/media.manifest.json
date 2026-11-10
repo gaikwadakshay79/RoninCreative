@@ -1,0 +1,302 @@
+{
+  "aerial-beach": {
+    "width": 1920,
+    "height": 1280,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "aerial-bridge": {
+    "width": 1920,
+    "height": 1440,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "aerial-city": {
+    "width": 2560,
+    "height": 1707,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2400
+    ]
+  },
+  "aerial-coast": {
+    "width": 2560,
+    "height": 1920,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2400
+    ]
+  },
+  "aerial-construction": {
+    "width": 2560,
+    "height": 1670,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2400
+    ]
+  },
+  "aerial-crossing": {
+    "width": 1920,
+    "height": 1203,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "aerial-gardens": {
+    "width": 1920,
+    "height": 1279,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "aerial-hills": {
+    "width": 2560,
+    "height": 1707,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2400
+    ]
+  },
+  "aerial-interchange": {
+    "width": 1920,
+    "height": 1280,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "aerial-island": {
+    "width": 1920,
+    "height": 1440,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "aerial-railworks": {
+    "width": 1920,
+    "height": 1080,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "aerial-skyline": {
+    "width": 2560,
+    "height": 1920,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2400
+    ]
+  },
+  "aerial-village": {
+    "width": 1920,
+    "height": 1440,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "aerial-vineyard": {
+    "width": 1920,
+    "height": 1272,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "arch-facade": {
+    "width": 1920,
+    "height": 1280,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "arch-office": {
+    "width": 2560,
+    "height": 1707,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2400
+    ]
+  },
+  "arch-pylon": {
+    "width": 1920,
+    "height": 1440,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "arch-stairs": {
+    "width": 1920,
+    "height": 1783,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "cine-camera": {
+    "width": 2560,
+    "height": 1438,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2400
+    ]
+  },
+  "drone-flight": {
+    "width": 2560,
+    "height": 1707,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2400
+    ]
+  },
+  "drone-kit": {
+    "width": 1920,
+    "height": 1280,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "event-dancers": {
+    "width": 1920,
+    "height": 1280,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "event-drums": {
+    "width": 1920,
+    "height": 1278,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "event-stage": {
+    "width": 2560,
+    "height": 1709,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2400
+    ]
+  },
+  "hero-home": {
+    "width": 2560,
+    "height": 1591,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2400
+    ]
+  },
+  "model-city": {
+    "width": 1920,
+    "height": 1440,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "model-massing": {
+    "width": 1920,
+    "height": 1097,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "photo-camera": {
+    "width": 1920,
+    "height": 1280,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "photo-studio": {
+    "width": 1920,
+    "height": 1307,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  }
+}

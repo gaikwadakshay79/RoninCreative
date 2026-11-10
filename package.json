@@ -1,0 +1,46 @@
+{
+  "name": "ronin-creative",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Ronin Creative: photography, cinematography, aerial imaging and 3D visualization.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build && node scripts/postbuild.mjs",
+    "preview": "vite preview",
+    "typecheck": "tsc -b --noEmit",
+    "lint": "eslint .",
+    "media": "node scripts/build-media.mjs"
+  },
+  "dependencies": {
+    "@ant-design/cssinjs": "^2.1.2",
+    "@ant-design/v5-patch-for-react-19": "^1.0.3",
+    "@fontsource-variable/geologica": "^5.3.0",
+    "@google/model-viewer": "^4.4.0",
+    "@tanstack/react-query": "^5.107.1",
+    "antd": "^5.29.3",
+    "axios": "^1.21.1",
+    "lucide-react": "^1.71.0",
+    "motion": "^14.12.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-router-dom": "^7.18.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@tailwindcss/vite": "^4.3.5",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "eslint": "^10.14.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "globals": "^17.14.0",
+    "sharp": "^0.35.5",
+    "tailwindcss": "^4.3.5",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.72.2",
+    "vite": "^8.3.7"
+  }
+}
