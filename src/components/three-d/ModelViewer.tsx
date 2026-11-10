@@ -137,7 +137,7 @@ export function ModelViewer({ model }: ModelViewerProps) {
             className="icon-btn icon-btn--solid"
             aria-label="Zoom out"
             disabled={status !== 'ready'}
-            onClick={() => viewerRef.current?.zoom(-1)}
+            onClick={() => viewerRef.current?.zoom(-4)}
           >
             <Minus size={18} strokeWidth={1.5} aria-hidden="true" />
           </button>
@@ -146,7 +146,7 @@ export function ModelViewer({ model }: ModelViewerProps) {
             className="icon-btn icon-btn--solid"
             aria-label="Zoom in"
             disabled={status !== 'ready'}
-            onClick={() => viewerRef.current?.zoom(1)}
+            onClick={() => viewerRef.current?.zoom(4)}
           >
             <Plus size={18} strokeWidth={1.5} aria-hidden="true" />
           </button>

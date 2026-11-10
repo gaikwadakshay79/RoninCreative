@@ -9,7 +9,7 @@ interface PageHeroProps {
   lead?: string;
   /** Background photograph. Without one the hero is type on paper. */
   media?: MediaKey;
-  /** `full` fills the first screen (home). `short` leaves the next section in view. */
+  /** `full` fills the first screen. `short` leaves the next section in view. */
   size?: 'full' | 'short';
   /**
    * Optional film played over the photograph: a path under /public to a short
@@ -30,7 +30,7 @@ const prefersReducedMotion = () =>
  * on its calm side, over a scrim of the page's own paper colour. The headline,
  * one sentence and the actions enter once on load, then stand.
  */
-export function PageHero({ title, lead, media, size = 'short', video, children }: PageHeroProps) {
+export function PageHero({ title, lead, media, size = 'full', video, children }: PageHeroProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [paused, setPaused] = useState(false);
   const [showVideo] = useState(() => Boolean(video) && !prefersReducedMotion());

@@ -292,8 +292,7 @@ export function PointCloud({ className = '', label = 'A terrain with a few build
 
   return (
     <div ref={hostRef} className={`stage ${className}`}>
-      <canvas ref={canvasRef} role="img" aria-label={label} />
-      <div className="stage__fade" aria-hidden="true" />
+      <canvas ref={canvasRef} className="stage__cloud" role="img" aria-label={label} />
       <div className="stage__bar">
         <p className="label">Illustration drawn in your browser, not a scan of a real site.</p>
         {reducedMotion ? null : (

@@ -1,0 +1,43 @@
+[
+ {
+  "shape": "Feature Stack",
+  "theme": "vantage",
+  "axes": "dark/grotesk-sans/chromatic-lime",
+  "hero": "Poster",
+  "nav": "edge-aligned bar, clear over the hero",
+  "footer": "statement",
+  "imagery": "photographs, stand-ins 29 (Wikimedia Commons), muted",
+  "photos": [
+   "hero-home",
+   "aerial-coast",
+   "arch-office",
+   "aerial-construction",
+   "model-city",
+   "event-stage",
+   "drone-kit",
+   "aerial-hills"
+  ],
+  "entry": "src/pages/Home.tsx",
+  "fingerprint": "vantage/poster/statement-footer/bento/rows/ticks-band",
+  "sections": [
+   "Poster hero",
+   "Statement",
+   "Bento of work",
+   "Rows of services",
+   "Band of three principles",
+   "Split founder",
+   "Band close",
+   "Statement footer"
+  ],
+  "signature": "a live terrain point cloud on the Aerial 3D page",
+  "waived": [
+   "11",
+   "71",
+   "44c",
+   "83"
+  ],
+  "prompt": "Ronin Creative: photography, cinematography and aerial imaging studio site",
+  "date": "2026-11-10",
+  "mode": "build"
+ }
+]

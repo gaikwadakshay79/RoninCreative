@@ -52,7 +52,7 @@ export function InquiryForm({ initialService }: InquiryFormProps) {
   useEffect(() => {
     if (!initialService || !services.data) return;
     if (services.data.some((service) => service.id === initialService)) {
-      form.setFieldValue('service', initialService as ServiceId);
+      form.setFieldsValue({ service: initialService as ServiceId });
     }
   }, [initialService, services.data, form]);
 
@@ -115,8 +115,7 @@ export function InquiryForm({ initialService }: InquiryFormProps) {
         <p className="notice ticks mb-lg" role="note">
           <Info size={20} strokeWidth={1.5} aria-hidden="true" />
           <span>
-            Enquiries are not switched on yet. The form checks what you enter, but it cannot send until contact details
-            are configured.
+            Enquiries are not switched on yet. The form checks your entries but cannot send them.
           </span>
         </p>
       )}

@@ -27,3 +27,7 @@ pnpm-debug.log*
 # tool scratch output
 .taste-skill/
 shots/
+
+# Hallmark tool output
+.hallmark/shots/
+.hallmark/scaffold/

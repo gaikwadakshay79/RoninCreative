@@ -10,8 +10,8 @@ export function Footer() {
   const socials = (Object.keys(siteConfig.social) as SocialNetwork[]).filter((network) => siteConfig.social[network]);
 
   return (
-    <footer className="border-t border-rule">
-      <div className="shell py-3xl">
+    <footer className="site-footer">
+      <div className="shell">
         <p className="statement">{siteConfig.tagline}</p>
 
         <div className="mt-2xl grid grid-cols-2 gap-x-col gap-y-xl lg:grid-cols-12">
@@ -61,7 +61,7 @@ export function Footer() {
           </p>
           <p data-credits>
             <Link to="/credits" className="link text-muted">
-              Placeholder photographs via Wikimedia Commons
+              Placeholder photo credits
             </Link>
           </p>
         </div>

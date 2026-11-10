@@ -54,7 +54,7 @@ function ServiceSection({ service, projects, index }: { service: Service; projec
         <div className="mt-2xl grid grid-cols-1 gap-x-col gap-y-xl lg:grid-cols-12">
           <Reveal className="lg:col-span-7">
             <h3>What it covers</h3>
-            <ul className="ruled mt-md grid grid-cols-1 gap-x-col text-md sm:grid-cols-2">
+            <ul className={`ruled mt-md grid grid-cols-1 gap-x-col text-md ${service.offerings.length % 2 === 0 ? 'sm:grid-cols-2' : ''}`}>
               {service.offerings.map((offering) => (
                 <li key={offering}>{offering}</li>
               ))}
@@ -97,7 +97,21 @@ export function Component() {
       <PageHero
         title="Photography, film, flight and 3D."
         lead="Each service can be booked alone, or combined with the others in one visit."
-      />
+      >
+        {services.data ? (
+          <nav aria-label="Services on this page" className="min-w-0 max-w-full">
+            <ul className="seg lg:flex-wrap">
+              {services.data.map((service) => (
+                <li key={service.id}>
+                  <a href={`#${service.id}`} className="seg__item no-underline">
+                    {service.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ) : null}
+      </PageHero>
 
       {services.isPending ? (
         <div className="shell pb-3xl" aria-hidden="true">
@@ -116,17 +130,6 @@ export function Component() {
 
       {services.data ? (
         <>
-          <nav aria-label="Services on this page" className="shell">
-            <ul className="seg lg:flex-wrap">
-              {services.data.map((service) => (
-                <li key={service.id}>
-                  <a href={`#${service.id}`} className="seg__item no-underline">
-                    {service.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
           {services.data.map((service, index) => (
             <ServiceSection key={service.id} service={service} projects={projects.data ?? []} index={index} />
           ))}

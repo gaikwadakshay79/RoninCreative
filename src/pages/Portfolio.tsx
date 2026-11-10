@@ -74,8 +74,11 @@ export function Component() {
         lead="Photography, film, aerial work and 3D visualization. Open a picture to see it full screen."
       />
 
-      <section className="pb-3xl" aria-label="Projects">
+      <section className="pt-2xl pb-3xl" aria-labelledby="projects-title">
         <div className="shell">
+          <h2 id="projects-title" className="visually-hidden">
+            Projects
+          </h2>
           {hasPlaceholders ? <PlaceholderNotice scope="page" className="mb-xl max-w-[80ch]" /> : null}
 
           <div className="seg" role="group" aria-label="Filter the work by category">
@@ -148,12 +151,12 @@ export function Component() {
                       />
                     </figure>
                   </button>
-                  <div className="tile__meta">
-                    <h2 className="max-w-none text-lg font-normal tracking-[-0.02em]">
+                  <div className="tile__meta tile__meta--stack">
+                    <h3 className="max-w-none text-lg">
                       <Link to={`/portfolio/${project.slug}`} className="link">
                         {project.title}
                       </Link>
-                    </h2>
+                    </h3>
                     <span className="label shrink-0">{categoryLabels[project.category]}</span>
                   </div>
                 </article>

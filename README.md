@@ -107,6 +107,8 @@ Pages read content through React Query hooks (`src/hooks/useContent.ts`) and ser
 
 Colours, type and spacing are the Vantage tokens at the top of `src/styles/globals.css`. Tailwind reads the same tokens (`bg-paper`, `text-ink-2`, `gap-lg`). Ant Design is mapped to them in `src/config/theme.ts`, which holds hex copies because Ant Design cannot read OKLCH. Change a colour in the CSS first, then mirror it there.
 
+Ant Design's styles sit in the `antd` cascade layer, below the site's own components and Tailwind utilities (`src/app/AntdProvider.tsx`). This depends on `@ant-design/cssinjs` staying on the same major version Ant Design itself uses (1.x for Ant Design 5). If it drifts, the layer is silently ignored and form styling breaks.
+
 ## Before launch
 
 - Fill in `src/config/site.ts` (email, phone, WhatsApp, socials, location) and set `VITE_SITE_URL`.

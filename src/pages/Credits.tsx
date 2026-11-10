@@ -20,7 +20,7 @@ export function Component() {
         lead="The pictures on this site are licensed placeholders from Wikimedia Commons, shown until Ronin Creative’s own work replaces them."
       />
 
-      <section className="pb-3xl" aria-label="Credits">
+      <section className="pt-2xl pb-3xl" aria-label="Credits">
         <div className="shell">
           {credits.length === 0 ? (
             <p className="lead">Every picture on this site is now Ronin Creative’s own work.</p>

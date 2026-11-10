@@ -20,6 +20,21 @@ const structuredData = {
   ...(siteConfig.contact.email ? { email: siteConfig.contact.email } : {}),
 };
 
+const principles = [
+  {
+    title: 'Visual storytelling',
+    line: 'Location, light and shot list follow from the story.',
+  },
+  {
+    title: 'Precision aerial imaging',
+    line: 'Route, height and frame overlap are planned on the ground.',
+  },
+  {
+    title: 'One finished set',
+    line: 'Ground, aerial and 3D work are edited as one project.',
+  },
+];
+
 /** Bento spans for up to five featured projects: one lead, one tall, three across. */
 const bento = [
   { span: 'lg:col-span-8', ratio: 'aspect-[4/3] lg:aspect-[16/9]', sizes: '(min-width: 64rem) 62vw, 100vw' },
@@ -86,7 +101,7 @@ function ServicesPreview() {
             Stills, film, flight and 3D
           </h2>
           <p className="lead lg:col-span-5 lg:col-start-8">
-            Each service can be booked alone. Most projects combine two or three in one visit.
+            Booked alone, or combined in one visit.
           </p>
         </Reveal>
 
@@ -97,8 +112,8 @@ function ServicesPreview() {
                 to={`/services#${service.id}`}
                 className="row-link grid grid-cols-1 gap-x-col gap-y-xs py-lg no-underline lg:grid-cols-12 lg:items-baseline lg:py-xl"
               >
-                <h3 className="lg:col-span-5">{service.title}</h3>
-                <p className="text-md text-ink-2 lg:col-span-6 lg:col-start-7">{service.summary}</p>
+                <h3 className="row-title lg:col-span-6">{service.title}</h3>
+                <p className="text-md text-ink-2 lg:col-span-5 lg:col-start-8">{service.summary}</p>
               </Link>
             </Reveal>
           ))}
@@ -128,7 +143,7 @@ export function Component() {
         </Link>
       </PageHero>
 
-      <section className="section section--l" aria-labelledby="intro-title">
+      <section className="section intro" aria-labelledby="intro-title">
         <Reveal className="shell grid grid-cols-1 gap-x-col gap-y-xl lg:grid-cols-12">
           <h2 id="intro-title" className="statement lg:col-span-7">
             One studio for the ground, the air and the 3D model.
@@ -155,27 +170,16 @@ export function Component() {
             <h2 id="philosophy-title" className="lg:col-span-6">
               The story first, then the flight plan
             </h2>
-            <p className="lead lg:col-span-5 lg:col-start-8">
-              Every commission starts with what the pictures have to say. The camera, the route and the settings follow
-              from that.
-            </p>
+            <p className="lead lg:col-span-5 lg:col-start-8">Every commission starts with what the pictures have to say.</p>
           </Reveal>
 
-          <div className="mt-2xl grid grid-cols-1 gap-col lg:grid-cols-2">
-            <Reveal className="ticks flex flex-col gap-md p-lg lg:p-xl">
-              <h3>Visual storytelling</h3>
-              <p className="text-md">
-                Before a shoot, Rohan asks what the pictures are for and who will see them. The location, the light and
-                the shot list are chosen to answer that, so the finished set reads as one story.
-              </p>
-            </Reveal>
-            <Reveal index={1} className="ticks flex flex-col gap-md p-lg lg:p-xl">
-              <h3>Precision aerial imaging</h3>
-              <p className="text-md">
-                A drone flight is planned on the ground: the route, the height, the overlap between frames and the time
-                of day. That planning is what keeps aerial footage smooth and a 3D model complete.
-              </p>
-            </Reveal>
+          <div className="mt-2xl grid grid-cols-1 gap-col lg:grid-cols-3">
+            {principles.map((principle, index) => (
+              <Reveal key={principle.title} index={index} className="ticks flex flex-col gap-md p-lg lg:p-xl">
+                <h3>{principle.title}</h3>
+                <p className="text-md">{principle.line}</p>
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>

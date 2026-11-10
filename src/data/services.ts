@@ -15,7 +15,7 @@ export const services: Service[] = [
   {
     id: 'photography',
     title: 'Professional photography',
-    summary: 'Portraits, products, architecture and events, photographed for print and screen.',
+    summary: 'Portraits, products, architecture and events.',
     description:
       'Still photography for people, brands and spaces. Each shoot starts with what the pictures are for, then the light, the location and the frames are planned around that use.',
     offerings: [
@@ -37,7 +37,7 @@ export const services: Service[] = [
   {
     id: 'cinematography',
     title: 'Cinematography and video production',
-    summary: 'Brand films, promotional videos and event films, from the shoot to the final edit.',
+    summary: 'Brand, promotional and event films, shot and edited.',
     description:
       'Moving pictures for brands, places and occasions. Ronin Creative plans the shots, films on the ground and from the air, and edits the footage into a finished film.',
     offerings: ['Brand films', 'Promotional videos', 'Event films', 'Creative cinematography', 'Professional editing'],
@@ -53,7 +53,7 @@ export const services: Service[] = [
   {
     id: 'drone',
     title: 'Drone photography and videography',
-    summary: 'Aerial stills and film, flown by a licensed drone pilot.',
+    summary: 'Aerial stills and film by a licensed pilot.',
     description:
       'Rohan Kamble is a licensed drone pilot. Each flight is planned around the location, the light and the airspace rules that apply there, then flown for stills, film or both.',
     offerings: [
@@ -76,7 +76,7 @@ export const services: Service[] = [
   {
     id: 'aerial-3d',
     title: 'Aerial 3D modelling',
-    summary: 'Buildings, sites and terrain rebuilt as 3D models from drone photographs.',
+    summary: 'Buildings, sites and terrain rebuilt as 3D models.',
     description:
       'A drone photographs the subject from many overlapping positions, and photogrammetry software turns those photographs into a textured 3D model you can orbit, zoom and present. The models are made for visualization, not as certified survey data.',
     offerings: [
@@ -120,7 +120,7 @@ export const services: Service[] = [
   {
     id: 'infrastructure',
     title: 'Infrastructure and real estate imaging',
-    summary: 'Progress records and marketing imagery for sites, buildings and developments.',
+    summary: 'Progress records and marketing imagery for sites and buildings.',
     description:
       'Repeat visits record how a project changes, and finished buildings are photographed for sale and letting. Ground and aerial views are captured in the same visit.',
     offerings: [

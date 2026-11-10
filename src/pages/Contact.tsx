@@ -19,11 +19,14 @@ export function Component() {
         lead="Say what you are planning, where it is and when. He replies with questions, an approach and the next step."
       />
 
-      <section className="pb-3xl" aria-label="Enquiry">
+      <section className="pt-2xl pb-3xl" aria-labelledby="enquiry-title">
+        <h2 id="enquiry-title" className="visually-hidden">
+          Contact details and enquiry form
+        </h2>
         <div className="shell grid grid-cols-1 gap-x-col gap-y-2xl lg:grid-cols-12">
           <div className="flex flex-col gap-xl lg:col-span-4">
             <div>
-              <h2 className="text-title font-normal tracking-[-0.02em]">Contact details</h2>
+              <h3>Contact details</h3>
               <div className="mt-md">
                 <ContactLinks variant="full" />
               </div>
@@ -31,14 +34,14 @@ export function Component() {
 
             {siteConfig.location ? (
               <div>
-                <h2 className="text-title font-normal tracking-[-0.02em]">Based in</h2>
+                <h3>Based in</h3>
                 <p className="mt-sm text-md">{siteConfig.location}</p>
               </div>
             ) : null}
 
             {socials.length > 0 ? (
               <div>
-                <h2 className="text-title font-normal tracking-[-0.02em]">Follow the work</h2>
+                <h3>Follow the work</h3>
                 <ul className="mt-sm flex flex-wrap gap-x-lg gap-y-xs">
                   {socials.map((network) => (
                     <li key={network}>
@@ -53,7 +56,7 @@ export function Component() {
           </div>
 
           <div className="lg:col-span-7 lg:col-start-6">
-            <h2 className="text-title font-normal tracking-[-0.02em]">Project enquiry</h2>
+            <h3>Project enquiry</h3>
             <div className="mt-lg">
               <AntdProvider>
                 <InquiryForm initialService={searchParams.get('service')} />

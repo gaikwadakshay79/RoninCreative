@@ -13,7 +13,7 @@
     "media": "node scripts/build-media.mjs"
   },
   "dependencies": {
-    "@ant-design/cssinjs": "^2.1.2",
+    "@ant-design/cssinjs": "^1.24.0",
     "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "@fontsource-variable/geologica": "^5.3.0",
     "@google/model-viewer": "^4.4.0",

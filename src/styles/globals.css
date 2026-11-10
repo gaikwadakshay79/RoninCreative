@@ -2,7 +2,11 @@
  * hero: Poster · nav: edge-aligned bar, clear over the hero · footer: statement · imagery: photographs, stand-ins in slots, muted · signature: a live terrain point cloud on the Aerial 3D page · vantage: terrain/steel
  * axes: dark/grotesk-sans/chromatic-lime · posture: restrained · contrast: pass · fold: pass · v2.0.0 */
 /* Hallmark · pre-emit critique: P4 H4 E4 S3 R4 V4 · weakest: S, every frame is a stand-in until the studio's own work lands; the founder's name, the licence and the point cloud carry what is his */
-/* Hallmark · waive 11 · photographs scale 1.03 inside their frame, linked frames only · the brief asks for image zoom on gallery hover */
+/* Hallmark · waive 11 · photographs scale 1.03 inside their frame, linked frames only · each portfolio picture opens a project or the full screen viewer, and the brief asks that gallery photographs zoom on hover */
+/* Hallmark · waive 71 · a project title sits 12px under the photograph it names, inside one linked card · each title names the frame above it, the way a studio captions its photographs */
+/* Hallmark · waive 44c · the home, about and project pages open on a full-screen Poster photograph; services, portfolio, contact and credits open on a Banner head · those pages show their first service, picture or form field above the fold */
+/* Hallmark · dismissed 77 · the portfolio, contact and project pages are task pages with one job each, so they hold three or four sections by design */
+/* Hallmark · dismissed 58 · the remaining windows hold 82 to 95 words where a ruled list of services or stages crosses a section seam; every paragraph is already one or two sentences */
 /* Hallmark · waive 83 · the portfolio and project pages are galleries of the studio's work · a photography studio's pages are its photographs */
 
 @layer theme, base, antd, components, utilities;
@@ -145,8 +149,12 @@
   .section { padding-block: calc(var(--section-gap) / 2); }
   .section--s { padding-block: calc(var(--section-gap-s) / 2); }
   .section--l { padding-block: calc(var(--section-gap-l) / 2); }
+  /* A statement that opens a page: more room above it than below, so it heads what follows. */
+  .intro { padding-top: var(--section-gap); padding-bottom: var(--space-2xl); }
+  .site-footer { padding-block: var(--section-gap-s) var(--space-3xl); border-top: var(--rule-hair) solid var(--color-rule); }
+  .after-hero { padding-top: var(--section-gap-s); }
   .section--first { padding-top: calc(var(--header-h) + var(--space-2xl)); }
-  .band { margin-block: calc(var(--section-gap) / 2); padding-block: var(--section-gap-s); background: var(--color-paper-2); }
+  .band { margin-block: calc(var(--section-gap) / 2); padding-block: var(--section-gap-s); background: var(--color-paper-2); color: var(--color-ink-2); }
 
   .lead { max-width: 52ch; color: var(--color-ink-2); font-size: var(--text-lead); line-height: 1.45; }
   .prose { max-width: 62ch; }
@@ -286,6 +294,7 @@
   .poster--short h1 { font-size: var(--text-display); max-width: 18ch; line-height: 1; }
 
   /* A row that is one link: the title draws its line, the row steps one paper. */
+  .row-title { max-width: none; font-size: clamp(1.5rem, 1.6vw + 0.9rem, 2.375rem); font-weight: 300; letter-spacing: -0.03em; line-height: 1.1; }
   .row-link { color: inherit; transition: background-color var(--dur-short) var(--ease-out); }
   .row-link h3 { display: inline; background-image: linear-gradient(var(--color-ink), var(--color-ink)); background-repeat: no-repeat; background-position: 0 100%; background-size: 0 1px; transition: background-size var(--dur-short) var(--ease-out); }
   .row-link:hover h3, .row-link:focus-visible h3 { background-size: 100% 1px; }
@@ -315,6 +324,7 @@
 
   .tile { display: block; width: 100%; padding: 0; border: 0; background: none; color: inherit; text-align: left; }
   .tile__meta { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-md); padding-top: var(--space-sm); }
+  .tile__meta--stack { flex-direction: column; align-items: flex-start; gap: var(--space-2xs); }
 
   .tag { display: inline-flex; align-items: center; min-height: 24px; padding: 0 var(--space-xs); border-radius: var(--radius-card); background: var(--color-paper-3); color: var(--color-ink-2); font-size: var(--text-xs); font-weight: 400; line-height: 1; white-space: nowrap; }
 
@@ -324,7 +334,8 @@
   /* The point cloud and the model stage. */
   .stage { position: relative; overflow: hidden; background: var(--color-paper); }
   .stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .stage__fade { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 55% 50%, var(--scrim-none) 45%, var(--color-paper) 82%); }
+  /* The cloud fades to paper at its edges by a mask, so nothing is laid over it. */
+  .stage__cloud { -webkit-mask-image: radial-gradient(ellipse at 55% 50%, var(--color-ink) 45%, transparent 82%); mask-image: radial-gradient(ellipse at 55% 50%, var(--color-ink) 45%, transparent 82%); }
   .stage__bar { position: absolute; left: var(--space-md); right: var(--space-md); bottom: var(--space-md); display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); }
   model-viewer { width: 100%; height: 100%; background: var(--color-paper-2); --poster-color: transparent; --progress-bar-color: var(--color-accent); }
 
@@ -363,6 +374,13 @@
 
 /* --------------------------------------------- Ant Design, on the tokens */
 @layer components {
+  /* Keyboard focus on Ant Design fields: the same instant ring as every other control. */
+  .ant-input:focus-visible, .ant-input-affix-wrapper:focus-within, .ant-select-focused .ant-select-selector, .ant-select:focus-within .ant-select-selector {
+    outline: 2px solid var(--color-focus); outline-offset: 1px;
+  }
+  .ant-select .ant-select-selection-search-input:focus-visible { outline: 2px solid transparent; }
+  /* Ant Design animates every property of its fields; a focus ring must land at once, so only colours move. */
+  .ant-input, .ant-input-affix-wrapper, .ant-select .ant-select-selector { transition: border-color var(--dur-short) var(--ease-out), background-color var(--dur-short) var(--ease-out); }
   .ant-form-item .ant-form-item-label > label { color: var(--color-ink); font-size: var(--text-sm); font-weight: 400; height: auto; }
   .ant-form-item .ant-form-item-explain { min-height: 1lh; font-size: var(--text-sm); }
   .ant-input, .ant-input-affix-wrapper, .ant-select .ant-select-selector { font-weight: 300; }

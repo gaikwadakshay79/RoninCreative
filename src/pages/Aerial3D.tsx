@@ -12,38 +12,38 @@ import { useSeo } from '@/hooks/useSeo';
 const workflow = [
   {
     title: 'Plan the flight',
-    line: 'The site, its surroundings and the airspace rules decide the route, the height and the time of day.',
+    line: 'Site, surroundings and airspace rules set the route and the height.',
   },
   {
     title: 'Capture overlapping photographs',
-    line: 'The drone photographs the subject from many positions, each frame sharing most of its view with the next.',
+    line: 'Each frame shares most of its view with the next.',
   },
   {
     title: 'Process and reconstruct',
-    line: 'Photogrammetry software finds the same points across the photographs and rebuilds the surface in 3D.',
+    line: 'Software matches points across the photographs and rebuilds the surface.',
   },
   {
     title: 'Review and deliver',
-    line: 'The model is cleaned, textured and delivered as a file you can open in a browser or present on a screen.',
+    line: 'The cleaned, textured model opens in a browser.',
   },
 ];
 
 const applications = [
   {
     title: 'Architecture',
-    line: 'An existing building and its surroundings as a context model, to design against or present beside a proposal.',
+    line: 'A building and its surroundings as a context model for design.',
   },
   {
     title: 'Real estate',
-    line: 'A property and its plot shown from any angle, for buyers who cannot visit in person.',
+    line: 'A property and its plot, shown from any angle.',
   },
   {
     title: 'Construction',
-    line: 'The state of a site recorded on a known date, to compare with the visit before and the visit after.',
+    line: 'The state of a site, recorded on a known date.',
   },
   {
     title: 'Land and terrain',
-    line: 'The shape of a plot, its slopes and its access, visualized before design work starts.',
+    line: 'The shape, slopes and access of a plot before design starts.',
   },
 ];
 
@@ -148,12 +148,8 @@ export function Component() {
             <h2 id="photogrammetry-title">How photographs become a model</h2>
             <div className="prose text-md">
               <p className="lead">
-                Photogrammetry measures a subject from photographs. Seen from two positions, the same point shifts, and
-                that shift gives its place in space.
-              </p>
-              <p>
-                Repeat it across several hundred overlapping aerial photographs and the result is a dense cloud of
-                points, then a surface, then a textured model of the whole site.
+                Photogrammetry measures a subject from photographs: seen from two positions a point shifts, and the
+                shift gives its place in space.
               </p>
               <p>
                 These models are made for visualization and presentation. They are not certified survey data.
@@ -191,11 +187,10 @@ export function Component() {
         <div className="shell grid grid-cols-1 gap-x-col gap-y-xl lg:grid-cols-12">
           <Reveal className="flex flex-col gap-md lg:col-span-4">
             <h2 id="applications-title">Where a 3D model helps</h2>
-            <p className="lead">One capture serves the architect, the agent and the site team.</p>
           </Reveal>
           <dl className="rows lg:col-span-7 lg:col-start-6">
             {applications.map((item, index) => (
-              <Reveal key={item.title} index={index} className="grid grid-cols-1 gap-x-col gap-y-2xs py-lg sm:grid-cols-4">
+              <Reveal key={item.title} index={index} className="grid grid-cols-1 gap-x-col gap-y-2xs py-xl sm:grid-cols-4">
                 <dt className="text-lg font-normal text-ink">{item.title}</dt>
                 <dd className="m-0 text-md sm:col-span-3">{item.line}</dd>
               </Reveal>

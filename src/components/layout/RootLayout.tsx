@@ -17,10 +17,14 @@ export function RootLayout() {
         Skip to content
       </a>
       <Header />
-      <main id="main" tabIndex={-1} aria-busy={navigation.state === 'loading'} className="outline-none">
-        <div key={location.pathname} className="route-fade">
-          <Outlet />
-        </div>
+      <main
+        id="main"
+        key={location.pathname}
+        tabIndex={-1}
+        aria-busy={navigation.state === 'loading'}
+        className="route-fade outline-none"
+      >
+        <Outlet />
       </main>
       <Footer />
       <ScrollRestoration />

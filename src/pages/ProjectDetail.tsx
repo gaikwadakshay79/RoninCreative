@@ -30,7 +30,7 @@ function ProjectSeo({ project }: { project: Project }) {
 function LoadingState() {
   return (
     <div aria-busy="true" aria-label="Loading the project">
-      <div className="skeleton h-[min(78svh,760px)] rounded-none" />
+      <div className="skeleton h-svh rounded-none" />
       <div className="shell section">
         <div className="skeleton h-12 w-2/3" />
         <div className="skeleton mt-md h-6 w-1/2" />
@@ -100,7 +100,7 @@ export function Component() {
 
       <PageHero media={data.cover} title={data.title} lead={data.summary} />
 
-      <section className="section" aria-label="About the project">
+      <section className="section after-hero" aria-label="About the project">
         <div className="shell">
           {data.placeholder ? <PlaceholderNotice scope="project" className="mb-2xl max-w-[80ch]" /> : null}
 
@@ -127,15 +127,10 @@ export function Component() {
               </div>
             ) : null}
           </div>
-        </div>
-      </section>
 
-      {pictures.length > 0 ? (
-        <section className="section section--s" aria-labelledby="gallery-title">
-          <div className="shell">
-            <h2 id="gallery-title" className="visually-hidden">
-              Gallery
-            </h2>
+          {pictures.length > 0 ? (
+            <div className="mt-2xl">
+              <h2 className="visually-hidden">Gallery</h2>
             <div className="grid grid-cols-1 gap-col sm:grid-cols-2">
               {pictures.map((picture, index) => {
                 const lead = index === 0 && pictures.length % 2 === 1;
@@ -158,9 +153,10 @@ export function Component() {
                 );
               })}
             </div>
-          </div>
-        </section>
-      ) : null}
+            </div>
+          ) : null}
+        </div>
+      </section>
 
       {data.video ? (
         <section className="section section--s" aria-labelledby="film-title">

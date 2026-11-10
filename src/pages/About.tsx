@@ -11,49 +11,48 @@ import { useSeo } from '@/hooks/useSeo';
 const path = [
   {
     title: 'Photography and film',
-    line: 'The practice starts with still and moving pictures: portraits, products, buildings and events.',
+    line: 'Portraits, products, buildings and events.',
   },
   {
     title: 'Licensed drone flight',
-    line: 'A licence to fly adds the aerial view: stills, film and full panoramas from above.',
+    line: 'Stills, film and panoramas from above.',
   },
   {
     title: 'Aerial 3D imaging',
-    line: 'Overlapping aerial photographs become 3D models of buildings, sites and terrain.',
+    line: 'Overlapping photographs become 3D models of sites.',
   },
 ];
 
 const process = [
-  { title: 'Brief', line: 'What the pictures are for, who will see them and where they will be used.' },
-  { title: 'Plan', line: 'Locations, light and a shot list. For flights, also the route and the permissions.' },
-  { title: 'Capture', line: 'Ground and aerial work in the same visit, wherever the site allows it.' },
-  { title: 'Deliver', line: 'Edited stills, a finished film, a panorama or a 3D model, in the formats you asked for.' },
+  { title: 'Brief', line: 'What the pictures are for and who will see them.' },
+  { title: 'Plan', line: 'Locations, light, a shot list and, for flights, the route and permissions.' },
+  { title: 'Capture', line: 'Ground and aerial work in one visit, where the site allows.' },
+  { title: 'Deliver', line: 'Edited stills, a film, a panorama or a 3D model.' },
 ];
 
 const safety = [
   'A site check before every flight',
-  'Weather and wind checked on the day',
-  'Airspace rules and permissions confirmed for the location',
-  'A safe distance kept from people, traffic and property',
-  'No flight when the conditions are not right',
+  'Airspace rules and permissions confirmed',
+  'Distance kept from people, traffic and property',
+  'No flight in poor weather or wind',
 ];
 
 const reasons = [
   {
     title: 'One brief, every viewpoint',
-    line: 'Ground photography, film and aerial work are planned together, so the pictures match.',
+    line: 'Ground, film and aerial work, planned together.',
   },
   {
     title: 'A licensed pilot',
-    line: 'Flights are flown by a licensed drone pilot who plans around the rules of each location.',
+    line: 'Flights planned around the rules of each location.',
   },
   {
     title: 'From capture to 3D',
-    line: 'The flight that films a site can also record it for a 3D model.',
+    line: 'The filming flight can also record the 3D model.',
   },
   {
     title: 'Clear about limits',
-    line: 'You hear before the shoot what is possible on your site and what is not.',
+    line: 'You hear what is possible before the shoot.',
   },
 ];
 
@@ -68,7 +67,7 @@ export function Component() {
         lead={`${siteConfig.name} is ${siteConfig.founder}’s studio for photography, film and aerial imaging.`}
       />
 
-      <section className="section section--l" aria-labelledby="philosophy-title">
+      <section className="section intro" aria-labelledby="philosophy-title">
         <Reveal className="shell grid grid-cols-1 gap-x-col gap-y-xl lg:grid-cols-12">
           <h2 id="philosophy-title" className="statement lg:col-span-7">
             A change of viewpoint changes the story.
@@ -77,10 +76,7 @@ export function Component() {
             <p className="lead">
               {siteConfig.name} shows places, people and projects from the viewpoint that explains them best.
             </p>
-            <p>
-              Sometimes that is eye level, through a portrait lens. Sometimes it is from the air, looking straight down.
-              Often a project needs both, and they have to look like one piece of work.
-            </p>
+            <p>Sometimes that is eye level, through a portrait lens. Sometimes it is from the air. Often a project needs both.</p>
           </div>
         </Reveal>
       </section>
@@ -102,13 +98,10 @@ export function Component() {
                 Rohan is a professional photographer and cinematographer, and a licensed drone pilot.
               </p>
               <p>
-                He founded {siteConfig.name} to keep those three skills in one practice. A portrait session, a brand
-                film and an aerial pass over a building site are planned by the same person, with the same eye.
+                He founded {siteConfig.name} to keep those three skills in one practice, planned by the same person
+                with the same eye.
               </p>
-              <p>
-                The licence matters for a practical reason. It means the aerial part of a project is flown by someone
-                trained for it, who knows what a location allows before the day of the shoot.
-              </p>
+              <p>The licence means the aerial part of a project is flown by someone trained for it.</p>
             </div>
           </Reveal>
         </div>
@@ -139,11 +132,11 @@ export function Component() {
         <div className="shell grid grid-cols-1 gap-x-col gap-y-xl lg:grid-cols-12">
           <Reveal className="flex flex-col gap-md lg:col-span-4">
             <h2 id="process-title">Creative eye, technical plan</h2>
-            <p className="lead">A project runs in four stages, whatever its size.</p>
+            <p className="lead">Four stages, whatever the size of the project.</p>
           </Reveal>
           <dl className="rows lg:col-span-7 lg:col-start-6">
             {process.map((item, index) => (
-              <Reveal key={item.title} index={index} className="grid grid-cols-1 gap-x-col gap-y-2xs py-lg sm:grid-cols-4">
+              <Reveal key={item.title} index={index} className="grid grid-cols-1 gap-x-col gap-y-2xs py-xl sm:grid-cols-4">
                 <dt className="text-lg font-normal text-ink">{item.title}</dt>
                 <dd className="m-0 text-md sm:col-span-3">{item.line}</dd>
               </Reveal>
@@ -156,10 +149,7 @@ export function Component() {
         <div className="shell grid grid-cols-1 gap-x-col gap-y-xl lg:grid-cols-12">
           <Reveal className="flex flex-col gap-md lg:col-span-5">
             <h2 id="safety-title">Safety comes before the shot</h2>
-            <p className="lead">
-              A drone shares the air with other aircraft and the ground with people. Every flight is planned with both
-              in mind.
-            </p>
+            <p className="lead">Every flight is planned around other aircraft and the people below.</p>
           </Reveal>
           <Reveal index={1} className="lg:col-span-6 lg:col-start-7">
             <ul className="ruled text-md">
