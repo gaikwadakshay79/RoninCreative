@@ -126,8 +126,8 @@ export function ModelViewer({ model }: ModelViewerProps) {
         </div>
       ) : null}
 
-      <div className="stage__bar">
-        <p className="label" role="status" aria-live="polite">
+      <div className="stage__bar max-sm:justify-end">
+        <p className="label max-sm:sr-only" role="status" aria-live="polite">
           {busy ? (progress > 0 ? `Loading the model, ${progress}%` : 'Loading the model…') : null}
           {status === 'ready' ? 'Drag to orbit. Pinch or scroll to zoom.' : null}
         </p>

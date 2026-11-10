@@ -13,4 +13,8 @@ export const queryKeys = {
     all: ['models'] as const,
     list: () => [...queryKeys.models.all, 'list'] as const,
   },
+  panoramas: {
+    all: ['panoramas'] as const,
+    list: () => [...queryKeys.panoramas.all, 'list'] as const,
+  },
 } as const;

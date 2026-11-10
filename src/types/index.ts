@@ -77,6 +77,34 @@ export interface ModelAsset {
   description?: string;
 }
 
+/** Where a 360° panorama looks when it opens. Angles in degrees. */
+export interface PanoramaView {
+  /** Left and right. 0 is the centre of the image, positive turns right. */
+  yaw: number;
+  /** Up and down. 0 is the horizon, negative looks down. */
+  pitch: number;
+  /** Field of view. 90 is natural, smaller zooms in. */
+  fov: number;
+}
+
+export interface Panorama {
+  /** Also the file name in media/panoramas/ (without its extension). */
+  id: string;
+  title: string;
+  /** What the panorama shows, for people who cannot see it. */
+  alt: string;
+  view?: PanoramaView;
+  /**
+   * Path to a finished tour exported from the Marzipano Tool or Pano2VR, for
+   * example "/tours/villa/index.html". When set, the export is shown in a
+   * frame and no image in media/panoramas/ is needed, only a poster.
+   */
+  embed?: string;
+  /** True while the panorama is a licensed stand-in and not Ronin Creative's own work. */
+  placeholder: boolean;
+  credit?: MediaCredit;
+}
+
 export interface Project {
   slug: string;
   title: string;

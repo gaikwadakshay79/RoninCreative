@@ -5,6 +5,7 @@ import { ProjectCard } from '@/components/gallery/ProjectCard';
 import { Reveal } from '@/components/motion/Reveal';
 import { CtaClose } from '@/components/sections/CtaClose';
 import { PageHero } from '@/components/sections/PageHero';
+import { PanoShowcase } from '@/components/three-d/PanoShowcase';
 import { pageSeo } from '@/data/seo';
 import { useProjects, useServices } from '@/hooks/useContent';
 import { useSeo } from '@/hooks/useSeo';
@@ -69,6 +70,8 @@ function ServiceSection({ service, projects, index }: { service: Service; projec
             </ul>
           </Reveal>
         </div>
+
+        {service.id === 'aerial-360' ? <PanoShowcase /> : null}
 
         {related.length > 0 ? (
           <div className="mt-2xl">

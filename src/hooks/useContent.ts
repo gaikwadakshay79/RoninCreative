@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { submitInquiry, type InquiryContext } from '@/lib/api/contact';
 import { fetchProject, fetchProjects } from '@/lib/api/projects';
-import { fetchModels, fetchServices } from '@/lib/api/services';
+import { fetchModels, fetchPanoramas, fetchServices } from '@/lib/api/services';
 import { queryKeys } from '@/lib/query-keys';
 import type { InquiryPayload, Project } from '@/types';
 
@@ -34,6 +34,10 @@ export function useServices() {
 
 export function useModels() {
   return useQuery({ queryKey: queryKeys.models.list(), queryFn: fetchModels });
+}
+
+export function usePanoramas() {
+  return useQuery({ queryKey: queryKeys.panoramas.list(), queryFn: fetchPanoramas });
 }
 
 interface InquiryVariables {

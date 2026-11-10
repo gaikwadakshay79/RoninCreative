@@ -15,4 +15,5 @@ export const endpoints = {
   project: (slug: string) => `/projects/${encodeURIComponent(slug)}`,
   services: '/services',
   models: '/models',
+  panoramas: '/panoramas',
 } as const;

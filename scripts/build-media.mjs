@@ -80,7 +80,61 @@ async function main() {
   console.log(`${files.length} images in the manifest, ${built} rebuilt.`);
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+/**
+ * 360° panoramas: every equirectangular image (twice as wide as it is tall) in
+ * media/panoramas/ becomes public/panoramas/<key>-3840.webp and -1920.webp for
+ * the viewer, plus <key>-poster.jpg, a flat 16:9 crop shown before it loads.
+ */
+const PANO_SRC = path.join(root, 'media', 'panoramas');
+const PANO_OUT = path.join(root, 'public', 'panoramas');
+
+async function panoramas() {
+  if (!(await exists(PANO_SRC))) return;
+  const files = (await fs.readdir(PANO_SRC)).filter((f) => /\.(jpe?g|png|webp|tiff?)$/i.test(f)).sort();
+  if (files.length === 0) return;
+  await fs.mkdir(PANO_OUT, { recursive: true });
+  let built = 0;
+
+  for (const file of files) {
+    const key = path.parse(file).name;
+    const input = path.join(PANO_SRC, file);
+    const meta = await sharp(input).metadata();
+    if (Math.abs(meta.width / meta.height - 2) > 0.02) {
+      console.warn(`skipped panorama ${file}: it must be equirectangular, exactly twice as wide as it is tall`);
+      continue;
+    }
+    const poster = path.join(PANO_OUT, `${key}-poster.jpg`);
+    const srcStat = await fs.stat(input);
+    if (!force && (await exists(poster)) && (await fs.stat(poster)).mtimeMs >= srcStat.mtimeMs) continue;
+
+    for (const width of [3840, 1920]) {
+      await sharp(input)
+        .resize({ width, height: width / 2, fit: 'fill', withoutEnlargement: false })
+        .webp({ quality: 80 })
+        .toFile(path.join(PANO_OUT, `${key}-${width}.webp`));
+    }
+    // The poster is the middle third of the panorama, looking at its centre.
+    const cropWidth = Math.round(meta.width / 3);
+    const cropHeight = Math.round((cropWidth * 9) / 16);
+    await sharp(input)
+      .extract({
+        left: Math.round((meta.width - cropWidth) / 2),
+        top: Math.max(0, Math.round(meta.height * 0.56 - cropHeight / 2)),
+        width: cropWidth,
+        height: cropHeight,
+      })
+      .resize({ width: 1280 })
+      .jpeg({ quality: 80, mozjpeg: true })
+      .toFile(poster);
+    built += 1;
+    console.log(`built   panorama ${key}`);
+  }
+  console.log(`${files.length} panoramas, ${built} rebuilt.`);
+}
+
+main()
+  .then(panoramas)
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
