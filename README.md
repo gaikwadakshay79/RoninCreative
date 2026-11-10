@@ -39,6 +39,7 @@ Optional repository variables (**Settings > Secrets and variables > Actions > Va
 | Variable | Purpose |
 | --- | --- |
 | `PAGES_CUSTOM_DOMAIN` | Your own domain, for example `ronincreative.in`. The site is then built for the root of that domain and a `CNAME` file is published with it. |
+| `SITE_URL` | The full public address when it is neither the default nor a domain of this repository's own, for example `https://agbuilds.online/RoninCreative`. An account-wide custom domain puts every project site under that domain. Used for canonical URLs, share images and the sitemap. |
 | `VITE_CONTACT_ENDPOINT` | Where the contact form posts. |
 | `VITE_API_BASE_URL` | A content API, if one is ever used. |
 

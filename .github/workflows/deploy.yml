@@ -12,6 +12,11 @@
 #   PAGES_CUSTOM_DOMAIN    your own domain, for example ronincreative.in.
 #                          The site is then built for the root of that domain
 #                          and a CNAME file is published with it.
+#   SITE_URL               the full public address when it is neither of the
+#                          above, for example https://agbuilds.online/RoninCreative
+#                          (an account-wide custom domain puts every project
+#                          site under that domain). Used for canonical URLs,
+#                          share images and the sitemap.
 #   VITE_CONTACT_ENDPOINT  where the contact form posts (see the README).
 #   VITE_API_BASE_URL      a content API, if one is ever used (see the README).
 
@@ -51,6 +56,7 @@ jobs:
       - name: Work out the site's address
         env:
           CUSTOM_DOMAIN: ${{ vars.PAGES_CUSTOM_DOMAIN }}
+          SITE_URL: ${{ vars.SITE_URL }}
           REPO: ${{ github.event.repository.name }}
           OWNER: ${{ github.repository_owner }}
         run: |
@@ -59,6 +65,11 @@ jobs:
           if [ -n "$CUSTOM_DOMAIN" ]; then
             base="/"
             url="https://$CUSTOM_DOMAIN"
+          elif [ -n "$SITE_URL" ]; then
+            # The address is given outright; the base path is whatever follows the domain.
+            url="${SITE_URL%/}"
+            path=$(echo "$url" | sed -E 's#^https?://[^/]+##')
+            base="${path}/"
           elif [ "$repo_lower" = "$owner.github.io" ]; then
             base="/"
             url="https://$owner.github.io"
