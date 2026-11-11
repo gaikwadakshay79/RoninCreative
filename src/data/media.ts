@@ -277,12 +277,11 @@ export const mediaLibrary: Record<MediaKey, MediaItem> = {
     placeholder: false,
   },
   'panshet-2': {
-    alt: 'A steel frame of a new building on the hillside at Splendid Valley Retreat, looking out over a forested valley',
-    position: '40% 60%',
+    alt: 'The white house and café terrace at Splendid Valley Retreat from the air, with green chairs, parked motorbikes and a water tank, forested hills behind',
     placeholder: false,
   },
   'panshet-3': {
-    alt: 'Forested hills and a green clearing below Splendid Valley Retreat, under a hazy sky',
+    alt: 'Splendid Valley Retreat across the slope: the café, the white house and new stone retaining walls on red earth, with wooded hills around',
     placeholder: false,
   },
 };

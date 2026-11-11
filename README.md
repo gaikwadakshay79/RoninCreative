@@ -105,7 +105,7 @@ Testimonials go in `src/data/testimonials.ts`. The list is empty and the section
 
 The Services page has a 360° viewer (Marzipano) in its "360° aerial experiences" section. It shows a flat poster until the viewer comes near the screen, then loads the tour and starts turning slowly by itself (about one full turn a minute; `TURN_SPEED` in `PanoViewer.tsx`). It pauses while the visitor drags, while it is off screen and under reduced motion. On phones a vertical swipe still scrolls the page. It has the site's own controls: the scene name top left, a compass top right (press it to face north), scene thumbnails and a toolbar (zoom, pause the slow turn, back to the starting view, fullscreen) along the bottom.
 
-Today it shows one tour: Splendid Valley Retreat, Panshet (`public/tours/panshet/`, three scenes), which is also the first portfolio project (`/portfolio/splendid-valley-retreat-panshet`). The current export was stitched with the PTGui trial and carries its watermarks, so it must be replaced with a licensed re-export before the site goes live (steps 1 to 3 below, over the same folder; step 3 also refreshes the portfolio stills).
+Today it shows one tour: Splendid Valley Retreat, Panshet (`public/tours/panshet/`, three scenes), which is also the first portfolio project (`/portfolio/splendid-valley-retreat-panshet`). All three scenes are stitched by the site's own stitcher (below) from Rohan's drone photos: no watermarks, filled sky, level horizon, true north at yaw 0.
 
 **A tour exported from the Marzipano Tool (one or more scenes, tiled):**
 
@@ -115,6 +115,16 @@ Today it shows one tour: Splendid Valley Retreat, Panshet (`public/tours/panshet
 4. Add an entry to `src/data/panoramas.ts` with `tour: { path: '/tours/<name>' }`, a title, an `alt` description and `placeholder: false`.
 5. Set north for the compass: `tour.north` maps each scene id (the folder names in `tiles/`) to the yaw, in degrees, at which that scene looks north. Find it by turning the view until it faces north on a map (a road or ridge you can see on both helps) and reading the yaw. Until it is set, the compass treats the scene's yaw 0 as north, which is only right by chance.
 6. To list it in the portfolio, add a project in `src/data/projects.ts` with category `360-tours`, the stills as `cover` and `gallery`, and `panorama: '<id>'`: the project page then shows the tour in the same viewer.
+
+**Stitching a DJI drone sphere yourself (no PTGui or Hugin):**
+
+`scripts/stitch/` stitches the photos of one DJI sphere shot (the drone's `PANORAMA/<number>` folder, 25 to 35 photos) straight into tour tiles. It reads each photo's gimbal heading and tilt, matches features between overlapping photos, levels the result back onto the gimbal horizon, evens out exposure changes between frames, blends along seams that avoid mismatches, fills the unphotographed sky above about 73° and puts true north at yaw 0. Stitched panoramas left in the folder (PTGui output and the like) are skipped. It needs Python 3.10+ with `opencv-python`, `numpy`, `scipy` and `pillow`, and takes about four minutes per sphere.
+
+```bash
+python -I scripts/stitch/stitch.py Rohan/001_0134/001_0134 panshet 0-panshet-1
+```
+
+The arguments are the photo folder, the tour folder name and the scene id. If the alignment step prints `QUALITY: CHECK THE RESULT` (drift, or a sphere shot close to the ground), run it again with `--lens scripts/stitch/lens-FC9113.json`, which reuses the lens solved on a good set from this drone. It overwrites `public/tours/<tour>/tiles/<scene id>/` and keeps the full 16384 × 8192 panorama in `stitch-work/`. For a new scene, add it to the tour's `data.js` (same `levels` as the others, `faceSize: 4096`). Set the scene's `north` to `0` in `src/data/panoramas.ts`, then rerun step 3 above. Raw photos go in `Rohan/`, which git ignores.
 
 **A single panorama (stitched in PTGui or similar):**
 
@@ -149,6 +159,5 @@ Ant Design's styles sit in the `antd` cascade layer, below the site's own compon
 - Fill in `src/config/site.ts` (email, phone, WhatsApp, socials, location) and set `VITE_SITE_URL`.
 - Replace every placeholder photograph and project with Rohan's own work, including the founder portrait.
 - Confirm the list of services and the wording about the drone licence.
-- Replace the Panshet tour (`public/tours/panshet/`) with a re-export stitched in licensed PTGui: the current one has trial watermarks.
 - Set north for each Panshet scene in `src/data/panoramas.ts` so the compass is right.
 - Optionally add a hero film: a short muted loop under 2 MB, path in `siteConfig.hero.video`.

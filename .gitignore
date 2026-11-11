@@ -31,3 +31,7 @@ shots/
 # Hallmark tool output
 .hallmark/shots/
 .hallmark/scaffold/
+
+# 360° stitching: raw drone photos and working files stay out of git
+Rohan/
+stitch-work/

@@ -93,7 +93,12 @@ export interface Panorama {
    * example "/tours/panshet". `north` gives, per scene id, the yaw in degrees
    * at which the scene looks north; the compass points from it (0 if unset).
    */
-  tour?: { path: string; north?: Record<string, number> };
+  tour?: {
+    path: string;
+    north?: Record<string, number>;
+    /** Scene ids to show, in this order. Leave out to show every scene in data.js. */
+    scenes?: string[];
+  };
   /** For a single panorama: the yaw in degrees at which it looks north. */
   north?: number;
   /** True while the panorama is a licensed stand-in and not Ronin Creative's own work. */

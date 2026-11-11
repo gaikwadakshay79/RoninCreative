@@ -75,9 +75,13 @@ async function loadTour(path: string): Promise<TourScene[]> {
 /** The scenes of one panorama entry: one for a single image, several for a tour. */
 async function scenesOf(panorama: Panorama): Promise<SceneSpec[]> {
   if (panorama.tour) {
-    const { path, north = {} } = panorama.tour;
+    const { path, north = {}, scenes: only } = panorama.tour;
     const base = withBase(path);
-    const scenes = await loadTour(path);
+    const all = await loadTour(path);
+    const scenes = only
+      ? only.map((id) => all.find((scene) => scene.id === id)).filter((scene): scene is TourScene => Boolean(scene))
+      : all;
+    if (scenes.length === 0) throw new Error(`None of the listed scenes is in ${path}/data.js`);
     return scenes.map((scene) => {
       const tiles = `${base}/tiles/${scene.id}`;
       // The face the scene opens on, at the first level held in one tile, makes its thumbnail.

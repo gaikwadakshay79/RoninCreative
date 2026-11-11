@@ -39,7 +39,7 @@ export const projects: Project[] = [
     summary: 'A 360° aerial tour of a hillside retreat near Panshet, seen from three points in the air.',
     overview: [
       'Three aerial panoramas, each taken from one point above the site, show the retreat with the valley and hills around it.',
-      'Visitors turn each view themselves and move between the three viewpoints in the tour below.',
+      'Visitors turn each view themselves, from the sky overhead to the ground below the drone, and move between the three viewpoints in the tour below.',
     ],
     cover: 'panshet-1',
     gallery: ['panshet-1', 'panshet-2', 'panshet-3'],

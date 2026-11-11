@@ -28,9 +28,10 @@ export const panoramas: Panorama[] = [
     alt: 'A 360° aerial tour of Splendid Valley Retreat near Panshet: a terraced café with stone retaining walls, red earth paths and forested hills all around',
     tour: {
       path: '/tours/panshet',
-      // Where north lies in each scene, in degrees of yaw. 0 until checked
-      // against the drone's flight log or a map: see the README.
-      north: {},
+      // Where north lies in each scene, in degrees of yaw. All three scenes are
+      // stitched by scripts/stitch from the drone's compass headings, so yaw 0 is
+      // true north in each.
+      north: { '0-panshet-1': 0, '1-pano_0001-panorama': 0, '2-pano_0001-panorama': 0 },
     },
     placeholder: false,
   },
