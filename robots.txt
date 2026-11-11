@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gaikwadakshay79.github.io/RoninCreative/sitemap.xml
