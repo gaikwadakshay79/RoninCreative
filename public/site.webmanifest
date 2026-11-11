@@ -1,0 +1,15 @@
+{
+  "name": "Ronin Creative",
+  "short_name": "Ronin",
+  "description": "Photography, cinematography, aerial imaging and 360° aerial tours by Rohan Kamble.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#04090c",
+  "theme_color": "#04090c",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

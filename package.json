@@ -11,7 +11,8 @@
     "typecheck": "tsc -b --noEmit",
     "lint": "eslint .",
     "media": "node scripts/build-media.mjs",
-    "tour-images": "node scripts/tour-images.mjs"
+    "tour-images": "node scripts/tour-images.mjs",
+    "icons": "node scripts/build-icons.mjs"
   },
   "dependencies": {
     "@ant-design/cssinjs": "^1.24.0",

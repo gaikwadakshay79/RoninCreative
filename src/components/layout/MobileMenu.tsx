@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import * as m from 'motion/react-m';
 import { useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
+import { LogoMark } from '@/components/brand/Mark';
 import { AntdProvider } from '@/app/AntdProvider';
 import { contactCta, primaryNav } from '@/config/navigation';
 import { siteConfig } from '@/config/site';
@@ -45,6 +46,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
         <div className="flex min-h-full flex-col">
           <div className="shell flex h-header shrink-0 items-center justify-between">
             <Link to="/" className="wordmark" onClick={onClose}>
+              <LogoMark className="wordmark__mark" />
               {siteConfig.name}
             </Link>
             <button type="button" className="icon-btn" aria-label="Close the menu" onClick={onClose}>

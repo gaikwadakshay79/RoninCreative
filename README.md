@@ -101,6 +101,13 @@ Fields you leave out are not rendered. Delete the placeholder entries as real pr
 
 Testimonials go in `src/data/testimonials.ts`. The list is empty and the section stays hidden until real ones are added.
 
+## Logo and icons
+
+The logo mark (the ronin with a camera, and the drone) is traced from the studio's logo (`src/assets/brand/ronin-creative-logo-original.jpg`) into vector shapes in `src/assets/brand/`: `mark.svg` (full mark) and `bust.svg` (hat, shoulders and camera, for small sizes).
+
+- **On the site:** `src/components/brand/Mark.tsx` draws the mark in the text colour, beside the name in the header and the mobile menu, and next to the tagline in the footer (hidden on phones).
+- **Icons:** `npm run icons` rebuilds the favicon (`favicon.svg`, `favicon.ico`), the iOS icon (`apple-touch-icon.png`), the app icons named in `site.webmanifest` (192, 512 and a maskable 512) and `brand/logo.png`, the logo search engines are given in the home page's structured data (used once `VITE_SITE_URL` is set). Run it again after changing the SVGs.
+
 ## Adding 360° panoramas
 
 The Services page has a 360° viewer (Marzipano) in its "360° aerial experiences" section. It shows a flat poster until the viewer comes near the screen, then loads the tour and starts turning slowly by itself (about one full turn a minute; `TURN_SPEED` in `PanoViewer.tsx`). It pauses while the visitor drags, while it is off screen and under reduced motion. On phones a vertical swipe still scrolls the page. It has the site's own controls: the scene name top left, a compass top right (press it to face north), scene thumbnails and a toolbar (zoom, pause the slow turn, back to the starting view, fullscreen) along the bottom.

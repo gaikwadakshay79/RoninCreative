@@ -16,7 +16,7 @@ const structuredData = {
   description: siteConfig.description,
   slogan: siteConfig.tagline,
   founder: { '@type': 'Person', name: siteConfig.founder, jobTitle: siteConfig.founderRole },
-  ...(siteConfig.url ? { url: siteConfig.url } : {}),
+  ...(siteConfig.url ? { url: siteConfig.url, logo: `${siteConfig.url}/brand/logo.png`, image: `${siteConfig.url}/brand/logo.png` } : {}),
   ...(siteConfig.contact.email ? { email: siteConfig.contact.email } : {}),
 };
 

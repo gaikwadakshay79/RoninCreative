@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { LogoMark } from '@/components/brand/Mark';
 import { ContactLinks } from '@/components/common/ContactLinks';
 import { primaryNav } from '@/config/navigation';
 import { siteConfig, socialLabels, type SocialNetwork } from '@/config/site';
@@ -12,7 +13,10 @@ export function Footer() {
   return (
     <footer className="site-footer">
       <div className="shell">
-        <p className="statement">{siteConfig.tagline}</p>
+        <div className="flex items-end justify-between gap-xl">
+          <p className="statement">{siteConfig.tagline}</p>
+          <LogoMark className="footer-mark" />
+        </div>
 
         <div className="mt-2xl grid grid-cols-2 gap-x-col gap-y-xl lg:grid-cols-12">
           <nav aria-label="Footer" className="lg:col-span-3">

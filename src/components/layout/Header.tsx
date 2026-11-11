@@ -1,6 +1,7 @@
 import { Menu } from 'lucide-react';
 import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import { LogoMark } from '@/components/brand/Mark';
 import { contactCta, primaryNav } from '@/config/navigation';
 import { siteConfig } from '@/config/site';
 
@@ -34,6 +35,7 @@ export function Wordmark() {
   const [first, ...rest] = siteConfig.name.split(' ');
   return (
     <Link to="/" className="wordmark" aria-label={`${siteConfig.name}, home`}>
+      <LogoMark className="wordmark__mark" />
       {first}
       <span>{rest.join(' ')}</span>
     </Link>
