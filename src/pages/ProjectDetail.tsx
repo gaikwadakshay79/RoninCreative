@@ -6,9 +6,9 @@ import { PlaceholderNotice } from '@/components/gallery/PlaceholderNotice';
 import { ProjectCard } from '@/components/gallery/ProjectCard';
 import { Reveal } from '@/components/motion/Reveal';
 import { PageHero } from '@/components/sections/PageHero';
-import { ModelViewer } from '@/components/three-d/ModelViewer';
+import { PanoViewer } from '@/components/three-d/PanoViewer';
 import { categoryLabels } from '@/data/projects';
-import { useProject, useProjects, useServices } from '@/hooks/useContent';
+import { usePanoramas, useProject, useProjects, useServices } from '@/hooks/useContent';
 import { useSeo } from '@/hooks/useSeo';
 import { getMedia, mediaUrl } from '@/lib/media';
 import { withBase } from '@/lib/paths';
@@ -45,6 +45,7 @@ export function Component() {
   const project = useProject(slug);
   const all = useProjects();
   const services = useServices();
+  const panoramas = usePanoramas();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const data = project.data;
@@ -92,6 +93,8 @@ export function Component() {
     data.location ? { label: 'Location', value: data.location } : null,
     data.year ? { label: 'Year', value: String(data.year) } : null,
   ].filter((fact): fact is { label: string; value: string } => fact !== null);
+
+  const panorama = data.panorama ? panoramas.data?.find((item) => item.id === data.panorama) : undefined;
 
   const videoPoster = data.video && getMedia(data.video.poster) ? mediaUrl(data.video.poster, 'fallback') : undefined;
 
@@ -170,13 +173,13 @@ export function Component() {
         </section>
       ) : null}
 
-      {data.model ? (
-        <section className="section section--s" aria-labelledby="model-title">
+      {panorama ? (
+        <section className="section section--s" aria-labelledby="pano-title">
           <div className="shell">
-            <h2 id="model-title">{data.model.title}</h2>
-            {data.model.description ? <p className="lead mt-md">{data.model.description}</p> : null}
+            <h2 id="pano-title">Look around in 360°</h2>
+            <p className="lead mt-md">Drag to turn the view. The thumbnails switch between viewpoints.</p>
             <div className="mt-xl">
-              <ModelViewer model={data.model} />
+              <PanoViewer panoramas={[panorama]} showProjects={false} />
             </div>
           </div>
         </section>

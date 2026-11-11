@@ -9,10 +9,6 @@ export const queryKeys = {
     all: ['services'] as const,
     list: () => [...queryKeys.services.all, 'list'] as const,
   },
-  models: {
-    all: ['models'] as const,
-    list: () => [...queryKeys.models.all, 'list'] as const,
-  },
   panoramas: {
     all: ['panoramas'] as const,
     list: () => [...queryKeys.panoramas.all, 'list'] as const,

@@ -3,9 +3,10 @@ import type { Project, ProjectCategory } from '@/types';
 /**
  * Portfolio projects.
  *
- * Every entry below is a PLACEHOLDER STUDY built on a licensed stand-in
- * photograph (`placeholder: true`). They show how real projects will look and
- * read; none of them is a client commission and none is Rohan Kamble's work.
+ * Entries with `placeholder: true` are PLACEHOLDER STUDIES built on licensed
+ * stand-in photographs. They show how real projects will look and read; none
+ * of them is a client commission or Rohan Kamble's work. Entries with
+ * `placeholder: false` are his own.
  *
  * To publish a real project: add its pictures to media/originals/, run
  * `npm run media`, describe them in src/data/media.ts, then add an entry here
@@ -17,7 +18,7 @@ export const categoryLabels: Record<ProjectCategory, string> = {
   cinematography: 'Cinematography',
   aerial: 'Aerial',
   architecture: 'Architecture',
-  '3d-visualization': '3D Visualization',
+  '360-tours': '360° Tours',
   events: 'Events',
 };
 
@@ -26,11 +27,28 @@ export const categoryOrder: ProjectCategory[] = [
   'cinematography',
   'aerial',
   'architecture',
-  '3d-visualization',
+  '360-tours',
   'events',
 ];
 
 export const projects: Project[] = [
+  {
+    slug: 'splendid-valley-retreat-panshet',
+    title: 'Splendid Valley Retreat, Panshet',
+    category: '360-tours',
+    summary: 'A 360° aerial tour of a hillside retreat near Panshet, seen from three points in the air.',
+    overview: [
+      'Three aerial panoramas, each taken from one point above the site, show the retreat with the valley and hills around it.',
+      'Visitors turn each view themselves and move between the three viewpoints in the tour below.',
+    ],
+    cover: 'panshet-1',
+    gallery: ['panshet-1', 'panshet-2', 'panshet-3'],
+    panorama: 'panshet',
+    location: 'Panshet, Maharashtra',
+    services: ['aerial-360', 'drone'],
+    featured: true,
+    placeholder: false,
+  },
   {
     slug: 'coastline-straight-down',
     title: 'Coastline, straight down',
@@ -73,21 +91,6 @@ export const projects: Project[] = [
     cover: 'aerial-construction',
     gallery: ['aerial-interchange', 'aerial-bridge', 'aerial-railworks'],
     services: ['infrastructure', 'drone'],
-    featured: true,
-    placeholder: true,
-  },
-  {
-    slug: 'city-block-model',
-    title: 'City block model',
-    category: '3d-visualization',
-    summary: 'A district set out as a scale model, with its buildings, streets and trees.',
-    overview: [
-      'Aerial 3D models start as several hundred overlapping photographs, matched point by point to rebuild the surface of a site.',
-      'The finished model can be orbited in a browser or rendered as stills.',
-    ],
-    cover: 'model-city',
-    gallery: ['model-massing', 'aerial-city'],
-    services: ['aerial-3d'],
     featured: true,
     placeholder: true,
   },

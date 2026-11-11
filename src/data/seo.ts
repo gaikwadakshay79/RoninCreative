@@ -20,7 +20,7 @@ export const pageSeo = {
     path: '/',
     title: 'Ronin Creative | Photography, cinematography and aerial imaging',
     description:
-      'Ronin Creative is the studio of Rohan Kamble: professional photography, cinematography, aerial imaging and 3D visualization.',
+      'Ronin Creative is the studio of Rohan Kamble: professional photography, cinematography, aerial imaging and 360° aerial tours.',
     image: 'hero-home',
   },
   about: {
@@ -32,29 +32,22 @@ export const pageSeo = {
   },
   services: {
     path: '/services',
-    title: 'Photography, film, drone and aerial 3D services',
+    title: 'Photography, film, drone and 360° aerial services',
     description:
-      'Professional photography, cinematography, drone photography and videography, aerial 3D modelling, 360° aerial views and infrastructure imaging.',
+      'Professional photography, cinematography, drone photography and videography, 360° aerial tours and infrastructure imaging.',
     image: 'drone-flight',
   },
   portfolio: {
     path: '/portfolio',
     title: 'Portfolio of photography, film and aerial work',
     description:
-      'Photography, cinematography, aerial, architecture, 3D visualization and event work from Ronin Creative.',
+      'Photography, cinematography, aerial, architecture, 360° tour and event work from Ronin Creative.',
     image: 'aerial-coast',
-  },
-  aerial3d: {
-    path: '/aerial-3d',
-    title: 'Aerial 3D modelling by drone photogrammetry',
-    description:
-      'Ronin Creative turns overlapping drone photographs into 3D models of buildings, sites and terrain for visualization and presentation.',
-    image: 'aerial-city',
   },
   contact: {
     path: '/contact',
     title: 'Contact Ronin Creative',
-    description: 'Tell Rohan Kamble about your shoot, film, drone flight or 3D model and where it takes place.',
+    description: 'Tell Rohan Kamble about your shoot, film, drone flight or 360° tour and where it takes place.',
     image: 'hero-home',
   },
   credits: {

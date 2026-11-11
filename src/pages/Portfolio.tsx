@@ -71,7 +71,7 @@ export function Component() {
     <>
       <PageHero
         title="Portfolio"
-        lead="Photography, film, aerial work and 3D visualization. Open a picture to see it full screen."
+        lead="Photography, film, aerial work and 360° tours. Open a picture to see it full screen."
       />
 
       <section className="pt-2xl pb-3xl" aria-labelledby="projects-title">
@@ -157,7 +157,10 @@ export function Component() {
                         {project.title}
                       </Link>
                     </h3>
-                    <span className="label shrink-0">{categoryLabels[project.category]}</span>
+                    <span className="label shrink-0">
+                      {categoryLabels[project.category]}
+                      {project.placeholder ? ' · placeholder' : null}
+                    </span>
                   </div>
                 </article>
               ))}

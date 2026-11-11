@@ -24,25 +24,26 @@ function relatedProjects(service: Service, projects: Project[]): Project[] {
 
 function ServiceSection({ service, projects, index }: { service: Service; projects: Project[]; index: number }) {
   const related = useMemo(() => relatedProjects(service, projects), [service, projects]);
-  const wide = index % 2 === 0;
+  // Every picture is the same size and ratio; the side alternates, so the page zigzags.
+  const pictureRight = index % 2 === 1;
   const titleId = `${service.id}-title`;
 
   return (
     <section id={service.id} className="section scroll-mt-header" aria-labelledby={titleId}>
       <div className="shell">
         <div className="grid grid-cols-1 items-center gap-x-col gap-y-xl lg:grid-cols-12">
-          <Reveal className={wide ? 'lg:col-span-7' : 'lg:col-span-6'}>
+          <Reveal className={pictureRight ? 'lg:order-2 lg:col-span-7 lg:col-start-6' : 'lg:col-span-7'}>
             <Frame
               media={service.image}
               slot={`service-${service.id}`}
               sizes="(min-width: 64rem) 55vw, 100vw"
               priority={index === 0}
-              frameClassName={wide ? 'aspect-[3/2]' : 'aspect-[4/3]'}
+              frameClassName="aspect-[3/2]"
             />
           </Reveal>
           <Reveal
             index={1}
-            className={`flex flex-col items-start gap-lg ${wide ? 'lg:col-span-5' : 'lg:col-span-5 lg:col-start-8'}`}
+            className={`flex flex-col items-start gap-lg ${pictureRight ? 'lg:order-1 lg:col-span-5 lg:col-start-1 lg:row-start-1' : 'lg:col-span-5'}`}
           >
             <h2 id={titleId}>{service.title}</h2>
             <p className="text-md">{service.description}</p>
@@ -98,7 +99,7 @@ export function Component() {
   return (
     <>
       <PageHero
-        title="Photography, film, flight and 3D."
+        title="Photography, film, flight and 360°."
         lead="Each service can be booked alone, or combined with the others in one visit."
       >
         {services.data ? (
@@ -141,7 +142,7 @@ export function Component() {
 
       <CtaClose
         title="Not sure which service fits? Describe the project."
-        line="Say what you need pictures of and what they are for. Rohan suggests the mix of ground, air and 3D."
+        line="Say what you need pictures of and what they are for. Rohan suggests the mix of ground and aerial work."
       />
     </>
   );

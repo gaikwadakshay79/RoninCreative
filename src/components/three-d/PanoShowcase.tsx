@@ -11,7 +11,7 @@ export function PanoShowcase() {
   const { data: panoramas, isPending, isError, refetch } = usePanoramas();
 
   if (isPending) {
-    return <div className="skeleton mt-2xl aspect-[4/3] w-full lg:aspect-[16/9]" aria-hidden="true" />;
+    return <div className="skeleton mt-2xl aspect-[4/5] w-full sm:aspect-[16/9]" aria-hidden="true" />;
   }
 
   if (isError) {
@@ -27,7 +27,15 @@ export function PanoShowcase() {
 
   if (!panoramas || panoramas.length === 0) return null;
 
-  const hasPlaceholders = panoramas.some((panorama) => panorama.placeholder);
+  const demos = panoramas.filter((panorama) => panorama.placeholder);
+  const hasPlaceholders = demos.length > 0;
+  // With Rohan's own work in the list too, name the demos so the note does not cover it.
+  const demoNote =
+    demos.length === panoramas.length
+      ? 'These are licensed demo panoramas'
+      : `${new Intl.ListFormat('en-GB', { type: 'conjunction' }).format(demos.map((demo) => demo.title))} ${
+          demos.length === 1 ? 'is a licensed demo panorama' : 'are licensed demo panoramas'
+        }`;
 
   return (
     <Reveal className="mt-2xl">
@@ -37,7 +45,7 @@ export function PanoShowcase() {
       </div>
       {hasPlaceholders ? (
         <p className="label mt-md">
-          These are licensed demo panoramas, not Ronin Creative’s own work.{' '}
+          {demoNote}, not Ronin Creative’s own work.{' '}
           <Link to="/credits" className="link text-muted">
             See the credits
           </Link>

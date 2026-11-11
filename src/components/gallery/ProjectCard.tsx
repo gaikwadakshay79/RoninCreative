@@ -19,7 +19,7 @@ export function ProjectCard({ project, ratio = 'aspect-[4/3]', sizes, priority, 
     <Link
       to={`/portfolio/${project.slug}`}
       className={`zoom group flex flex-col no-underline ${fill ? 'h-full' : ''}`}
-      aria-label={`${project.title}, ${categoryLabels[project.category]}`}
+      aria-label={`${project.title}, ${categoryLabels[project.category]}${project.placeholder ? ', placeholder' : ''}`}
     >
       <Frame
         media={project.cover}
@@ -31,7 +31,10 @@ export function ProjectCard({ project, ratio = 'aspect-[4/3]', sizes, priority, 
       />
       <div className="tile__meta">
         <h3 className="text-lg">{project.title}</h3>
-        <span className="label shrink-0">{categoryLabels[project.category]}</span>
+        <span className="label shrink-0">
+          {categoryLabels[project.category]}
+          {project.placeholder ? ' · placeholder' : null}
+        </span>
       </div>
     </Link>
   );

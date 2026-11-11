@@ -20,7 +20,6 @@ export const router = createBrowserRouter(
       { path: 'services', lazy: () => import('@/pages/Services') },
       { path: 'portfolio', lazy: () => import('@/pages/Portfolio') },
       { path: 'portfolio/:slug', lazy: () => import('@/pages/ProjectDetail') },
-      { path: 'aerial-3d', lazy: () => import('@/pages/Aerial3D') },
       { path: 'contact', lazy: () => import('@/pages/Contact') },
       { path: 'credits', lazy: () => import('@/pages/Credits') },
       { path: '*', lazy: () => import('@/pages/NotFound') },

@@ -6,9 +6,11 @@ import type { MediaItem, MediaKey } from '@/types';
  * The key is the file name in media/originals/ without its extension. Sizes
  * come from src/data/media.manifest.json, which `npm run media` writes.
  *
- * EVERY ENTRY BELOW IS A LICENSED STAND-IN (`placeholder: true`), taken from
- * Wikimedia Commons under the licence in its credit. None is Ronin Creative's
- * work. To replace one with the studio's own photograph:
+ * Entries with `placeholder: true` are licensed stand-ins from Wikimedia
+ * Commons under the licence in their credit, not Ronin Creative's work. The
+ * `panshet-*` stills are Rohan's own, cut from the Splendid Valley Retreat
+ * tour by `npm run tour-images`. To replace a stand-in with the studio's own
+ * photograph:
  *
  *   1. Save the new file over media/originals/<key>.jpg (same name).
  *   2. Run `npm run media`.
@@ -251,24 +253,6 @@ export const mediaLibrary: Record<MediaKey, MediaItem> = {
       source: 'https://commons.wikimedia.org/wiki/File:Rob_Bourdon_HQ.jpg',
     },
   },
-  'model-massing': {
-    alt: 'A wooden architectural model of low courtyard buildings on a dark ground',
-    placeholder: true,
-    credit: {
-      author: 'Designer Mario Kleff',
-      licence: 'CC BY-SA 4.0',
-      source: 'https://commons.wikimedia.org/wiki/File:Architectural_Masterplan_Model_of_Lieb_Tang_Rodfai_Villas.jpg',
-    },
-  },
-  'model-city': {
-    alt: 'A white scale model of a city district, with rows of buildings and small model trees',
-    placeholder: true,
-    credit: {
-      author: 'Robert-brook',
-      licence: 'CC0',
-      source: 'https://commons.wikimedia.org/wiki/File:A_section_of_an_architectural_model_on_Durham.jpg',
-    },
-  },
   'aerial-railworks': {
     alt: 'Rail workers in high-visibility vests repairing a track at night, seen from above',
     placeholder: true,
@@ -286,5 +270,19 @@ export const mediaLibrary: Record<MediaKey, MediaItem> = {
       licence: 'CC BY-SA 4.0',
       source: 'https://commons.wikimedia.org/wiki/File:Traditional_floating_vegetable_garden_34.jpg',
     },
+  },
+  'panshet-1': {
+    alt: 'Splendid Valley Retreat from the air: a terraced café with a long veranda, lawns behind stone retaining walls and a red earth track, with forested hills beyond',
+    position: '50% 55%',
+    placeholder: false,
+  },
+  'panshet-2': {
+    alt: 'A steel frame of a new building on the hillside at Splendid Valley Retreat, looking out over a forested valley',
+    position: '40% 60%',
+    placeholder: false,
+  },
+  'panshet-3': {
+    alt: 'Forested hills and a green clearing below Splendid Valley Retreat, under a hazy sky',
+    placeholder: false,
   },
 };

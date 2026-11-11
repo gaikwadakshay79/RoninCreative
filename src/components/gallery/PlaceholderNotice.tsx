@@ -17,7 +17,7 @@ export function PlaceholderNotice({ scope, className = '' }: PlaceholderNoticePr
       <Info size={20} strokeWidth={1.5} aria-hidden="true" />
       <span>
         {scope === 'page'
-          ? 'These pictures are licensed placeholders. Ronin Creative’s own projects replace them before launch.'
+          ? 'Projects marked “placeholder” are built on licensed stand-in pictures. Ronin Creative’s own projects replace them before launch.'
           : 'This project is a placeholder built on licensed photographs, not a client commission.'}
       </span>
     </p>

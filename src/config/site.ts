@@ -11,7 +11,7 @@ export const siteConfig = {
   tagline: 'Perspective Beyond the Ordinary.',
   supportingLine: 'From the ground to the sky, we capture perspectives that tell extraordinary stories.',
   description:
-    'Ronin Creative is the studio of Rohan Kamble: professional photography, cinematography, aerial imaging and 3D visualization.',
+    'Ronin Creative is the studio of Rohan Kamble: professional photography, cinematography, aerial imaging and 360° aerial tours.',
   /** Public address of the live site, without a trailing slash. Set VITE_SITE_URL to fill it. */
   url: (import.meta.env.VITE_SITE_URL ?? '').replace(/\/$/, ''),
   locale: 'en_IN',

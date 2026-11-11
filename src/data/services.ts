@@ -74,29 +74,6 @@ export const services: Service[] = [
     enabled: true,
   },
   {
-    id: 'aerial-3d',
-    title: 'Aerial 3D modelling',
-    summary: 'Buildings, sites and terrain rebuilt as 3D models.',
-    description:
-      'A drone photographs the subject from many overlapping positions, and photogrammetry software turns those photographs into a textured 3D model you can orbit, zoom and present. The models are made for visualization, not as certified survey data.',
-    offerings: [
-      'Drone-based photogrammetry',
-      'Aerial 3D reconstruction',
-      'Property and terrain visualization',
-      'Site documentation',
-      '3D asset generation',
-      'Interactive model presentation',
-    ],
-    deliverables: [
-      'A textured 3D model, ready to view in a browser',
-      'Rendered views of the model',
-      'An interactive presentation for clients and stakeholders',
-    ],
-    image: 'model-city',
-    related: ['3d-visualization', 'aerial'],
-    enabled: true,
-  },
-  {
     id: 'aerial-360',
     title: '360° aerial experiences',
     summary: 'Aerial panoramas a viewer can look around in.',
@@ -113,8 +90,8 @@ export const services: Service[] = [
       'An interactive view for your website',
       'Linked viewpoints for larger sites',
     ],
-    image: 'aerial-skyline',
-    related: ['aerial', 'architecture'],
+    image: 'panshet-1',
+    related: ['360-tours', 'aerial'],
     enabled: true,
   },
   {
@@ -136,7 +113,7 @@ export const services: Service[] = [
       'Marketing images of the finished property',
     ],
     image: 'aerial-construction',
-    related: ['aerial', 'architecture', '3d-visualization'],
+    related: ['aerial', 'architecture'],
     enabled: true,
   },
 ];

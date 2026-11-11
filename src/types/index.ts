@@ -29,7 +29,6 @@ export type ServiceId =
   | 'photography'
   | 'cinematography'
   | 'drone'
-  | 'aerial-3d'
   | 'aerial-360'
   | 'infrastructure';
 
@@ -38,7 +37,7 @@ export type ProjectCategory =
   | 'cinematography'
   | 'aerial'
   | 'architecture'
-  | '3d-visualization'
+  | '360-tours'
   | 'events';
 
 export interface Service {
@@ -65,18 +64,6 @@ export interface ProjectVideo {
   title: string;
 }
 
-export interface ModelAsset {
-  id: string;
-  title: string;
-  /** Path under /public (for example /models/site.glb) or an absolute URL. .glb and .gltf are supported. */
-  src: string;
-  /** Shown before the model loads and wherever the viewer cannot run. */
-  poster?: MediaKey;
-  /** What the model shows, for people who cannot see it. */
-  alt: string;
-  description?: string;
-}
-
 /** Where a 360° panorama looks when it opens. Angles in degrees. */
 export interface PanoramaView {
   /** Left and right. 0 is the centre of the image, positive turns right. */
@@ -100,6 +87,15 @@ export interface Panorama {
    * frame and no image in media/panoramas/ is needed, only a poster.
    */
   embed?: string;
+  /**
+   * A tour exported from the Marzipano Tool, shown in the site's own viewer:
+   * `path` is the folder in public/ holding its data.js and tiles/, for
+   * example "/tours/panshet". `north` gives, per scene id, the yaw in degrees
+   * at which the scene looks north; the compass points from it (0 if unset).
+   */
+  tour?: { path: string; north?: Record<string, number> };
+  /** For a single panorama: the yaw in degrees at which it looks north. */
+  north?: number;
   /** True while the panorama is a licensed stand-in and not Ronin Creative's own work. */
   placeholder: boolean;
   credit?: MediaCredit;
@@ -114,7 +110,8 @@ export interface Project {
   cover: MediaKey;
   gallery?: MediaKey[];
   video?: ProjectVideo;
-  model?: ModelAsset;
+  /** Id of an entry in src/data/panoramas.ts, shown in the 360° viewer on the project page. */
+  panorama?: string;
   location?: string;
   year?: number;
   services: ServiceId[];

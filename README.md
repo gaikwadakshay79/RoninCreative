@@ -1,12 +1,12 @@
 # Ronin Creative
 
-The website of Ronin Creative, the studio of Rohan Kamble: professional photography, cinematography, aerial imaging and 3D visualization. It is a static site (no backend, no database) built on Hallmark's Vantage theme.
+The website of Ronin Creative, the studio of Rohan Kamble: professional photography, cinematography, aerial imaging and 360° aerial tours. It is a static site (no backend, no database) built on Hallmark's Vantage theme.
 
-Pages: Home, About, Services, Portfolio, Project detail, Aerial 3D, Contact, Credits and a 404 page.
+Pages: Home, About, Services, Portfolio, Project detail, Contact, Credits and a 404 page.
 
 ## Technology
 
-React 19, TypeScript (strict), Vite, React Router, TanStack React Query, Axios, Ant Design 5, Tailwind CSS 4, Lucide icons and Motion for React. The 3D viewer is `@google/model-viewer`, loaded only when a model is on screen. The 360° viewer is Marzipano, loaded only when a visitor opens a panorama. Node 22.18 or newer is required.
+React 19, TypeScript (strict), Vite, React Router, TanStack React Query, Axios, Ant Design 5, Tailwind CSS 4, Lucide icons and Motion for React. The 360° viewer is Marzipano, loaded only when a visitor opens a panorama. Node 22.18 or newer is required.
 
 ## Commands
 
@@ -82,13 +82,13 @@ Add an entry to `src/data/projects.ts`:
 {
   slug: 'riverside-villa',            // the address: /portfolio/riverside-villa
   title: 'Riverside villa',
-  category: 'architecture',           // photography | cinematography | aerial | architecture | 3d-visualization | events
+  category: 'architecture',           // photography | cinematography | aerial | architecture | 360-tours | events
   summary: 'One line for cards and link previews.',
   overview: ['First paragraph.', 'Second paragraph.'],   // optional
   cover: 'riverside-villa-cover',     // media key
   gallery: ['riverside-villa-1', 'riverside-villa-2'],  // optional
   video: { src: '/videos/villa.mp4', poster: 'riverside-villa-cover', title: 'The film' }, // optional
-  model: { id: 'villa', title: '3D model', src: '/models/villa.glb', alt: 'What the model shows' }, // optional
+  panorama: 'villa',                  // optional: id of an entry in src/data/panoramas.ts, shown in a 360° viewer on the project page
   location: 'Pune',                   // optional
   year: 2026,                         // optional
   services: ['photography', 'drone'],
@@ -101,31 +101,30 @@ Fields you leave out are not rendered. Delete the placeholder entries as real pr
 
 Testimonials go in `src/data/testimonials.ts`. The list is empty and the section stays hidden until real ones are added.
 
-## Adding 3D models
-
-1. Export the model as `.glb` (preferred) or `.gltf` and copy it to `public/models/`.
-2. Optionally add a poster picture through the media steps above.
-3. Add an entry to `src/data/models.ts` (the file has an example).
-
-The Aerial 3D page then shows the viewer with orbit, zoom, fullscreen, a loading state and the poster as fallback. While the list is empty the page shows a "first models are on their way" panel. A model can also be attached to a single project through its `model` field.
-
 ## Adding 360° panoramas
 
-The Services page has a 360° viewer (Marzipano) in its "360° aerial experiences" section. It shows a flat poster and a "Look around in 360°" button; the viewer and the panorama load only when that button is pressed. The three panoramas there today are licensed demos from Wikimedia Commons, credited on `/credits`.
+The Services page has a 360° viewer (Marzipano) in its "360° aerial experiences" section. It shows a flat poster until the viewer comes near the screen, then loads the tour and starts turning slowly by itself (about one full turn a minute; `TURN_SPEED` in `PanoViewer.tsx`). It pauses while the visitor drags, while it is off screen and under reduced motion. On phones a vertical swipe still scrolls the page. It has the site's own controls: the scene name top left, a compass top right (press it to face north), scene thumbnails and a toolbar (zoom, pause the slow turn, back to the starting view, fullscreen) along the bottom.
+
+Today it shows one tour: Splendid Valley Retreat, Panshet (`public/tours/panshet/`, three scenes), which is also the first portfolio project (`/portfolio/splendid-valley-retreat-panshet`). The current export was stitched with the PTGui trial and carries its watermarks, so it must be replaced with a licensed re-export before the site goes live (steps 1 to 3 below, over the same folder; step 3 also refreshes the portfolio stills).
+
+**A tour exported from the Marzipano Tool (one or more scenes, tiled):**
+
+1. Before exporting, give every scene a real name in the Marzipano Tool and set each scene's starting view; the site shows those names under the thumbnails and opens each scene where it was set.
+2. Copy the contents of the export's `app-files/` folder to `public/tours/<name>/`, with the zip's `LICENSE.txt` (Marzipano's licence). The site reads only `data.js` and `tiles/`; the export's own `index.html` stays as a fallback and is marked `noindex`.
+3. Run `npm run tour-images -- <name> <id>`, then `npm run media`. It writes the viewer's poster (`public/panoramas/<id>-poster.jpg`) and one still per scene (`media/originals/<id>-1.jpg`, `-2`, ...) from the tour's own tiles. Describe the stills in `src/data/media.ts` to use them as a project's cover and gallery.
+4. Add an entry to `src/data/panoramas.ts` with `tour: { path: '/tours/<name>' }`, a title, an `alt` description and `placeholder: false`.
+5. Set north for the compass: `tour.north` maps each scene id (the folder names in `tiles/`) to the yaw, in degrees, at which that scene looks north. Find it by turning the view until it faces north on a map (a road or ridge you can see on both helps) and reading the yaw. Until it is set, the compass treats the scene's yaw 0 as north, which is only right by chance.
+6. To list it in the portfolio, add a project in `src/data/projects.ts` with category `360-tours`, the stills as `cover` and `gallery`, and `panorama: '<id>'`: the project page then shows the tour in the same viewer.
 
 **A single panorama (stitched in PTGui or similar):**
 
 1. Export it as an equirectangular JPEG, exactly twice as wide as it is tall (for example 8000 x 4000), with the horizon level.
 2. Save it as `media/panoramas/<id>.jpg` and run `npm run media`. This writes the viewer files and a poster into `public/panoramas/`.
-3. Add an entry to `src/data/panoramas.ts` with the same `id`, a title, an `alt` description and `placeholder: false`. `view` sets where it opens: `yaw` turns left and right, `pitch` tilts (negative looks down), `fov` zooms.
+3. Add an entry to `src/data/panoramas.ts` with the same `id`, a title, an `alt` description and `placeholder: false`. `view` sets where it opens: `yaw` turns left and right, `pitch` tilts (negative looks down), `fov` zooms. `north` sets the compass.
 
-**A finished tour (several linked scenes and hotspots, exported from the Marzipano Tool or Pano2VR):**
+**A tour from another tool (Pano2VR and the like):** copy it to `public/tours/<name>/`, add a 16:9 poster as `public/panoramas/<id>-poster.jpg` and set `embed: '/tours/<name>/index.html'`. It opens in a frame with that tool's own controls, not the site's.
 
-1. Copy the exported folder, unchanged, to `public/tours/<name>/`.
-2. Add a 16:9 poster picture as `public/panoramas/<id>-poster.jpg` (about 1280px wide).
-3. Add an entry to `src/data/panoramas.ts` with `embed: '/tours/<name>/index.html'`. The tour then opens in a frame in place of the built-in viewer.
-
-Delete the three demo entries (and their files in `media/panoramas/` and `public/panoramas/`) once real ones are in. An empty list hides the viewer.
+Each entry is one project: a row of buttons above the viewer names them (shown even when there is only one) and switches between them; a tour's scenes are the thumbnails inside the viewer. An empty list hides the viewer.
 
 ## Contact form
 
@@ -137,7 +136,7 @@ The form validates with Ant Design and sends through one adapter, `src/lib/api/c
 
 ## Content API
 
-Pages read content through React Query hooks (`src/hooks/useContent.ts`) and service modules (`src/lib/api/`). With `VITE_API_BASE_URL` empty they load the typed files in `src/data`. Set it and the same modules call `GET /projects`, `GET /projects/:slug`, `GET /services`, `GET /models` and `GET /panoramas` through the shared Axios client (`src/lib/api/client.ts`). Query keys are in `src/lib/query-keys.ts`.
+Pages read content through React Query hooks (`src/hooks/useContent.ts`) and service modules (`src/lib/api/`). With `VITE_API_BASE_URL` empty they load the typed files in `src/data`. Set it and the same modules call `GET /projects`, `GET /projects/:slug`, `GET /services` and `GET /panoramas` through the shared Axios client (`src/lib/api/client.ts`). Query keys are in `src/lib/query-keys.ts`.
 
 ## Design system
 
@@ -150,6 +149,6 @@ Ant Design's styles sit in the `antd` cascade layer, below the site's own compon
 - Fill in `src/config/site.ts` (email, phone, WhatsApp, socials, location) and set `VITE_SITE_URL`.
 - Replace every placeholder photograph and project with Rohan's own work, including the founder portrait.
 - Confirm the list of services and the wording about the drone licence.
-- Add at least one 3D model, or leave the "on their way" panel.
-- Replace the three demo 360° panoramas with Rohan's own, or remove them.
+- Replace the Panshet tour (`public/tours/panshet/`) with a re-export stitched in licensed PTGui: the current one has trial watermarks.
+- Set north for each Panshet scene in `src/data/panoramas.ts` so the compass is right.
 - Optionally add a hero film: a short muted loop under 2 MB, path in `siteConfig.hero.video`.

@@ -5,7 +5,6 @@ export const primaryNav: NavItem[] = [
   { label: 'About', to: '/about' },
   { label: 'Services', to: '/services' },
   { label: 'Portfolio', to: '/portfolio' },
-  { label: 'Aerial 3D', to: '/aerial-3d' },
   { label: 'Contact', to: '/contact' },
 ];
 

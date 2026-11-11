@@ -31,7 +31,7 @@ const principles = [
   },
   {
     title: 'One finished set',
-    line: 'Ground, aerial and 3D work are edited as one project.',
+    line: 'Ground, aerial and 360° work are edited as one project.',
   },
 ];
 
@@ -98,7 +98,7 @@ function ServicesPreview() {
       <div className="shell">
         <Reveal className="grid grid-cols-1 gap-x-col gap-y-md lg:grid-cols-12 lg:items-end">
           <h2 id="services-title" className="lg:col-span-6">
-            Stills, film, flight and 3D
+            Stills, film, flight and 360°
           </h2>
           <p className="lead lg:col-span-5 lg:col-start-8">
             Booked alone, or combined in one visit.
@@ -133,7 +133,7 @@ export function Component() {
         media={siteConfig.hero.image}
         video={siteConfig.hero.video || undefined}
         title="Every perspective tells a story."
-        lead="Photography, cinematography, aerial imaging and 3D visualization."
+        lead="Photography, cinematography, aerial imaging and 360° aerial tours."
       >
         <Link to="/portfolio" className="btn">
           Explore our work
@@ -146,7 +146,7 @@ export function Component() {
       <section className="section intro" aria-labelledby="intro-title">
         <Reveal className="shell grid grid-cols-1 gap-x-col gap-y-xl lg:grid-cols-12">
           <h2 id="intro-title" className="statement lg:col-span-7">
-            One studio for the ground, the air and the 3D model.
+            One studio for the ground and the air.
           </h2>
           <div className="flex flex-col items-start gap-lg lg:col-span-4 lg:col-start-9 lg:pt-xs">
             <p className="lead">

@@ -259,24 +259,37 @@
       2400
     ]
   },
-  "model-city": {
-    "width": 1920,
-    "height": 1440,
+  "panshet-1": {
+    "width": 4096,
+    "height": 2731,
     "widths": [
       480,
       800,
       1200,
-      1600
+      1600,
+      2400
     ]
   },
-  "model-massing": {
-    "width": 1920,
-    "height": 1097,
+  "panshet-2": {
+    "width": 4096,
+    "height": 2731,
     "widths": [
       480,
       800,
       1200,
-      1600
+      1600,
+      2400
+    ]
+  },
+  "panshet-3": {
+    "width": 4096,
+    "height": 2731,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2400
     ]
   },
   "photo-camera": {

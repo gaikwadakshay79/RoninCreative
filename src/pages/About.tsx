@@ -18,8 +18,8 @@ const path = [
     line: 'Stills, film and panoramas from above.',
   },
   {
-    title: 'Aerial 3D imaging',
-    line: 'Overlapping photographs become 3D models of sites.',
+    title: '360° aerial tours',
+    line: 'Panoramas from points in the air, to look around in.',
   },
 ];
 
@@ -27,7 +27,7 @@ const process = [
   { title: 'Brief', line: 'What the pictures are for and who will see them.' },
   { title: 'Plan', line: 'Locations, light, a shot list and, for flights, the route and permissions.' },
   { title: 'Capture', line: 'Ground and aerial work in one visit, where the site allows.' },
-  { title: 'Deliver', line: 'Edited stills, a film, a panorama or a 3D model.' },
+  { title: 'Deliver', line: 'Edited stills, a film or a 360° tour.' },
 ];
 
 const safety = [
@@ -47,8 +47,8 @@ const reasons = [
     line: 'Flights planned around the rules of each location.',
   },
   {
-    title: 'From capture to 3D',
-    line: 'The filming flight can also record the 3D model.',
+    title: 'From capture to 360°',
+    line: 'The filming flight can also record a 360° panorama.',
   },
   {
     title: 'Clear about limits',
@@ -110,7 +110,7 @@ export function Component() {
       <section className="section" aria-labelledby="path-title">
         <div className="shell">
           <Reveal>
-            <h2 id="path-title">From the camera to the point cloud</h2>
+            <h2 id="path-title">From the camera to the 360° view</h2>
           </Reveal>
           <ol className="steps mt-2xl grid grid-cols-1 gap-col lg:grid-cols-3">
             {path.map((stage, index) => (
@@ -121,8 +121,8 @@ export function Component() {
             ))}
           </ol>
           <Reveal className="mt-xl">
-            <Link to="/aerial-3d" className="link text-md">
-              See how aerial 3D imaging works
+            <Link to="/portfolio/splendid-valley-retreat-panshet" className="link text-md">
+              Look around a 360° aerial tour
             </Link>
           </Reveal>
         </div>

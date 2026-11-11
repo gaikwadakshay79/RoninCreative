@@ -1,6 +1,7 @@
 /**
  * Types for the parts of Marzipano the site uses. The library ships as plain
- * JavaScript; this covers one viewer, equirectangular scenes and autorotation.
+ * JavaScript; this covers one viewer, equirectangular and tiled cube scenes
+ * (Marzipano Tool exports) and autorotation.
  */
 declare module 'marzipano' {
   export interface ViewParameters {
@@ -11,7 +12,14 @@ declare module 'marzipano' {
 
   export type ViewLimiter = (params: Required<ViewParameters>) => Required<ViewParameters>;
 
-  export class RectilinearView {
+  export interface EventEmitter {
+    addEventListener(event: string, listener: (...args: never[]) => void): void;
+    removeEventListener(event: string, listener: (...args: never[]) => void): void;
+  }
+
+  export class RectilinearView implements EventEmitter {
+    addEventListener(event: string, listener: (...args: never[]) => void): void;
+    removeEventListener(event: string, listener: (...args: never[]) => void): void;
     constructor(params?: ViewParameters, limiter?: ViewLimiter);
     static limit: {
       traditional(maxResolution: number, maxVFov: number, maxHFov?: number): ViewLimiter;
@@ -29,13 +37,19 @@ declare module 'marzipano' {
     constructor(levels: Array<{ width: number }>);
   }
 
-  export class ImageUrlSource {
-    static fromString(url: string): ImageUrlSource;
+  export interface CubeLevel {
+    tileSize: number;
+    size: number;
+    fallbackOnly?: boolean;
   }
 
-  export interface EventEmitter {
-    addEventListener(event: string, listener: (...args: never[]) => void): void;
-    removeEventListener(event: string, listener: (...args: never[]) => void): void;
+  export class CubeGeometry {
+    constructor(levels: CubeLevel[]);
+  }
+
+  export class ImageUrlSource {
+    /** `url` may hold {z} {f} {y} {x}; a cube preview strip is used while tiles load. */
+    static fromString(url: string, options?: { cubeMapPreviewUrl?: string; cubeMapPreviewFaceOrder?: string }): ImageUrlSource;
   }
 
   export type TextureStore = EventEmitter;
@@ -67,7 +81,7 @@ declare module 'marzipano' {
     );
     createScene(options: {
       source: ImageUrlSource;
-      geometry: EquirectGeometry;
+      geometry: EquirectGeometry | CubeGeometry;
       view: RectilinearView;
       pinFirstLevel?: boolean;
     }): Scene;
@@ -94,6 +108,7 @@ declare module 'marzipano' {
     Viewer: typeof Viewer;
     RectilinearView: typeof RectilinearView;
     EquirectGeometry: typeof EquirectGeometry;
+    CubeGeometry: typeof CubeGeometry;
     ImageUrlSource: typeof ImageUrlSource;
     autorotate: typeof autorotate;
   };
