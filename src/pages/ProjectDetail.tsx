@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { Picture } from '@/components/common/Picture';
 import { Lightbox, type LightboxItem } from '@/components/gallery/Lightbox';
@@ -6,26 +6,17 @@ import { PlaceholderNotice } from '@/components/gallery/PlaceholderNotice';
 import { ProjectCard } from '@/components/gallery/ProjectCard';
 import { Reveal } from '@/components/motion/Reveal';
 import { PageHero } from '@/components/sections/PageHero';
-import { PanoViewer, type PanoLook } from '@/components/three-d/PanoViewer';
+import { PanoViewer } from '@/components/three-d/PanoViewer';
 import { categoryLabels } from '@/data/projects';
 import { usePanoramas, useProject, useProjects, useServices } from '@/hooks/useContent';
 import { useSeo } from '@/hooks/useSeo';
 import { getMedia, mediaUrl, projectPictures } from '@/lib/media';
 import { withBase } from '@/lib/paths';
+import { clearOldLink, pictureToken, readSharedLink, upgradeOldLink } from '@/lib/shareLink';
 import type { Project } from '@/types';
 import { NotFoundContent } from './NotFound';
 
 const RELATED_COUNT = 3;
-
-/** The direction in a shared 360° link (?yaw=&pitch=&fov=), if all of it is there and valid. */
-function readLook(params: URLSearchParams): PanoLook | undefined {
-  const angle = (name: string) => {
-    const value = params.get(name);
-    return value === null || value.trim() === '' ? Number.NaN : Number(value);
-  };
-  const look = { yaw: angle('yaw'), pitch: angle('pitch'), fov: angle('fov') };
-  return Number.isFinite(look.yaw) && Number.isFinite(look.pitch) && look.fov > 0 && look.fov < 180 ? look : undefined;
-}
 
 function ProjectSeo({ project }: { project: Project }) {
   useSeo({
@@ -60,23 +51,34 @@ export function Component() {
 
   const data = project.data;
 
-  // Every picture the viewer can show, each with its own link (?image=<key>).
+  // Every picture the viewer can show, each with its own short link.
   const pictures = useMemo<LightboxItem[]>(
     () =>
       data
         ? projectPictures(data).map((media) => ({
             media,
             title: data.title,
-            sharePath: `/portfolio/${data.slug}?image=${encodeURIComponent(media)}`,
+            sharePath: `/portfolio/${data.slug}?s=${pictureToken(media)}`,
           }))
         : [],
     [data],
   );
 
   // The address holds the open picture, so it can be shared, reloaded or linked to.
-  const imageParam = searchParams.get('image');
-  const linkedIndex = imageParam ? pictures.findIndex((picture) => picture.media === imageParam) : -1;
+  const shared = useMemo(() => readSharedLink(searchParams), [searchParams]);
+  const { isPicture } = shared;
+  const linkedIndex = isPicture ? pictures.findIndex((picture) => isPicture(picture.media)) : -1;
   const openIndex = linkedIndex >= 0 ? linkedIndex : null;
+
+  // A link shared before the short form opens as it always did, then shows the short form.
+  useEffect(() => {
+    if (!data) return;
+    const upgraded = upgradeOldLink(
+      searchParams,
+      pictures.map((picture) => picture.media),
+    );
+    if (upgraded) setSearchParams(upgraded, { replace: true, preventScrollReset: true });
+  }, [data, pictures, searchParams, setSearchParams]);
 
   const showPicture = useCallback(
     (index: number | null) => {
@@ -84,8 +86,14 @@ export function Component() {
       setSearchParams(
         (current) => {
           const next = new URLSearchParams(current);
-          if (media) next.set('image', media);
-          else next.delete('image');
+          if (media) {
+            clearOldLink(next);
+            next.set('s', pictureToken(media));
+          } else {
+            // A 360° token stays: closing a picture must not drop the view the page was opened on.
+            if (readSharedLink(next).isPicture) next.delete('s');
+            next.delete('image');
+          }
           return next;
         },
         { replace: true, preventScrollReset: true },
@@ -135,7 +143,6 @@ export function Component() {
 
   const panorama = data.panorama ? panoramas.data?.find((item) => item.id === data.panorama) : undefined;
   const galleryKeys = (data.gallery ?? []).filter((key) => getMedia(key));
-  const viewParam = searchParams.get('view');
 
   const videoPoster = data.video && getMedia(data.video.poster) ? mediaUrl(data.video.poster, 'fallback') : undefined;
 
@@ -185,9 +192,9 @@ export function Component() {
                 panoramas={[panorama]}
                 showProjects={false}
                 projectPath={() => `/portfolio/${data.slug}`}
-                initialScene={viewParam}
-                initialLook={readLook(searchParams)}
-                openFullView={Boolean(viewParam) && openIndex === null}
+                initialScene={shared.isScene}
+                initialLook={shared.look}
+                openFullView={Boolean(shared.isScene) && openIndex === null}
               />
             </div>
           </div>

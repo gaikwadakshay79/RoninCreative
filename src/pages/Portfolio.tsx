@@ -11,6 +11,7 @@ import { pageSeo } from '@/data/seo';
 import { useProjects } from '@/hooks/useContent';
 import { useSeo } from '@/hooks/useSeo';
 import { getMedia, projectPictures } from '@/lib/media';
+import { pictureToken } from '@/lib/shareLink';
 import type { Project, ProjectCategory } from '@/types';
 
 type Filter = ProjectCategory | 'all';
@@ -56,7 +57,7 @@ export function Component() {
           detail: pictures.length > 1 ? `Picture ${position + 1} of ${pictures.length}` : undefined,
           href: `/portfolio/${project.slug}`,
           hrefLabel: 'See the Project',
-          sharePath: `/portfolio/${project.slug}?image=${encodeURIComponent(media)}`,
+          sharePath: `/portfolio/${project.slug}?s=${pictureToken(media)}`,
           group: project.slug,
         });
       });

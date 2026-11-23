@@ -4,6 +4,7 @@ import type { CubeLevel, RectilinearView, Scene, Viewer } from 'marzipano';
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { ShareLink } from '@/components/common/ShareLink';
 import { withBase } from '@/lib/paths';
+import { viewToken } from '@/lib/shareLink';
 import type { Panorama } from '@/types';
 
 type Status = 'poster' | 'loading' | 'ready' | 'error';
@@ -22,8 +23,8 @@ interface PanoViewerProps {
   showProjects?: boolean;
   /** The project page of a panorama, for shared links. Without one there is no Share button. */
   projectPath?: (panoramaId: string) => string | undefined;
-  /** Scene to open first, by the slug in a shared link. */
-  initialScene?: string | null;
+  /** Picks the scene to open first, from a shared link. */
+  initialScene?: (slug: string) => boolean;
   /** Direction to open in, from a shared link. The slow turn stays off so it holds. */
   initialLook?: PanoLook;
   /** A shared link to this viewer: open at once, filling the screen. */
@@ -85,8 +86,6 @@ const toSlug = (name: string) =>
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
-
-const roundAngle = (radians: number) => String(Math.round((radians / DEG) * 10) / 10);
 
 /** Reads a Marzipano Tool export's data.js (`var APP_DATA = {...};`) without running it. */
 async function loadTour(path: string): Promise<TourScene[]> {
@@ -310,7 +309,7 @@ export function PanoViewer({
   const inPageRef = useRef(true);
   const detachTouchRef = useRef<(() => void) | null>(null);
   /** What a shared link asked for. Used once, on the first open. */
-  const sharedRef = useRef<{ scene?: string | null; look?: PanoLook; full: boolean } | null>(
+  const sharedRef = useRef<{ scene?: (slug: string) => boolean; look?: PanoLook; full: boolean } | null>(
     initialScene || initialLook ? { scene: initialScene, look: initialLook, full: openFullView } : null,
   );
   const openedByLink = useRef(openFullView);
@@ -406,7 +405,8 @@ export function PanoViewer({
         }
         const shared = sharedRef.current;
         sharedRef.current = null;
-        const linked = shared?.scene ? list.findIndex((item) => item.slug === shared.scene) : -1;
+        const isLinked = shared?.scene;
+        const linked = isLinked ? list.findIndex((item) => isLinked(item.slug)) : -1;
         const target = linked >= 0 ? linked : Math.min(index, list.length - 1);
         if (shared?.full && linked >= 0) setExpanded(true);
         setSpecs(list);
@@ -642,17 +642,12 @@ export function PanoViewer({
   const sharePage = projectPath?.(active.id);
   /** The exact scene and direction on screen right now. */
   const currentSharePath = () => {
-    const params = new URLSearchParams();
-    if (spec) params.set('view', spec.slug);
     const view = activeSceneRef.current?.view();
-    if (view) {
-      // A view that has turned for a while can hold a yaw past a full circle.
-      const yawNow = Math.atan2(Math.sin(view.yaw()), Math.cos(view.yaw()));
-      params.set('yaw', roundAngle(yawNow));
-      params.set('pitch', roundAngle(view.pitch()));
-      params.set('fov', roundAngle(view.fov()));
-    }
-    return `${sharePage ?? ''}?${params.toString()}`;
+    if (!spec || !view) return sharePage ?? '';
+    // A view that has turned for a while can hold a yaw past a full circle.
+    const yawNow = Math.atan2(Math.sin(view.yaw()), Math.cos(view.yaw()));
+    const token = viewToken(spec.slug, { yaw: yawNow / DEG, pitch: view.pitch() / DEG, fov: view.fov() / DEG });
+    return `${sharePage ?? ''}?s=${token}`;
   };
 
   const opened = status !== 'poster';
