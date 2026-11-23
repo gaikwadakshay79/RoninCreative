@@ -1,5 +1,6 @@
 import { Outlet, ScrollRestoration, useLocation, useNavigation, type Location } from 'react-router-dom';
 import { basePath } from '@/lib/paths';
+import { ContactBar } from './ContactBar';
 import { Footer } from './Footer';
 import { Header } from './Header';
 
@@ -30,7 +31,7 @@ function forgetPositionOnNewVisit() {
 forgetPositionOnNewVisit();
 
 /**
- * The shell every page shares: skip link, header, the routed page, footer.
+ * The shell every page shares: skip link, header, the routed page, footer, contact bar.
  * ScrollRestoration returns to the top on a new page, to the saved position on
  * back and forward, and to the target of a #hash link.
  */
@@ -54,6 +55,7 @@ export function RootLayout() {
         <Outlet />
       </main>
       <Footer />
+      <ContactBar />
       <ScrollRestoration getKey={scrollKey} storageKey={SCROLL_STORAGE_KEY} />
     </>
   );
