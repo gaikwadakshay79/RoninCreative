@@ -13,3 +13,8 @@ export function withBase(path: string): string {
   if (!path.startsWith('/') || path.startsWith('//')) return path;
   return `${basePath}${path}`;
 }
+
+/** The full address of a page on this site, for a link someone can share. */
+export function shareUrl(path: string): string {
+  return `${window.location.origin}${withBase(path)}`;
+}

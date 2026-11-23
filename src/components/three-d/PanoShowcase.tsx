@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Reveal } from '@/components/motion/Reveal';
-import { usePanoramas } from '@/hooks/useContent';
+import { usePanoramas, useProjects } from '@/hooks/useContent';
 import { PanoViewer } from './PanoViewer';
 
 /**
@@ -9,6 +9,13 @@ import { PanoViewer } from './PanoViewer';
  */
 export function PanoShowcase() {
   const { data: panoramas, isPending, isError, refetch } = usePanoramas();
+  const { data: projects } = useProjects();
+
+  /** A shared link opens the project page that holds the panorama. */
+  const projectPath = (panoramaId: string) => {
+    const project = projects?.find((item) => item.panorama === panoramaId);
+    return project ? `/portfolio/${project.slug}` : undefined;
+  };
 
   if (isPending) {
     return <div className="skeleton mt-2xl aspect-[4/5] w-full sm:aspect-[16/9]" aria-hidden="true" />;
@@ -41,7 +48,7 @@ export function PanoShowcase() {
     <Reveal className="mt-2xl">
       <h3>Try a 360° View</h3>
       <div className="mt-lg">
-        <PanoViewer panoramas={panoramas} />
+        <PanoViewer panoramas={panoramas} projectPath={projectPath} />
       </div>
       {hasPlaceholders ? (
         <p className="label mt-md">

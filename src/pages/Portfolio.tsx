@@ -10,7 +10,7 @@ import { categoryLabels, categoryOrder } from '@/data/projects';
 import { pageSeo } from '@/data/seo';
 import { useProjects } from '@/hooks/useContent';
 import { useSeo } from '@/hooks/useSeo';
-import { getMedia } from '@/lib/media';
+import { getMedia, projectPictures } from '@/lib/media';
 import type { Project, ProjectCategory } from '@/types';
 
 type Filter = ProjectCategory | 'all';
@@ -47,7 +47,7 @@ export function Component() {
     const items: LightboxItem[] = [];
     const covers = new Map<string, number>();
     for (const project of visible) {
-      const pictures = [...new Set([project.cover, ...(project.gallery ?? [])])].filter((key) => getMedia(key));
+      const pictures = projectPictures(project);
       covers.set(project.slug, items.length);
       pictures.forEach((media, position) => {
         items.push({
@@ -56,6 +56,7 @@ export function Component() {
           detail: pictures.length > 1 ? `Picture ${position + 1} of ${pictures.length}` : undefined,
           href: `/portfolio/${project.slug}`,
           hrefLabel: 'See the Project',
+          sharePath: `/portfolio/${project.slug}?image=${encodeURIComponent(media)}`,
           group: project.slug,
         });
       });

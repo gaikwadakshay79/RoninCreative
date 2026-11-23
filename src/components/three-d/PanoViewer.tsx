@@ -1,22 +1,40 @@
 import { Maximize2, Minimize2, Minus, Pause, Play, Plus, RotateCcw } from 'lucide-react';
 import type MarzipanoLib from 'marzipano';
-import type { CubeLevel, Scene, Viewer } from 'marzipano';
+import type { CubeLevel, RectilinearView, Scene, Viewer } from 'marzipano';
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { ShareLink } from '@/components/common/ShareLink';
 import { withBase } from '@/lib/paths';
 import type { Panorama } from '@/types';
 
 type Status = 'poster' | 'loading' | 'ready' | 'error';
 type Marzipano = typeof MarzipanoLib;
 
+/** A direction to look in, in degrees, as written in a shared link. */
+export interface PanoLook {
+  yaw: number;
+  pitch: number;
+  fov: number;
+}
+
 interface PanoViewerProps {
   panoramas: Panorama[];
   /** Show the row of project buttons above the viewer. Off on a project's own page. */
   showProjects?: boolean;
+  /** The project page of a panorama, for shared links. Without one there is no Share button. */
+  projectPath?: (panoramaId: string) => string | undefined;
+  /** Scene to open first, by the slug in a shared link. */
+  initialScene?: string | null;
+  /** Direction to open in, from a shared link. The slow turn stays off so it holds. */
+  initialLook?: PanoLook;
+  /** Bring the viewer on screen when the page opens, for a shared link. */
+  scrollOnOpen?: boolean;
 }
 
 /** One scene the viewer can show: a single panorama, or one scene of a tour. */
 interface SceneSpec {
   key: string;
+  /** Short name in a shared link, for example "panshet-2". */
+  slug: string;
   name: string;
   /** Small square picture for the scene chooser (tours only). */
   thumb?: string;
@@ -62,6 +80,14 @@ function pickWidth(): number {
 
 const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+const toSlug = (name: string) =>
+  name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+const roundAngle = (radians: number) => String(Math.round((radians / DEG) * 10) / 10);
+
 /** Reads a Marzipano Tool export's data.js (`var APP_DATA = {...};`) without running it. */
 async function loadTour(path: string): Promise<TourScene[]> {
   const response = await fetch(withBase(`${path}/data.js`));
@@ -90,6 +116,7 @@ async function scenesOf(panorama: Panorama): Promise<SceneSpec[]> {
       const thumbLevel = scene.levels.findIndex((level) => !level.fallbackOnly && level.size <= level.tileSize);
       return {
         key: `${panorama.id}/${scene.id}`,
+        slug: toSlug(scene.name),
         name: scene.name,
         thumb: thumbLevel >= 0 ? `${tiles}/${thumbLevel}/${face}/0/0.jpg` : undefined,
         north: north[scene.id] ?? 0,
@@ -116,6 +143,7 @@ async function scenesOf(panorama: Panorama): Promise<SceneSpec[]> {
   return [
     {
       key: panorama.id,
+      slug: toSlug(panorama.title),
       name: panorama.title,
       north: panorama.north ?? 0,
       initial,
@@ -172,13 +200,77 @@ function Compass({ heading, onFaceNorth }: { heading: number; onFaceNorth: () =>
   );
 }
 
-/** Sets touch-action on the viewer's gesture layers: `pan-y` lets the page scroll, `none` keeps every touch. */
-function allowPageScroll(mount: HTMLElement, allow: boolean) {
-  const value = allow ? 'pan-y' : 'none';
+/**
+ * In the page, a vertical swipe belongs to the page: `pan-y` lets it scroll, and
+ * Marzipano's own touch drag is off, because it reads a cancelled scroll gesture
+ * as a fling and throws the view up to the sky. Fullscreen has no page to
+ * scroll, so Marzipano takes every touch there.
+ */
+function setTouchMode(viewer: Viewer, mount: HTMLElement, inPage: boolean) {
+  const value = inPage ? 'pan-y' : 'none';
   mount.style.touchAction = value;
   mount.querySelectorAll<HTMLElement>('*').forEach((element) => {
     if (element.style.touchAction) element.style.touchAction = value;
   });
+  if (inPage) viewer.controls().disableMethod('touchView');
+  else viewer.controls().enableMethod('touchView');
+}
+
+const TURN_THRESHOLD = 8;
+
+/** In the page, one finger dragged sideways turns the view. It never changes the tilt. */
+function attachSidewaysTurn(
+  element: HTMLElement,
+  inPage: () => boolean,
+  getView: () => RectilinearView | undefined,
+  onTurn: () => void,
+) {
+  const touches = new Set<number>();
+  let pointer: number | null = null;
+  let startX = 0;
+  let lastX = 0;
+  let turning = false;
+
+  const down = (event: PointerEvent) => {
+    if (event.pointerType !== 'touch') return;
+    touches.add(event.pointerId);
+    // A second finger is a pinch, which Marzipano handles.
+    pointer = touches.size === 1 ? event.pointerId : null;
+    startX = event.clientX;
+    lastX = event.clientX;
+    turning = false;
+  };
+  const move = (event: PointerEvent) => {
+    if (event.pointerId !== pointer || !inPage()) return;
+    if (!turning) {
+      if (Math.abs(event.clientX - startX) < TURN_THRESHOLD) return;
+      turning = true;
+      lastX = event.clientX;
+      return;
+    }
+    const view = getView();
+    if (!view) return;
+    const { width, height } = element.getBoundingClientRect();
+    const horizontalFov = 2 * Math.atan(Math.tan(view.fov() / 2) * (width / height));
+    view.offsetYaw((-(event.clientX - lastX) / width) * horizontalFov);
+    lastX = event.clientX;
+    onTurn();
+  };
+  const up = (event: PointerEvent) => {
+    touches.delete(event.pointerId);
+    if (event.pointerId === pointer) pointer = null;
+  };
+
+  element.addEventListener('pointerdown', down);
+  element.addEventListener('pointermove', move);
+  element.addEventListener('pointerup', up);
+  element.addEventListener('pointercancel', up);
+  return () => {
+    element.removeEventListener('pointerdown', down);
+    element.removeEventListener('pointermove', move);
+    element.removeEventListener('pointerup', up);
+    element.removeEventListener('pointercancel', up);
+  };
 }
 
 /**
@@ -187,8 +279,9 @@ function allowPageScroll(mount: HTMLElement, allow: boolean) {
  * Nothing heavy loads until the viewer comes near the screen: until then the
  * stage shows a flat poster. Then it imports Marzipano (its own chunk) and the
  * panorama, and starts turning slowly by itself. On touch screens a vertical
- * swipe still scrolls the page; a sideways drag turns the view and a pinch
- * zooms. The slow turn stops while the viewer is off screen.
+ * swipe still scrolls the page without moving the view; a sideways drag turns
+ * it and a pinch zooms. In fullscreen a finger looks in every direction. The
+ * slow turn stops while the viewer is off screen.
  *
  * It shows single equirectangular panoramas and tiled tours exported from the
  * Marzipano Tool (read from their data.js), with the site's own controls: a
@@ -201,8 +294,21 @@ function allowPageScroll(mount: HTMLElement, allow: boolean) {
  *
  * A panorama with `embed` set shows a tour from another tool in a frame.
  */
-export function PanoViewer({ panoramas, showProjects = true }: PanoViewerProps) {
+export function PanoViewer({
+  panoramas,
+  showProjects = true,
+  projectPath,
+  initialScene,
+  initialLook,
+  scrollOnOpen = false,
+}: PanoViewerProps) {
   const stageRef = useRef<HTMLDivElement>(null);
+  const inPageRef = useRef(true);
+  const detachTouchRef = useRef<(() => void) | null>(null);
+  /** What a shared link asked for. Used once, on the first open. */
+  const sharedRef = useRef<{ scene?: string | null; look?: PanoLook } | null>(
+    initialScene || initialLook ? { scene: initialScene, look: initialLook } : null,
+  );
   const mountRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<Viewer | null>(null);
   const scenesRef = useRef(new Map<string, Scene>());
@@ -214,7 +320,7 @@ export function PanoViewer({ panoramas, showProjects = true }: PanoViewerProps) 
   const [specs, setSpecs] = useState<SceneSpec[]>([]);
   const [sceneIndex, setSceneIndex] = useState(0);
   const [status, setStatus] = useState<Status>('poster');
-  const [held, setHeld] = useState(() => prefersReducedMotion());
+  const [held, setHeld] = useState(() => prefersReducedMotion() || Boolean(initialLook));
   const [fullscreen, setFullscreen] = useState(false);
   const [yaw, setYaw] = useState(0);
 
@@ -223,7 +329,7 @@ export function PanoViewer({ panoramas, showProjects = true }: PanoViewerProps) 
   const spec = specs[sceneIndex];
 
   /** Builds (or reuses) a scene and shows it. */
-  const showSpec = useCallback(async (next: SceneSpec) => {
+  const showSpec = useCallback(async (next: SceneSpec, look?: PanoLook) => {
     const mount = mountRef.current;
     if (!mount) return;
     setStatus('loading');
@@ -241,10 +347,13 @@ export function PanoViewer({ panoramas, showProjects = true }: PanoViewerProps) 
           if (stable) setStatus((current) => (current === 'loading' ? 'ready' : current));
         }) as never);
         rotateRef.current = M.autorotate({ yawSpeed: TURN_SPEED, targetPitch: null, targetFov: null });
-        // Marzipano's gestures claim every touch (touch-action: none), which would trap a phone
-        // visitor scrolling past. Let vertical swipes scroll the page; sideways drags and
-        // pinches still reach the viewer. Fullscreen has no page to scroll, so it keeps them all.
-        allowPageScroll(mount, true);
+        setTouchMode(viewer, mount, true);
+        detachTouchRef.current = attachSidewaysTurn(
+          mount,
+          () => inPageRef.current,
+          () => activeSceneRef.current?.view(),
+          () => viewer.breakIdleMovement(),
+        );
         viewerRef.current = viewer;
       }
 
@@ -266,6 +375,7 @@ export function PanoViewer({ panoramas, showProjects = true }: PanoViewerProps) 
         scenesRef.current.set(next.key, created);
         scene = created;
       }
+      if (look) scene.view().setParameters({ yaw: look.yaw * DEG, pitch: look.pitch * DEG, fov: look.fov * DEG });
       activeSceneRef.current = scene;
       setYaw(scene.view().yaw() / DEG);
       scene.switchTo({ transitionDuration: prefersReducedMotion() ? 0 : 400 });
@@ -284,10 +394,14 @@ export function PanoViewer({ panoramas, showProjects = true }: PanoViewerProps) 
           list = await scenesOf(panorama);
           specsCache.current.set(panorama.id, list);
         }
+        const shared = sharedRef.current;
+        sharedRef.current = null;
+        const linked = shared?.scene ? list.findIndex((item) => item.slug === shared.scene) : -1;
+        const target = linked >= 0 ? linked : Math.min(index, list.length - 1);
         setSpecs(list);
-        setSceneIndex(index);
-        const first = list[Math.min(index, list.length - 1)];
-        if (first) await showSpec(first);
+        setSceneIndex(target);
+        const first = list[target];
+        if (first) await showSpec(first, shared?.look);
       } catch {
         setStatus('error');
       }
@@ -326,6 +440,15 @@ export function PanoViewer({ panoramas, showProjects = true }: PanoViewerProps) 
     }
     void showPanorama(active);
   };
+
+  // A shared link to a 360° view brings the viewer on screen.
+  useEffect(() => {
+    if (!scrollOnOpen) return;
+    const frame = requestAnimationFrame(() => {
+      stageRef.current?.scrollIntoView({ block: 'center', behavior: 'instant' });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [scrollOnOpen]);
 
   // Open by itself once the stage comes near the screen; track whether it is on screen.
   const [onScreen, setOnScreen] = useState(false);
@@ -405,7 +528,8 @@ export function PanoViewer({ panoramas, showProjects = true }: PanoViewerProps) 
     const onChange = () => {
       const isFull = document.fullscreenElement === stageRef.current;
       setFullscreen(isFull);
-      if (mountRef.current && viewerRef.current) allowPageScroll(mountRef.current, !isFull);
+      inPageRef.current = !isFull;
+      if (mountRef.current && viewerRef.current) setTouchMode(viewerRef.current, mountRef.current, !isFull);
       viewerRef.current?.updateSize();
     };
     document.addEventListener('fullscreenchange', onChange);
@@ -416,6 +540,8 @@ export function PanoViewer({ panoramas, showProjects = true }: PanoViewerProps) 
   useEffect(() => {
     const scenes = scenesRef.current;
     return () => {
+      detachTouchRef.current?.();
+      detachTouchRef.current = null;
       viewerRef.current?.destroy();
       viewerRef.current = null;
       scenes.clear();
@@ -458,6 +584,22 @@ export function PanoViewer({ panoramas, showProjects = true }: PanoViewerProps) 
   };
 
   if (!active) return null;
+
+  const sharePage = projectPath?.(active.id);
+  /** The exact scene and direction on screen right now. */
+  const currentSharePath = () => {
+    const params = new URLSearchParams();
+    if (spec) params.set('view', spec.slug);
+    const view = activeSceneRef.current?.view();
+    if (view) {
+      // A view that has turned for a while can hold a yaw past a full circle.
+      const yawNow = Math.atan2(Math.sin(view.yaw()), Math.cos(view.yaw()));
+      params.set('yaw', roundAngle(yawNow));
+      params.set('pitch', roundAngle(view.pitch()));
+      params.set('fov', roundAngle(view.fov()));
+    }
+    return `${sharePage ?? ''}?${params.toString()}`;
+  };
 
   const opened = status !== 'poster';
   const canFullscreen = typeof document !== 'undefined' && document.fullscreenEnabled;
@@ -594,6 +736,14 @@ export function PanoViewer({ panoramas, showProjects = true }: PanoViewerProps) 
                 >
                   <RotateCcw size={18} strokeWidth={1.75} aria-hidden="true" />
                 </button>
+                {sharePage && controlsLive ? (
+                  <ShareLink
+                    variant="tool"
+                    getPath={currentSharePath}
+                    title={`${active.title}: ${spec?.name ?? '360° view'}`}
+                    label="Share a link to this 360° view"
+                  />
+                ) : null}
                 {canFullscreen ? (
                   <button
                     type="button"

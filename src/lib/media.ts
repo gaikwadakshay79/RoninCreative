@@ -1,6 +1,6 @@
 import { mediaLibrary } from '@/data/media';
 import manifestJson from '@/data/media.manifest.json';
-import type { MediaDimensions, MediaItem, MediaKey } from '@/types';
+import type { MediaDimensions, MediaItem, MediaKey, Project } from '@/types';
 import { withBase } from './paths';
 
 const manifest = manifestJson as Record<string, MediaDimensions>;
@@ -44,6 +44,11 @@ export function mediaUrl(key: MediaKey, variant: 'fallback' | { width: number; f
 
 export function mediaSrcSet(media: ResolvedMedia, format: MediaFormat): string {
   return media.widths.map((width) => `${mediaUrl(media.key, { width, format })} ${width}w`).join(', ');
+}
+
+/** A project's pictures for the viewer: its cover, then its gallery, each once. */
+export function projectPictures(project: Pick<Project, 'cover' | 'gallery'>): MediaKey[] {
+  return [...new Set([project.cover, ...(project.gallery ?? [])])].filter((key) => getMedia(key));
 }
 
 /** Every stand-in picture with its credit, for the credits page. */

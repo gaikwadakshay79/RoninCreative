@@ -4,6 +4,7 @@ import * as m from 'motion/react-m';
 import { useCallback, useEffect, useMemo, useRef, type KeyboardEvent, type TouchEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { Picture } from '@/components/common/Picture';
+import { ShareLink } from '@/components/common/ShareLink';
 import type { MediaKey } from '@/types';
 
 export interface LightboxItem {
@@ -14,6 +15,8 @@ export interface LightboxItem {
   /** Optional link shown beside the title, for example to the project page. */
   href?: string;
   hrefLabel?: string;
+  /** Path that opens exactly this picture. Adds a Share button. */
+  sharePath?: string;
   /** Pictures with the same group belong to one project. Two or more groups add project buttons. */
   group?: string;
 }
@@ -44,6 +47,7 @@ export function Lightbox({ items, index, onIndexChange, onClose }: LightboxProps
   const open = index !== null;
   const count = items.length;
   const current = open ? items[index] : undefined;
+  const sharePath = current?.sharePath;
 
   /** The index of the first picture of each project. */
   const groupStarts = useMemo(
@@ -128,9 +132,19 @@ export function Lightbox({ items, index, onIndexChange, onClose }: LightboxProps
               <span className="visually-hidden">Picture </span>
               {index + 1} <span className="text-muted">of {count}</span>
             </p>
-            <button type="button" className="icon-btn" aria-label="Close the viewer" onClick={onClose} autoFocus>
-              <X size={20} strokeWidth={1.5} aria-hidden="true" />
-            </button>
+            <div className="flex shrink-0 items-center gap-xs">
+              {sharePath ? (
+                <ShareLink
+                  variant="bar"
+                  getPath={() => sharePath}
+                  title={current.title ?? 'Ronin Creative'}
+                  label="Share a link to this picture"
+                />
+              ) : null}
+              <button type="button" className="icon-btn" aria-label="Close the viewer" onClick={onClose} autoFocus>
+                <X size={20} strokeWidth={1.5} aria-hidden="true" />
+              </button>
+            </div>
           </div>
 
           <div className="lightbox__stage" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>

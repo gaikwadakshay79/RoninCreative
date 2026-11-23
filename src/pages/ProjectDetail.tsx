@@ -1,21 +1,31 @@
-import { useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useCallback, useMemo } from 'react';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { Picture } from '@/components/common/Picture';
 import { Lightbox, type LightboxItem } from '@/components/gallery/Lightbox';
 import { PlaceholderNotice } from '@/components/gallery/PlaceholderNotice';
 import { ProjectCard } from '@/components/gallery/ProjectCard';
 import { Reveal } from '@/components/motion/Reveal';
 import { PageHero } from '@/components/sections/PageHero';
-import { PanoViewer } from '@/components/three-d/PanoViewer';
+import { PanoViewer, type PanoLook } from '@/components/three-d/PanoViewer';
 import { categoryLabels } from '@/data/projects';
 import { usePanoramas, useProject, useProjects, useServices } from '@/hooks/useContent';
 import { useSeo } from '@/hooks/useSeo';
-import { getMedia, mediaUrl } from '@/lib/media';
+import { getMedia, mediaUrl, projectPictures } from '@/lib/media';
 import { withBase } from '@/lib/paths';
 import type { Project } from '@/types';
 import { NotFoundContent } from './NotFound';
 
 const RELATED_COUNT = 3;
+
+/** The direction in a shared 360° link (?yaw=&pitch=&fov=), if all of it is there and valid. */
+function readLook(params: URLSearchParams): PanoLook | undefined {
+  const angle = (name: string) => {
+    const value = params.get(name);
+    return value === null || value.trim() === '' ? Number.NaN : Number(value);
+  };
+  const look = { yaw: angle('yaw'), pitch: angle('pitch'), fov: angle('fov') };
+  return Number.isFinite(look.yaw) && Number.isFinite(look.pitch) && look.fov > 0 && look.fov < 180 ? look : undefined;
+}
 
 function ProjectSeo({ project }: { project: Project }) {
   useSeo({
@@ -46,13 +56,42 @@ export function Component() {
   const all = useProjects();
   const services = useServices();
   const panoramas = usePanoramas();
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const data = project.data;
 
+  // Every picture the viewer can show, each with its own link (?image=<key>).
   const pictures = useMemo<LightboxItem[]>(
-    () => (data?.gallery ?? []).filter((key) => getMedia(key)).map((key) => ({ media: key, title: data?.title })),
+    () =>
+      data
+        ? projectPictures(data).map((media) => ({
+            media,
+            title: data.title,
+            sharePath: `/portfolio/${data.slug}?image=${encodeURIComponent(media)}`,
+          }))
+        : [],
     [data],
+  );
+
+  // The address holds the open picture, so it can be shared, reloaded or linked to.
+  const imageParam = searchParams.get('image');
+  const linkedIndex = imageParam ? pictures.findIndex((picture) => picture.media === imageParam) : -1;
+  const openIndex = linkedIndex >= 0 ? linkedIndex : null;
+
+  const showPicture = useCallback(
+    (index: number | null) => {
+      const media = index === null ? undefined : pictures[index]?.media;
+      setSearchParams(
+        (current) => {
+          const next = new URLSearchParams(current);
+          if (media) next.set('image', media);
+          else next.delete('image');
+          return next;
+        },
+        { replace: true, preventScrollReset: true },
+      );
+    },
+    [pictures, setSearchParams],
   );
 
   const { related, next } = useMemo(() => {
@@ -95,6 +134,8 @@ export function Component() {
   ].filter((fact): fact is { label: string; value: string } => fact !== null);
 
   const panorama = data.panorama ? panoramas.data?.find((item) => item.id === data.panorama) : undefined;
+  const galleryKeys = (data.gallery ?? []).filter((key) => getMedia(key));
+  const viewParam = searchParams.get('view');
 
   const videoPoster = data.video && getMedia(data.video.poster) ? mediaUrl(data.video.poster, 'fallback') : undefined;
 
@@ -131,47 +172,8 @@ export function Component() {
               </div>
             ) : null}
           </div>
-
-          {pictures.length > 0 ? (
-            <div className="mt-2xl">
-              <h2 className="visually-hidden">Gallery</h2>
-            <div className="grid grid-cols-1 gap-col sm:grid-cols-2">
-              {pictures.map((picture, index) => {
-                const lead = index === 0 && pictures.length % 2 === 1;
-                return (
-                  <Reveal key={picture.media} index={index} className={lead ? 'sm:col-span-2' : ''}>
-                    <button
-                      type="button"
-                      className="tile zoom"
-                      aria-label={`Open picture ${index + 1} of ${pictures.length} full screen`}
-                      onClick={() => setOpenIndex(index)}
-                    >
-                      <figure className={`frame ${lead ? 'aspect-[4/3] sm:aspect-[21/9]' : 'aspect-[4/3]'}`}>
-                        <Picture
-                          media={picture.media}
-                          sizes={lead ? '100vw' : '(min-width: 40rem) 48vw, 100vw'}
-                        />
-                      </figure>
-                    </button>
-                  </Reveal>
-                );
-              })}
-            </div>
-            </div>
-          ) : null}
         </div>
       </section>
-
-      {data.video ? (
-        <section className="section section--s" aria-labelledby="film-title">
-          <div className="shell">
-            <h2 id="film-title">{data.video.title}</h2>
-            <div className="frame mt-xl aspect-[16/9]">
-              <video src={withBase(data.video.src)} poster={videoPoster} controls playsInline preload="none" />
-            </div>
-          </div>
-        </section>
-      ) : null}
 
       {panorama ? (
         <section className="section section--s" aria-labelledby="pano-title">
@@ -179,7 +181,52 @@ export function Component() {
             <h2 id="pano-title">Look Around in 360°</h2>
             <p className="lead mt-md">Drag to turn the view. The thumbnails switch between viewpoints.</p>
             <div className="mt-xl">
-              <PanoViewer panoramas={[panorama]} showProjects={false} />
+              <PanoViewer
+                panoramas={[panorama]}
+                showProjects={false}
+                projectPath={() => `/portfolio/${data.slug}`}
+                initialScene={viewParam}
+                initialLook={readLook(searchParams)}
+                scrollOnOpen={Boolean(viewParam) && openIndex === null}
+              />
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {galleryKeys.length > 0 ? (
+        <section className="section section--s" aria-labelledby="photos-title">
+          <div className="shell">
+            <h2 id="photos-title">Photos</h2>
+            <div className="mt-xl grid grid-cols-1 gap-col sm:grid-cols-2">
+              {galleryKeys.map((media, index) => {
+                const lead = index === 0 && galleryKeys.length % 2 === 1;
+                return (
+                  <Reveal key={media} index={index} className={lead ? 'sm:col-span-2' : ''}>
+                    <button
+                      type="button"
+                      className="tile zoom"
+                      aria-label={`Open picture ${index + 1} of ${galleryKeys.length} full screen`}
+                      onClick={() => showPicture(pictures.findIndex((picture) => picture.media === media))}
+                    >
+                      <figure className={`frame ${lead ? 'aspect-[4/3] sm:aspect-[21/9]' : 'aspect-[4/3]'}`}>
+                        <Picture media={media} sizes={lead ? '100vw' : '(min-width: 40rem) 48vw, 100vw'} />
+                      </figure>
+                    </button>
+                  </Reveal>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {data.video ? (
+        <section className="section section--s" aria-labelledby="film-title">
+          <div className="shell">
+            <h2 id="film-title">{data.video.title}</h2>
+            <div className="frame mt-xl aspect-[16/9]">
+              <video src={withBase(data.video.src)} poster={videoPoster} controls playsInline preload="none" />
             </div>
           </div>
         </section>
@@ -216,7 +263,7 @@ export function Component() {
         </nav>
       ) : null}
 
-      <Lightbox items={pictures} index={openIndex} onIndexChange={setOpenIndex} onClose={() => setOpenIndex(null)} />
+      <Lightbox items={pictures} index={openIndex} onIndexChange={showPicture} onClose={() => showPicture(null)} />
     </article>
   );
 }
