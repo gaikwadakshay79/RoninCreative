@@ -1,0 +1,2 @@
+# Netlify and Cloudflare Pages: any address without its own file gets the app, which shows its 404 page.
+/*    /404.html   404

@@ -1,0 +1,1 @@
+var e=[{id:`panshet`,title:`Splendid Valley Retreat, Panshet`,alt:`A 360° aerial tour of Splendid Valley Retreat near Panshet: a terraced café with stone retaining walls, red earth paths and forested hills all around`,tour:{path:`/tours/panshet`,north:{"0-panshet-1":0,"1-pano_0001-panorama":0,"2-pano_0001-panorama":0}},placeholder:!1}];export{e as panoramas};
