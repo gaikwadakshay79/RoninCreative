@@ -1,4 +1,4 @@
-import type { Project, ProjectCategory } from '@/types';
+import type { PortfolioGroup, Project, ProjectCategory } from '@/types';
 
 /**
  * Portfolio projects.
@@ -14,20 +14,52 @@ import type { Project, ProjectCategory } from '@/types';
  * See the README, "Adding projects".
  */
 export const categoryLabels: Record<ProjectCategory, string> = {
-  photography: 'Photography',
-  aerial: 'Aerial',
-  architecture: 'Architecture',
   '360-tours': '360° Tours',
-  events: 'Events',
+  'aerial-cinematography': 'Aerial Cinematography',
+  'aerial-photography': 'Aerial Photography',
+  infrastructure: 'Infrastructure and Real Estate',
+  product: 'Product',
+  maternity: 'Maternity',
+  'pre-wedding': 'Pre-Wedding',
+  'ai-product': 'AI Product',
+  'ai-model': 'AI Model',
+  'other-photography': 'Photography',
 };
 
-export const categoryOrder: ProjectCategory[] = [
-  'aerial',
-  '360-tours',
-  'architecture',
-  'photography',
-  'events',
+/** The portfolio's filters. A section appears once it has at least one project. */
+export const portfolioGroups: PortfolioGroup[] = [
+  {
+    id: 'aerial',
+    label: 'Aerial',
+    sections: [
+      { id: '360-tours', label: categoryLabels['360-tours'] },
+      { id: 'aerial-cinematography', label: categoryLabels['aerial-cinematography'] },
+      { id: 'aerial-photography', label: categoryLabels['aerial-photography'] },
+      { id: 'infrastructure', label: categoryLabels.infrastructure },
+    ],
+  },
+  {
+    id: 'photography',
+    label: 'Photography',
+    sections: [
+      { id: 'product', label: categoryLabels.product },
+      { id: 'maternity', label: categoryLabels.maternity },
+      { id: 'pre-wedding', label: categoryLabels['pre-wedding'] },
+    ],
+  },
+  {
+    id: 'ai-studio',
+    label: 'AI Studio',
+    sections: [
+      { id: 'ai-product', label: 'Product' },
+      { id: 'ai-model', label: 'Model' },
+    ],
+  },
 ];
+
+/** Whether a project belongs to a portfolio section and so appears in lists of work. */
+export const isListed = (project: Pick<Project, 'category'>): boolean =>
+  portfolioGroups.some((group) => group.sections.some((section) => section.id === project.category));
 
 export const projects: Project[] = [
   {
@@ -50,7 +82,7 @@ export const projects: Project[] = [
   {
     slug: 'coastline-straight-down',
     title: 'Coastline, Straight Down',
-    category: 'aerial',
+    category: 'aerial-photography',
     summary: 'A top-down pass along a rocky shore, with forest on one side and open water on the other.',
     overview: [
       'Top-down coastal flights are planned around the tide and the angle of the sun, so the water keeps its colour.',
@@ -65,7 +97,7 @@ export const projects: Project[] = [
   {
     slug: 'glass-office-at-dusk',
     title: 'Glass Office at Dusk',
-    category: 'architecture',
+    category: 'infrastructure',
     summary: 'A corner office building at blue hour, its floors lit from inside.',
     overview: [
       'Buildings are photographed twice where the schedule allows: in flat daylight for the record, and at dusk when interior light balances the sky.',
@@ -80,7 +112,7 @@ export const projects: Project[] = [
   {
     slug: 'construction-site-overview',
     title: 'Construction Site Overview',
-    category: 'aerial',
+    category: 'infrastructure',
     summary: 'A large structure mid-build, recorded from the air with its roads and surroundings.',
     overview: [
       'Progress records repeat the same viewpoints on every visit, so one month can be laid over the next.',
@@ -95,7 +127,7 @@ export const projects: Project[] = [
   {
     slug: 'festival-main-stage',
     title: 'Festival Main Stage',
-    category: 'events',
+    category: 'other-photography',
     summary: 'A night crowd under crossing beams of stage light.',
     overview: [
       'Event coverage follows the running order: the room before doors, the headline moments, the crowd from the back.',
@@ -110,7 +142,7 @@ export const projects: Project[] = [
   {
     slug: 'terraced-vineyards',
     title: 'Terraced Vineyards',
-    category: 'aerial',
+    category: 'aerial-photography',
     summary: 'Curving rows of vines across a hillside, seen from a low oblique angle.',
     cover: 'aerial-vineyard',
     gallery: ['aerial-hills', 'aerial-gardens'],
@@ -120,7 +152,7 @@ export const projects: Project[] = [
   {
     slug: 'crater-road',
     title: 'Road Into the Crater',
-    category: 'aerial',
+    category: 'aerial-photography',
     summary: 'A switchback road climbing a cliff while cloud spills over the rim.',
     cover: 'hero-home',
     services: ['drone'],
@@ -129,7 +161,7 @@ export const projects: Project[] = [
   {
     slug: 'city-crossing',
     title: 'City Crossing From Above',
-    category: 'aerial',
+    category: 'aerial-photography',
     summary: 'Painted road markings and a single taxi, framed from directly overhead.',
     cover: 'aerial-crossing',
     services: ['drone'],
@@ -138,7 +170,7 @@ export const projects: Project[] = [
   {
     slug: 'skyline-at-sunset',
     title: 'Skyline at Sunset',
-    category: 'aerial',
+    category: 'aerial-photography',
     summary: 'A city centre against low sun, from the height of a panorama flight.',
     cover: 'aerial-skyline',
     services: ['aerial-360', 'drone'],
@@ -147,7 +179,7 @@ export const projects: Project[] = [
   {
     slug: 'cable-stay-pylon',
     title: 'Cable-Stay Pylon at Night',
-    category: 'architecture',
+    category: 'infrastructure',
     summary: 'A bridge pylon and its fanned cables, lit against a black sky.',
     cover: 'arch-pylon',
     services: ['photography', 'infrastructure'],
@@ -156,7 +188,7 @@ export const projects: Project[] = [
   {
     slug: 'product-studio',
     title: 'Product Studio',
-    category: 'photography',
+    category: 'product',
     summary: 'A lighting setup with softboxes around a product table.',
     cover: 'photo-studio',
     services: ['photography'],
@@ -165,7 +197,7 @@ export const projects: Project[] = [
   {
     slug: 'behind-the-lens',
     title: 'Behind the Lens',
-    category: 'photography',
+    category: 'other-photography',
     summary: 'A photographer framing a shot in warm backlight.',
     cover: 'photo-camera',
     services: ['photography'],

@@ -29,9 +29,9 @@ export function ProjectCard({ project, ratio = 'aspect-[4/3]', sizes, priority, 
         frameClassName={fill ? `min-h-64 flex-1 ${ratio}` : ratio}
         slot={`project-${project.slug}`}
       />
-      <div className="tile__meta">
-        <h3 className="text-lg">{project.title}</h3>
-        <span className="label shrink-0">
+      <div className="tile__meta tile__meta--stack">
+        <h3 className="max-w-none text-lg">{project.title}</h3>
+        <span className="label">
           {categoryLabels[project.category]}
           {project.placeholder ? ' · Placeholder' : null}
         </span>

@@ -7,7 +7,7 @@ import { ProjectCard } from '@/components/gallery/ProjectCard';
 import { Reveal } from '@/components/motion/Reveal';
 import { PageHero } from '@/components/sections/PageHero';
 import { PanoViewer } from '@/components/three-d/PanoViewer';
-import { categoryLabels } from '@/data/projects';
+import { categoryLabels, isListed } from '@/data/projects';
 import { usePanoramas, useProject, useProjects, useServices } from '@/hooks/useContent';
 import { useSeo } from '@/hooks/useSeo';
 import { getMedia, mediaUrl, projectPictures } from '@/lib/media';
@@ -103,7 +103,7 @@ export function Component() {
   );
 
   const { related, next } = useMemo(() => {
-    const list = all.data ?? [];
+    const list = (all.data ?? []).filter(isListed);
     if (!data || list.length < 2) return { related: [] as Project[], next: null as Project | null };
     const position = list.findIndex((item) => item.slug === data.slug);
     const nextProject = list[(position + 1) % list.length] ?? null;

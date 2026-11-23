@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import { Frame } from '@/components/common/Picture';
 import { ProjectCard } from '@/components/gallery/ProjectCard';
@@ -6,6 +6,7 @@ import { Reveal } from '@/components/motion/Reveal';
 import { CtaClose } from '@/components/sections/CtaClose';
 import { PageHero } from '@/components/sections/PageHero';
 import { PanoShowcase } from '@/components/three-d/PanoShowcase';
+import { isListed } from '@/data/projects';
 import { pageSeo } from '@/data/seo';
 import { useProjects, useServices } from '@/hooks/useContent';
 import { useSeo } from '@/hooks/useSeo';
@@ -16,8 +17,9 @@ const RELATED_COUNT = 3;
 
 /** Projects that used the service first, then projects in its related categories. */
 function relatedProjects(service: Service, projects: Project[]): Project[] {
-  const direct = projects.filter((project) => project.services.includes(service.id));
-  const byCategory = projects.filter(
+  const listed = projects.filter(isListed);
+  const direct = listed.filter((project) => project.services.includes(service.id));
+  const byCategory = listed.filter(
     (project) => !direct.includes(project) && service.related.includes(project.category),
   );
   return [...direct, ...byCategory].slice(0, RELATED_COUNT);
@@ -31,7 +33,7 @@ function ServiceSection({ service, projects, index }: { service: Service; projec
   const picture = getMedia(service.image);
 
   return (
-    <section id={service.id} className="section scroll-mt-header" aria-labelledby={titleId}>
+    <section id={service.id} className="section jump-target" aria-labelledby={titleId}>
       <div className="shell">
         <div className="grid grid-cols-1 items-center gap-x-col gap-y-xl lg:grid-cols-12">
           <Reveal className={pictureRight ? 'lg:order-2 lg:col-span-7 lg:col-start-6' : 'lg:col-span-7'}>
@@ -111,21 +113,24 @@ export function Component() {
       <PageHero
         title="Flight, 360° and Photography."
         lead="Each service can be booked alone, or combined with the others in one visit."
-      >
-        {services.data ? (
-          <nav aria-label="Services on this page" className="min-w-0 max-w-full">
+      />
+
+      {/* Outside the hero, so it stays under the header for the whole page. */}
+      {services.data ? (
+        <nav aria-label="Services on this page" className="jump-bar" data-enter>
+          <div className="shell enter" style={{ '--i': 2 } as CSSProperties}>
             <ul className="seg lg:flex-wrap">
               {services.data.map((service) => (
                 <li key={service.id}>
-                  <a href={`#${service.id}`} className="seg__item no-underline">
+                  <Link to={`#${service.id}`} className="seg__item no-underline">
                     {service.title}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
-          </nav>
-        ) : null}
-      </PageHero>
+          </div>
+        </nav>
+      ) : null}
 
       {services.isPending ? (
         <div className="shell pb-3xl" aria-hidden="true">

@@ -81,7 +81,7 @@ Add an entry to `src/data/projects.ts`:
 {
   slug: 'riverside-villa',            // the address: /portfolio/riverside-villa
   title: 'Riverside villa',
-  category: 'architecture',           // photography | aerial | architecture | 360-tours | events
+  category: 'infrastructure',         // 360-tours | aerial-cinematography | aerial-photography | infrastructure | product | maternity | pre-wedding | ai-product | ai-model
   summary: 'One line for cards and link previews.',
   overview: ['First paragraph.', 'Second paragraph.'],   // optional
   cover: 'riverside-villa-cover',     // media key
@@ -96,7 +96,7 @@ Add an entry to `src/data/projects.ts`:
 }
 ```
 
-Fields you leave out are not rendered. Delete the placeholder entries as real projects replace them. The notice on the portfolio page disappears when no entry has `placeholder: true`.
+Fields you leave out are not rendered. A portfolio section and its filter appear once they have a project. Delete the placeholder entries as real projects replace them. The notice on the portfolio page disappears when no entry has `placeholder: true`.
 
 Testimonials go in `src/data/testimonials.ts`. The list is empty and the section stays hidden until real ones are added.
 

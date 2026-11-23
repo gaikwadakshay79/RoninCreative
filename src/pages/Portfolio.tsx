@@ -1,47 +1,89 @@
 import * as m from 'motion/react-m';
-import { useCallback, useMemo, useState, type CSSProperties } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Picture } from '@/components/common/Picture';
 import { Lightbox, type LightboxItem } from '@/components/gallery/Lightbox';
 import { PlaceholderNotice } from '@/components/gallery/PlaceholderNotice';
 import { CtaClose } from '@/components/sections/CtaClose';
 import { PageHero } from '@/components/sections/PageHero';
-import { categoryLabels, categoryOrder } from '@/data/projects';
+import { categoryLabels, isListed, portfolioGroups } from '@/data/projects';
 import { pageSeo } from '@/data/seo';
 import { useProjects } from '@/hooks/useContent';
 import { useSeo } from '@/hooks/useSeo';
-import { getMedia, projectPictures } from '@/lib/media';
+import { projectPictures } from '@/lib/media';
 import { pictureToken } from '@/lib/shareLink';
-import type { Project, ProjectCategory } from '@/types';
+import type { PortfolioGroup } from '@/types';
 
-type Filter = ProjectCategory | 'all';
+/** Filter addresses from before the sections were reorganised. */
+const oldCategories: Record<string, string> = { architecture: 'infrastructure' };
 
-const isCategory = (value: string | null): value is ProjectCategory =>
-  value !== null && (categoryOrder as string[]).includes(value);
-
-/** Each tile keeps its picture's own ratio, held between portrait 3:4 and wide 16:9. */
-function tileRatio(project: Project): CSSProperties {
-  const media = getMedia(project.cover);
-  const ratio = media ? Math.min(Math.max(media.width / media.height, 3 / 4), 16 / 9) : 4 / 3;
-  return { aspectRatio: String(ratio) };
+/**
+ * What ?category= asks for, among the sections that have work. A section with
+ * no work yet falls back to its main category, and that to All Work.
+ */
+function resolveFilter(requested: string | null, groups: PortfolioGroup[]) {
+  const wanted = requested ? (oldCategories[requested] ?? requested) : null;
+  const owner = portfolioGroups.find(
+    (item) => item.id === wanted || item.sections.some((section) => section.id === wanted),
+  );
+  const group = groups.find((item) => item.id === owner?.id) ?? null;
+  const section = group?.sections.find((item) => item.id === wanted) ?? null;
+  return { group, section };
 }
 
-const skeletonRatios = ['aspect-[4/3]', 'aspect-[3/4]', 'aspect-[3/2]', 'aspect-[1/1]', 'aspect-[4/3]', 'aspect-[16/9]'];
+const SKELETON_COUNT = 6;
 
 export function Component() {
   useSeo(pageSeo.portfolio);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const requested = searchParams.get('category');
-  const filter: Filter = isCategory(requested) ? requested : 'all';
 
   const { data: projects, isPending, isError, refetch } = useProjects();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const barRef = useRef<HTMLDivElement>(null);
+  const resultsRef = useRef<HTMLElement>(null);
+
+  // Only sections with published work are offered.
+  const groups = useMemo(
+    () =>
+      portfolioGroups
+        .map((item) => ({
+          ...item,
+          sections: item.sections.filter((section) => projects?.some((project) => project.category === section.id)),
+        }))
+        .filter((item) => item.sections.length > 0),
+    [projects],
+  );
+
+  const { group, section } = useMemo(() => resolveFilter(requested, groups), [requested, groups]);
+  const activeFilter = section?.id ?? group?.id ?? 'all';
 
   const visible = useMemo(
-    () => (projects ?? []).filter((project) => filter === 'all' || project.category === filter),
-    [projects, filter],
+    () =>
+      (projects ?? []).filter((project) => {
+        if (section) return project.category === section.id;
+        if (group) return group.sections.some((item) => item.id === project.category);
+        return isListed(project);
+      }),
+    [projects, group, section],
   );
+
+  // After a filter change: show the chosen button on a narrow screen, and start the results under the bar.
+  useLayoutEffect(() => {
+    const bar = barRef.current;
+    if (!bar) return;
+    bar.querySelectorAll<HTMLElement>('[aria-pressed="true"]').forEach((item) => {
+      const row = item.parentElement;
+      if (row) row.scrollLeft = item.offsetLeft - row.offsetLeft - (row.clientWidth - item.offsetWidth) / 2;
+    });
+    const results = resultsRef.current;
+    if (!results) return;
+    // Where the bar's bottom sits once stuck. Its live position can lag behind a scroll.
+    const stuckBottom = parseFloat(getComputedStyle(bar).top) + bar.offsetHeight;
+    const hidden = stuckBottom - results.getBoundingClientRect().top;
+    if (hidden > 1) window.scrollBy({ top: -hidden, behavior: 'instant' });
+  }, [activeFilter]);
 
   // Every picture of every shown project, in order, so the viewer can step through them all.
   const { lightboxItems, coverIndex } = useMemo(() => {
@@ -66,7 +108,7 @@ export function Component() {
   }, [visible]);
 
   const setFilter = useCallback(
-    (next: Filter) => {
+    (next: string) => {
       setOpenIndex(null);
       setSearchParams(next === 'all' ? {} : { category: next }, { replace: true, preventScrollReset: true });
     },
@@ -74,10 +116,7 @@ export function Component() {
   );
 
   const hasPlaceholders = (projects ?? []).some((project) => project.placeholder);
-  const filters: Array<{ id: Filter; label: string }> = [
-    { id: 'all', label: 'All Work' },
-    ...categoryOrder.map((category) => ({ id: category, label: categoryLabels[category] })),
-  ];
+  const mainFilters = [{ id: 'all', label: 'All Work' }, ...groups];
 
   return (
     <>
@@ -86,35 +125,65 @@ export function Component() {
         lead="Aerial work, 360° tours and photography. Open a picture to see it full screen."
       />
 
-      <section className="pt-2xl pb-3xl" aria-labelledby="projects-title">
-        <div className="shell">
-          <h2 id="projects-title" className="visually-hidden">
-            Projects
-          </h2>
-          {hasPlaceholders ? <PlaceholderNotice scope="page" className="mb-xl max-w-[80ch]" /> : null}
-
-          <div className="seg" role="group" aria-label="Filter the work by category">
-            {filters.map((item) => (
+      <div ref={barRef} className="jump-bar" data-enter>
+        <div className="shell enter" style={{ '--i': 2 } as CSSProperties}>
+          <div className="tabs" role="group" aria-label="Filter the work by category">
+            {mainFilters.map((item) => (
               <button
                 key={item.id}
                 type="button"
-                className="seg__item"
-                aria-pressed={filter === item.id}
+                className="tabs__item"
+                aria-pressed={(group?.id ?? 'all') === item.id}
                 onClick={() => setFilter(item.id)}
               >
                 {item.label}
               </button>
             ))}
           </div>
+          {group ? (
+            <div className="seg" role="group" aria-label={`Filter ${group.label} by type`}>
+              <button
+                type="button"
+                className="seg__item"
+                aria-pressed={section === null}
+                onClick={() => setFilter(group.id)}
+              >
+                All {group.label}
+              </button>
+              {group.sections.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className="seg__item"
+                  aria-pressed={section?.id === item.id}
+                  onClick={() => setFilter(item.id)}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      </div>
+
+      <section ref={resultsRef} className="pt-lg pb-3xl" aria-labelledby="projects-title">
+        <div className="shell">
+          <h2 id="projects-title" className="visually-hidden">
+            Projects
+          </h2>
+          {hasPlaceholders ? <PlaceholderNotice scope="page" className="max-w-[80ch]" /> : null}
+          {group?.id === 'ai-studio' ? (
+            <p className="mt-md text-sm text-muted">Created with AI from our photography.</p>
+          ) : null}
 
           <p className="visually-hidden" role="status" aria-live="polite">
             {isPending ? 'Loading the projects' : `${visible.length} ${visible.length === 1 ? 'project' : 'projects'} shown`}
           </p>
 
           {isPending ? (
-            <div className="masonry mt-xl" aria-hidden="true">
-              {skeletonRatios.map((ratio, index) => (
-                <div key={index} className={`skeleton ${ratio}`} />
+            <div className="work-grid mt-xl" aria-hidden="true">
+              {Array.from({ length: SKELETON_COUNT }, (_, index) => (
+                <div key={index} className="skeleton aspect-square" />
               ))}
             </div>
           ) : null}
@@ -130,19 +199,14 @@ export function Component() {
 
           {projects && visible.length === 0 ? (
             <div className="mt-xl flex flex-col items-start gap-md">
-              <p className="lead">No {filter === 'all' ? '' : categoryLabels[filter].toLowerCase()} projects are published yet.</p>
-              {filter === 'all' ? null : (
-                <button type="button" className="btn btn--line" onClick={() => setFilter('all')}>
-                  Show All Work
-                </button>
-              )}
+              <p className="lead">No projects are published yet.</p>
             </div>
           ) : null}
 
           {visible.length > 0 ? (
             <m.div
-              key={filter}
-              className="masonry mt-xl"
+              key={activeFilter}
+              className="work-grid mt-xl"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
@@ -155,11 +219,11 @@ export function Component() {
                     aria-label={`Open ${project.title} full screen`}
                     onClick={() => setOpenIndex(coverIndex.get(project.slug) ?? 0)}
                   >
-                    <figure className="frame" style={tileRatio(project)} data-slot={`project-${project.slug}`}>
+                    <figure className="frame aspect-square" data-slot={`project-${project.slug}`}>
                       <Picture
                         media={project.cover}
                         sizes="(min-width: 64rem) 30vw, (min-width: 40rem) 48vw, 100vw"
-                        priority={index < 2}
+                        priority={index < 3}
                       />
                     </figure>
                   </button>

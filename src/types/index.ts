@@ -34,11 +34,32 @@ export type ServiceId =
   | 'infrastructure';
 
 export type ProjectCategory =
-  | 'photography'
-  | 'aerial'
-  | 'architecture'
   | '360-tours'
-  | 'events';
+  | 'aerial-cinematography'
+  | 'aerial-photography'
+  | 'infrastructure'
+  | 'product'
+  | 'maternity'
+  | 'pre-wedding'
+  | 'ai-product'
+  | 'ai-model'
+  /** In no portfolio section: the project's own page opens, but it is not listed. */
+  | 'other-photography';
+
+export type PortfolioGroupId = 'aerial' | 'photography' | 'ai-studio';
+
+/** One subsection of the portfolio, with its label in the filter. */
+export interface PortfolioSection {
+  id: ProjectCategory;
+  label: string;
+}
+
+/** One main section of the portfolio. */
+export interface PortfolioGroup {
+  id: PortfolioGroupId;
+  label: string;
+  sections: PortfolioSection[];
+}
 
 export interface Service {
   id: ServiceId;

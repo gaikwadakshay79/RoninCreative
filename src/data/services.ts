@@ -32,7 +32,7 @@ export const services: Service[] = [
       'Top-down and oblique views of the same site',
     ],
     image: 'drone-flight',
-    related: ['aerial'],
+    related: ['aerial-photography', 'aerial-cinematography'],
     enabled: true,
   },
   {
@@ -53,7 +53,7 @@ export const services: Service[] = [
       'Linked viewpoints for larger sites',
     ],
     image: 'panshet-1',
-    related: ['360-tours', 'aerial'],
+    related: ['360-tours', 'aerial-photography'],
     enabled: true,
   },
   {
@@ -75,7 +75,7 @@ export const services: Service[] = [
       'Marketing images of the finished property',
     ],
     image: 'aerial-construction',
-    related: ['aerial', 'architecture'],
+    related: ['infrastructure', 'aerial-photography'],
     enabled: true,
   },
   {
@@ -97,7 +97,7 @@ export const services: Service[] = [
       'Web-sized files for sites and social media',
     ],
     image: 'photo-camera',
-    related: ['photography', 'architecture', 'events'],
+    related: ['product', 'maternity', 'pre-wedding', 'infrastructure'],
     enabled: true,
   },
 ];
