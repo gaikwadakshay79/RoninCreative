@@ -347,6 +347,19 @@
   /* 360° viewer chrome: name top left, compass top right, scenes and tools bottom centre. */
   .pano-stage { border-radius: var(--radius-card); isolation: isolate; }
   .pano-stage:fullscreen { border-radius: 0; }
+  /* The full view of a shared link. As a popover it sits in the top layer, so these also undo the browser's popover box. */
+  .pano-stage--full {
+    position: fixed; inset: 0; z-index: var(--z-modal); max-width: none; max-height: none;
+    margin: 0; padding: 0; border: 0; border-radius: 0; overflow: hidden; color: var(--color-ink);
+  }
+  .pano-stage--immersive {
+    --pano-top: max(var(--space-md), env(safe-area-inset-top));
+    --pano-bottom: max(var(--space-md), env(safe-area-inset-bottom));
+  }
+  .pano-stage--immersive .pano-chip { top: var(--pano-top); }
+  .pano-stage--immersive .pano-compass { top: calc(var(--pano-top) + 48px + var(--space-xs)); }
+  .pano-stage--immersive .pano-dock { bottom: var(--pano-bottom); }
+  .pano-close { position: absolute; top: var(--pano-top); right: var(--space-md); z-index: 1; }
   .pano-chip {
     position: absolute; top: var(--space-md); left: var(--space-md); max-width: calc(100% - 64px - 3 * var(--space-md));
     padding: var(--space-2xs) var(--space-sm); border-radius: var(--radius-card); background: var(--scrim);

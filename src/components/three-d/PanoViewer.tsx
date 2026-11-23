@@ -1,4 +1,4 @@
-import { Maximize2, Minimize2, Minus, Pause, Play, Plus, RotateCcw } from 'lucide-react';
+import { Maximize2, Minimize2, Minus, Pause, Play, Plus, RotateCcw, X } from 'lucide-react';
 import type MarzipanoLib from 'marzipano';
 import type { CubeLevel, RectilinearView, Scene, Viewer } from 'marzipano';
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react';
@@ -26,8 +26,8 @@ interface PanoViewerProps {
   initialScene?: string | null;
   /** Direction to open in, from a shared link. The slow turn stays off so it holds. */
   initialLook?: PanoLook;
-  /** Bring the viewer on screen when the page opens, for a shared link. */
-  scrollOnOpen?: boolean;
+  /** A shared link to this viewer: open at once, filling the screen. */
+  openFullView?: boolean;
 }
 
 /** One scene the viewer can show: a single panorama, or one scene of a tour. */
@@ -283,6 +283,10 @@ function attachSidewaysTurn(
  * it and a pinch zooms. In fullscreen a finger looks in every direction. The
  * slow turn stops while the viewer is off screen.
  *
+ * Browsers allow real fullscreen only after a tap, so a shared link opens in a
+ * full view instead: the stage fills the window from the browser's top layer.
+ * Phones without the Fullscreen API, such as iPhones, use it for the button too.
+ *
  * It shows single equirectangular panoramas and tiled tours exported from the
  * Marzipano Tool (read from their data.js), with the site's own controls: a
  * compass, scene thumbnails for tours, zoom, reset, slow turn and fullscreen.
@@ -300,15 +304,16 @@ export function PanoViewer({
   projectPath,
   initialScene,
   initialLook,
-  scrollOnOpen = false,
+  openFullView = false,
 }: PanoViewerProps) {
   const stageRef = useRef<HTMLDivElement>(null);
   const inPageRef = useRef(true);
   const detachTouchRef = useRef<(() => void) | null>(null);
   /** What a shared link asked for. Used once, on the first open. */
-  const sharedRef = useRef<{ scene?: string | null; look?: PanoLook } | null>(
-    initialScene || initialLook ? { scene: initialScene, look: initialLook } : null,
+  const sharedRef = useRef<{ scene?: string | null; look?: PanoLook; full: boolean } | null>(
+    initialScene || initialLook ? { scene: initialScene, look: initialLook, full: openFullView } : null,
   );
+  const openedByLink = useRef(openFullView);
   const mountRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<Viewer | null>(null);
   const scenesRef = useRef(new Map<string, Scene>());
@@ -322,11 +327,16 @@ export function PanoViewer({
   const [status, setStatus] = useState<Status>('poster');
   const [held, setHeld] = useState(() => prefersReducedMotion() || Boolean(initialLook));
   const [fullscreen, setFullscreen] = useState(false);
+  /** The full view: fills the window without the browser's Fullscreen API. */
+  const [expanded, setExpanded] = useState(false);
   const [yaw, setYaw] = useState(0);
 
   const active = panoramas[Math.min(selected, panoramas.length - 1)];
   const isEmbed = Boolean(active?.embed);
   const spec = specs[sceneIndex];
+  // An error message must stay in the page, where the visitor can carry on.
+  const showExpanded = expanded && status !== 'error';
+  const immersive = fullscreen || showExpanded;
 
   /** Builds (or reuses) a scene and shows it. */
   const showSpec = useCallback(async (next: SceneSpec, look?: PanoLook) => {
@@ -347,7 +357,7 @@ export function PanoViewer({
           if (stable) setStatus((current) => (current === 'loading' ? 'ready' : current));
         }) as never);
         rotateRef.current = M.autorotate({ yawSpeed: TURN_SPEED, targetPitch: null, targetFov: null });
-        setTouchMode(viewer, mount, true);
+        setTouchMode(viewer, mount, inPageRef.current);
         detachTouchRef.current = attachSidewaysTurn(
           mount,
           () => inPageRef.current,
@@ -398,6 +408,7 @@ export function PanoViewer({
         sharedRef.current = null;
         const linked = shared?.scene ? list.findIndex((item) => item.slug === shared.scene) : -1;
         const target = linked >= 0 ? linked : Math.min(index, list.length - 1);
+        if (shared?.full && linked >= 0) setExpanded(true);
         setSpecs(list);
         setSceneIndex(target);
         const first = list[target];
@@ -441,15 +452,6 @@ export function PanoViewer({
     void showPanorama(active);
   };
 
-  // A shared link to a 360° view brings the viewer on screen.
-  useEffect(() => {
-    if (!scrollOnOpen) return;
-    const frame = requestAnimationFrame(() => {
-      stageRef.current?.scrollIntoView({ block: 'center', behavior: 'instant' });
-    });
-    return () => cancelAnimationFrame(frame);
-  }, [scrollOnOpen]);
-
   // Open by itself once the stage comes near the screen; track whether it is on screen.
   const [onScreen, setOnScreen] = useState(false);
   const openRef = useRef(open);
@@ -483,6 +485,54 @@ export function PanoViewer({
       visible.disconnect();
     };
   }, []);
+
+  // A shared link opens the viewer straight away, and leaves the page at the viewer when it is closed.
+  useEffect(() => {
+    if (!openedByLink.current) return;
+    if (!opening.current) {
+      opening.current = true;
+      openRef.current();
+    }
+    const frame = requestAnimationFrame(() => {
+      stageRef.current?.parentElement?.scrollIntoView({ block: 'center', behavior: 'instant' });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  // The full view sits in the browser's top layer, above the header and any transformed parent.
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!showExpanded || !stage) return;
+    const topLayer = typeof stage.showPopover === 'function';
+    if (topLayer) {
+      stage.popover = 'manual';
+      stage.showPopover();
+    }
+    const previousOverflow = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = 'hidden';
+    const onEscape = (event: globalThis.KeyboardEvent) => {
+      if (event.key === 'Escape') setExpanded(false);
+    };
+    document.addEventListener('keydown', onEscape);
+    return () => {
+      document.removeEventListener('keydown', onEscape);
+      document.documentElement.style.overflow = previousOverflow;
+      if (topLayer) {
+        if (stage.matches(':popover-open')) stage.hidePopover();
+        stage.removeAttribute('popover');
+      }
+    };
+  }, [showExpanded]);
+
+  // Filling the screen, a finger looks in every direction. In the page, vertical swipes scroll.
+  useEffect(() => {
+    inPageRef.current = !immersive;
+    const viewer = viewerRef.current;
+    const mount = mountRef.current;
+    if (!viewer || !mount) return;
+    setTouchMode(viewer, mount, !immersive);
+    viewer.updateSize();
+  }, [immersive]);
 
   // Slow turn while idle: paused by the button, by keyboard focus and while off screen.
   const hovering = useRef(false);
@@ -526,10 +576,7 @@ export function PanoViewer({
 
   useEffect(() => {
     const onChange = () => {
-      const isFull = document.fullscreenElement === stageRef.current;
-      setFullscreen(isFull);
-      inPageRef.current = !isFull;
-      if (mountRef.current && viewerRef.current) setTouchMode(viewerRef.current, mountRef.current, !isFull);
+      setFullscreen(document.fullscreenElement === stageRef.current);
       viewerRef.current?.updateSize();
     };
     document.addEventListener('fullscreenchange', onChange);
@@ -579,8 +626,15 @@ export function PanoViewer({
   const toggleFullscreen = () => {
     const stage = stageRef.current;
     if (!stage) return;
-    if (document.fullscreenElement) void document.exitFullscreen();
-    else void stage.requestFullscreen?.();
+    if (expanded) {
+      setExpanded(false);
+    } else if (document.fullscreenElement) {
+      void document.exitFullscreen();
+    } else if (document.fullscreenEnabled && stage.requestFullscreen) {
+      stage.requestFullscreen().catch(() => setExpanded(true));
+    } else {
+      setExpanded(true);
+    }
   };
 
   if (!active) return null;
@@ -602,7 +656,6 @@ export function PanoViewer({
   };
 
   const opened = status !== 'poster';
-  const canFullscreen = typeof document !== 'undefined' && document.fullscreenEnabled;
   const controlsLive = status === 'ready' && !isEmbed;
   const showChrome = opened && status !== 'error' && !isEmbed;
   // Heading of the view from north, 0 to 360.
@@ -627,7 +680,12 @@ export function PanoViewer({
         </div>
       ) : null}
 
-      <div ref={stageRef} className="stage pano-stage aspect-[4/5] w-full bg-paper-2 sm:aspect-[16/9]">
+      {/* Holds the stage's place in the page while the stage fills the screen. */}
+      <div className="aspect-[4/5] w-full sm:aspect-[16/9]">
+      <div
+        ref={stageRef}
+        className={`stage pano-stage h-full w-full bg-paper-2 ${showExpanded ? 'pano-stage--full' : ''} ${immersive ? 'pano-stage--immersive' : ''}`}
+      >
         {/* Marzipano draws into this element. It stays mounted so the viewer survives scene changes. */}
         <div
           ref={mountRef}
@@ -681,6 +739,17 @@ export function PanoViewer({
                 {status === 'loading' ? 'Loading the panorama…' : 'Drag to look around'}
               </p>
             </div>
+
+            {immersive ? (
+              <button
+                type="button"
+                className="icon-btn icon-btn--solid pano-close"
+                aria-label="Close the full-screen view"
+                onClick={toggleFullscreen}
+              >
+                <X size={20} strokeWidth={1.5} aria-hidden="true" />
+              </button>
+            ) : null}
 
             {controlsLive ? <Compass heading={heading} onFaceNorth={faceNorth} /> : null}
 
@@ -744,25 +813,24 @@ export function PanoViewer({
                     label="Share a link to this 360° view"
                   />
                 ) : null}
-                {canFullscreen ? (
-                  <button
-                    type="button"
-                    className="pano-tool"
-                    aria-label={fullscreen ? 'Leave fullscreen' : 'View the panorama fullscreen'}
-                    aria-pressed={fullscreen}
-                    onClick={toggleFullscreen}
-                  >
-                    {fullscreen ? (
-                      <Minimize2 size={18} strokeWidth={1.75} aria-hidden="true" />
-                    ) : (
-                      <Maximize2 size={18} strokeWidth={1.75} aria-hidden="true" />
-                    )}
-                  </button>
-                ) : null}
+                <button
+                  type="button"
+                  className="pano-tool"
+                  aria-label={immersive ? 'Leave fullscreen' : 'View the panorama fullscreen'}
+                  aria-pressed={immersive}
+                  onClick={toggleFullscreen}
+                >
+                  {immersive ? (
+                    <Minimize2 size={18} strokeWidth={1.75} aria-hidden="true" />
+                  ) : (
+                    <Maximize2 size={18} strokeWidth={1.75} aria-hidden="true" />
+                  )}
+                </button>
               </div>
             </div>
           </>
         ) : null}
+      </div>
       </div>
     </div>
   );

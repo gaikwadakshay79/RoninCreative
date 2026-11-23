@@ -187,7 +187,7 @@ export function Component() {
                 projectPath={() => `/portfolio/${data.slug}`}
                 initialScene={viewParam}
                 initialLook={readLook(searchParams)}
-                scrollOnOpen={Boolean(viewParam) && openIndex === null}
+                openFullView={Boolean(viewParam) && openIndex === null}
               />
             </div>
           </div>
