@@ -17,6 +17,8 @@ export interface MediaItem {
   placeholder: boolean;
   /** Required for stand-ins. Remove it once the studio's own photograph replaces the file. */
   credit?: MediaCredit;
+  /** Also print the credit directly under the picture where a service shows it. */
+  captionCredit?: boolean;
 }
 
 export interface MediaDimensions {
@@ -27,14 +29,12 @@ export interface MediaDimensions {
 
 export type ServiceId =
   | 'photography'
-  | 'cinematography'
   | 'drone'
   | 'aerial-360'
   | 'infrastructure';
 
 export type ProjectCategory =
   | 'photography'
-  | 'cinematography'
   | 'aerial'
   | 'architecture'
   | '360-tours'

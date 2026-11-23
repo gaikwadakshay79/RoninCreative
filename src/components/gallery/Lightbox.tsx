@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { AnimatePresence } from 'motion/react';
 import * as m from 'motion/react-m';
-import { useCallback, useEffect, useRef, type KeyboardEvent, type TouchEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, type KeyboardEvent, type TouchEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { Picture } from '@/components/common/Picture';
 import type { MediaKey } from '@/types';
@@ -9,9 +9,13 @@ import type { MediaKey } from '@/types';
 export interface LightboxItem {
   media: MediaKey;
   title?: string;
+  /** Short note beside the title, for example "Picture 2 of 3". */
+  detail?: string;
   /** Optional link shown beside the title, for example to the project page. */
   href?: string;
   hrefLabel?: string;
+  /** Pictures with the same group belong to one project. Two or more groups add project buttons. */
+  group?: string;
 }
 
 interface LightboxProps {
@@ -27,9 +31,11 @@ const SWIPE_DISTANCE = 48;
 /**
  * Fullscreen picture viewer on the native <dialog> element, which supplies
  * the focus trap, Escape to close, an inert page behind it and the return of
- * focus to the picture that opened it.
+ * focus to the picture that opened it. The whole picture always fits the
+ * space between the two bars.
  *
- * Keys: Left and Right step, Home and End jump, Escape closes.
+ * Keys: Left and Right step, Page Up and Page Down change project, Home and
+ * End jump, Escape closes.
  * Touch: swipe left or right to step.
  */
 export function Lightbox({ items, index, onIndexChange, onClose }: LightboxProps) {
@@ -38,6 +44,13 @@ export function Lightbox({ items, index, onIndexChange, onClose }: LightboxProps
   const open = index !== null;
   const count = items.length;
   const current = open ? items[index] : undefined;
+
+  /** The index of the first picture of each project. */
+  const groupStarts = useMemo(
+    () => items.flatMap((item, i) => (item.group && item.group !== items[i - 1]?.group ? [i] : [])),
+    [items],
+  );
+  const hasProjects = groupStarts.length > 1;
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -64,9 +77,21 @@ export function Lightbox({ items, index, onIndexChange, onClose }: LightboxProps
     [index, count, onIndexChange],
   );
 
+  const stepProject = useCallback(
+    (delta: number) => {
+      if (index === null || !hasProjects) return;
+      const position = groupStarts.filter((start) => start <= index).length - 1;
+      const target = groupStarts[(position + delta + groupStarts.length) % groupStarts.length];
+      if (target !== undefined) onIndexChange(target);
+    },
+    [index, hasProjects, groupStarts, onIndexChange],
+  );
+
   const onKeyDown = (event: KeyboardEvent<HTMLDialogElement>) => {
     if (event.key === 'ArrowRight') step(1);
     else if (event.key === 'ArrowLeft') step(-1);
+    else if (event.key === 'PageDown') stepProject(1);
+    else if (event.key === 'PageUp') stepProject(-1);
     else if (event.key === 'Home') onIndexChange(0);
     else if (event.key === 'End') onIndexChange(count - 1);
     else return;
@@ -83,6 +108,10 @@ export function Lightbox({ items, index, onIndexChange, onClose }: LightboxProps
     if (start === null || end === undefined) return;
     if (Math.abs(end - start) >= SWIPE_DISTANCE) step(end < start ? 1 : -1);
   };
+
+  // Load the pictures on either side, so stepping shows them at once.
+  const neighbours =
+    index !== null && count > 1 ? [...new Set([(index + 1) % count, (index - 1 + count) % count])] : [];
 
   return (
     <dialog
@@ -105,49 +134,70 @@ export function Lightbox({ items, index, onIndexChange, onClose }: LightboxProps
           </div>
 
           <div className="lightbox__stage" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-            <AnimatePresence mode="wait" initial={false}>
+            <AnimatePresence initial={false}>
               <m.div
-                key={current.media}
-                className="grid h-full w-full place-items-center"
+                key={index}
+                className="lightbox__slide"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
               >
-                <Picture media={current.media} sizes="100vw" priority className="contents" />
+                <Picture media={current.media} sizes="100vw" priority className="contents" uncropped />
               </m.div>
             </AnimatePresence>
+
+            {count > 1 ? (
+              <>
+                <button
+                  type="button"
+                  className="icon-btn lightbox__nav lightbox__nav--prev"
+                  aria-label="Previous picture"
+                  onClick={() => step(-1)}
+                >
+                  <ChevronLeft size={24} strokeWidth={1.5} aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  className="icon-btn lightbox__nav lightbox__nav--next"
+                  aria-label="Next picture"
+                  onClick={() => step(1)}
+                >
+                  <ChevronRight size={24} strokeWidth={1.5} aria-hidden="true" />
+                </button>
+              </>
+            ) : null}
           </div>
 
-          <div className="lightbox__bar">
+          <div className="lightbox__bar lightbox__bar--info">
             <div className="flex min-w-0 flex-wrap items-baseline gap-x-md gap-y-2xs">
               {current.title ? <p className="truncate text-md text-ink">{current.title}</p> : null}
+              {current.detail ? <p className="num shrink-0 text-sm text-muted">{current.detail}</p> : null}
               {current.href ? (
-                <Link to={current.href} className="link text-sm">
-                  {current.hrefLabel ?? 'See the project'}
+                <Link to={current.href} className="link shrink-0 text-sm">
+                  {current.hrefLabel ?? 'See the Project'}
                 </Link>
               ) : null}
             </div>
-            <div className="flex shrink-0 gap-xs">
-              <button
-                type="button"
-                className="icon-btn"
-                aria-label="Previous picture"
-                onClick={() => step(-1)}
-                disabled={count < 2}
-              >
-                <ChevronLeft size={20} strokeWidth={1.5} aria-hidden="true" />
-              </button>
-              <button
-                type="button"
-                className="icon-btn"
-                aria-label="Next picture"
-                onClick={() => step(1)}
-                disabled={count < 2}
-              >
-                <ChevronRight size={20} strokeWidth={1.5} aria-hidden="true" />
-              </button>
-            </div>
+            {hasProjects ? (
+              <div className="flex shrink-0 gap-xs">
+                <button type="button" className="lightbox__jump" aria-label="Previous project" onClick={() => stepProject(-1)}>
+                  <ChevronLeft size={18} strokeWidth={1.5} aria-hidden="true" />
+                  Previous Project
+                </button>
+                <button type="button" className="lightbox__jump" aria-label="Next project" onClick={() => stepProject(1)}>
+                  Next Project
+                  <ChevronRight size={18} strokeWidth={1.5} aria-hidden="true" />
+                </button>
+              </div>
+            ) : null}
+          </div>
+
+          <div hidden>
+            {neighbours.map((neighbour) => {
+              const item = items[neighbour];
+              return item ? <Picture key={neighbour} media={item.media} sizes="100vw" alt="" priority /> : null;
+            })}
           </div>
         </>
       ) : null}

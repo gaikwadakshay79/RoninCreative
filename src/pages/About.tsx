@@ -10,15 +10,15 @@ import { useSeo } from '@/hooks/useSeo';
 
 const path = [
   {
-    title: 'Photography and film',
+    title: 'Photography',
     line: 'Portraits, products, buildings and events.',
   },
   {
-    title: 'Licensed drone flight',
-    line: 'Stills, film and panoramas from above.',
+    title: 'Licensed Drone Flight',
+    line: 'Aerial stills, cinematic footage and panoramas.',
   },
   {
-    title: '360° aerial tours',
+    title: '360° Aerial Tours',
     line: 'Panoramas from points in the air, to look around in.',
   },
 ];
@@ -27,7 +27,7 @@ const process = [
   { title: 'Brief', line: 'What the pictures are for and who will see them.' },
   { title: 'Plan', line: 'Locations, light, a shot list and, for flights, the route and permissions.' },
   { title: 'Capture', line: 'Ground and aerial work in one visit, where the site allows.' },
-  { title: 'Deliver', line: 'Edited stills, a film or a 360° tour.' },
+  { title: 'Deliver', line: 'Edited stills, aerial footage or a 360° tour.' },
 ];
 
 const safety = [
@@ -39,19 +39,19 @@ const safety = [
 
 const reasons = [
   {
-    title: 'One brief, every viewpoint',
-    line: 'Ground, film and aerial work, planned together.',
+    title: 'One Brief, Every Viewpoint',
+    line: 'Ground and aerial work, planned together.',
   },
   {
-    title: 'A licensed pilot',
+    title: 'A Licensed Pilot',
     line: 'Flights planned around the rules of each location.',
   },
   {
-    title: 'From capture to 360°',
-    line: 'The filming flight can also record a 360° panorama.',
+    title: 'From Capture to 360°',
+    line: 'The same flight can also record a 360° panorama.',
   },
   {
-    title: 'Clear about limits',
+    title: 'Clear About Limits',
     line: 'You hear what is possible before the shoot.',
   },
 ];
@@ -63,14 +63,14 @@ export function Component() {
     <>
       <PageHero
         media="aerial-hills"
-        title="A photographer who also flies."
-        lead={`${siteConfig.name} is ${siteConfig.founder}’s studio for photography, film and aerial imaging.`}
+        title="A Photographer Who Also Flies."
+        lead={`${siteConfig.name} is ${siteConfig.founder}’s studio for aerial imaging and photography.`}
       />
 
       <section className="section intro" aria-labelledby="philosophy-title">
         <Reveal className="shell grid grid-cols-1 gap-x-col gap-y-xl lg:grid-cols-12">
           <h2 id="philosophy-title" className="statement lg:col-span-7">
-            A change of viewpoint changes the story.
+            A Change of Viewpoint Changes the Story.
           </h2>
           <div className="prose text-md lg:col-span-4 lg:col-start-9 lg:pt-xs">
             <p className="lead">
@@ -92,14 +92,14 @@ export function Component() {
             />
           </Reveal>
           <Reveal index={1} className="flex flex-col gap-lg lg:col-span-6 lg:col-start-7">
-            <h2 id="founder-title">{siteConfig.founder}, founder</h2>
+            <h2 id="founder-title">{siteConfig.founder}, Founder</h2>
             <div className="prose text-md">
               <p className="lead">
-                Rohan is a professional photographer and cinematographer, and a licensed drone pilot.
+                Rohan is a professional photographer and a licensed drone pilot.
               </p>
               <p>
-                He founded {siteConfig.name} to keep those three skills in one practice, planned by the same person
-                with the same eye.
+                He founded {siteConfig.name} to keep both skills in one practice, planned by the same person with the
+                same eye.
               </p>
               <p>The licence means the aerial part of a project is flown by someone trained for it.</p>
             </div>
@@ -110,7 +110,7 @@ export function Component() {
       <section className="section" aria-labelledby="path-title">
         <div className="shell">
           <Reveal>
-            <h2 id="path-title">From the camera to the 360° view</h2>
+            <h2 id="path-title">From the Camera to the 360° View</h2>
           </Reveal>
           <ol className="steps mt-2xl grid grid-cols-1 gap-col lg:grid-cols-3">
             {path.map((stage, index) => (
@@ -122,7 +122,7 @@ export function Component() {
           </ol>
           <Reveal className="mt-xl">
             <Link to="/portfolio/splendid-valley-retreat-panshet" className="link text-md">
-              Look around a 360° aerial tour
+              Look Around a 360° Aerial Tour
             </Link>
           </Reveal>
         </div>
@@ -131,7 +131,7 @@ export function Component() {
       <section className="section" aria-labelledby="process-title">
         <div className="shell grid grid-cols-1 gap-x-col gap-y-xl lg:grid-cols-12">
           <Reveal className="flex flex-col gap-md lg:col-span-4">
-            <h2 id="process-title">Creative eye, technical plan</h2>
+            <h2 id="process-title">Creative Eye, Technical Plan</h2>
             <p className="lead">Four stages, whatever the size of the project.</p>
           </Reveal>
           <dl className="rows lg:col-span-7 lg:col-start-6">
@@ -148,7 +148,7 @@ export function Component() {
       <section className="band" aria-labelledby="safety-title">
         <div className="shell grid grid-cols-1 gap-x-col gap-y-xl lg:grid-cols-12">
           <Reveal className="flex flex-col gap-md lg:col-span-5">
-            <h2 id="safety-title">Safety comes before the shot</h2>
+            <h2 id="safety-title">Safety Comes Before the Shot</h2>
             <p className="lead">Every flight is planned around other aircraft and the people below.</p>
           </Reveal>
           <Reveal index={1} className="lg:col-span-6 lg:col-start-7">
@@ -164,7 +164,7 @@ export function Component() {
       <section className="section" aria-labelledby="reasons-title">
         <div className="shell">
           <Reveal>
-            <h2 id="reasons-title">Why work with {siteConfig.name}</h2>
+            <h2 id="reasons-title">Why Work With {siteConfig.name}</h2>
           </Reveal>
           <div className="mt-2xl grid grid-cols-1 gap-x-col gap-y-xl sm:grid-cols-2 lg:grid-cols-4">
             {reasons.map((reason, index) => (
@@ -180,7 +180,7 @@ export function Component() {
       {testimonials.length > 0 ? (
         <section className="section" aria-labelledby="clients-title">
           <div className="shell">
-            <h2 id="clients-title">What clients say</h2>
+            <h2 id="clients-title">What Clients Say</h2>
             <div className="mt-2xl grid grid-cols-1 gap-col lg:grid-cols-2">
               {testimonials.map((testimonial) => (
                 <figure key={`${testimonial.name}-${testimonial.quote.slice(0, 24)}`} className="ticks m-0 flex flex-col justify-between gap-lg p-lg lg:p-xl">

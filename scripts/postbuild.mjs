@@ -70,7 +70,7 @@ const pages = [
   })),
   ...projects.map((project) => ({
     pathname: `/portfolio/${project.slug}`,
-    title: `${project.title}, ${categoryLabels[project.category].toLowerCase()} project`,
+    title: `${project.title}, ${categoryLabels[project.category]} Project`,
     description: project.summary,
     image: project.cover,
     type: 'article',
@@ -95,7 +95,7 @@ await fs.writeFile(
   path.join(dist, '404.html'),
   render({
     pathname: '/404',
-    title: 'Page not found',
+    title: 'Page Not Found',
     description: 'This address does not match anything on the Ronin Creative site.',
     noindex: true,
   }),

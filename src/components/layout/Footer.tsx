@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
 import { LogoMark } from '@/components/brand/Mark';
 import { ContactLinks } from '@/components/common/ContactLinks';
+import { SocialLink } from '@/components/common/SocialLink';
 import { primaryNav } from '@/config/navigation';
-import { siteConfig, socialLabels, type SocialNetwork } from '@/config/site';
+import { siteConfig, type SocialNetwork } from '@/config/site';
 
 const year = new Date().getFullYear();
 
@@ -45,9 +46,7 @@ export function Footer() {
               <ul className="mt-sm flex flex-col gap-xs">
                 {socials.map((network) => (
                   <li key={network}>
-                    <a className="link text-md" href={siteConfig.social[network]} target="_blank" rel="noreferrer">
-                      {socialLabels[network]}
-                    </a>
+                    <SocialLink network={network} />
                   </li>
                 ))}
               </ul>
@@ -55,7 +54,7 @@ export function Footer() {
           ) : null}
 
           <p className="col-span-2 max-w-[36ch] text-md text-ink-2 lg:col-span-3 lg:col-start-10">
-            {siteConfig.name} is the studio of {siteConfig.founder}, {siteConfig.founderRole.toLowerCase()}.
+            {siteConfig.description}
           </p>
         </div>
 
@@ -65,7 +64,7 @@ export function Footer() {
           </p>
           <p data-credits>
             <Link to="/credits" className="link text-muted">
-              Placeholder photo credits
+              Placeholder Photo Credits
             </Link>
           </p>
         </div>

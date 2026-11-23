@@ -33,7 +33,7 @@ export function ProjectCard({ project, ratio = 'aspect-[4/3]', sizes, priority, 
         <h3 className="text-lg">{project.title}</h3>
         <span className="label shrink-0">
           {categoryLabels[project.category]}
-          {project.placeholder ? ' · placeholder' : null}
+          {project.placeholder ? ' · Placeholder' : null}
         </span>
       </div>
     </Link>

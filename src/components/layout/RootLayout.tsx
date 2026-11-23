@@ -14,7 +14,7 @@ export function RootLayout() {
   return (
     <>
       <a className="skip" href="#main">
-        Skip to content
+        Skip to Content
       </a>
       <Header />
       <main

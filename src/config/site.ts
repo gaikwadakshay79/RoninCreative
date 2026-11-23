@@ -6,27 +6,25 @@
  */
 export const siteConfig = {
   name: 'Ronin Creative',
-  founder: 'Rohan Kamble',
-  founderRole: 'Photographer, cinematographer and licensed drone pilot',
+  founder: 'Rohan K.',
+  founderRole: 'Photographer and Licensed Drone Pilot',
   tagline: 'Perspective Beyond the Ordinary.',
   supportingLine: 'From the ground to the sky, we capture perspectives that tell extraordinary stories.',
   description:
-    'Ronin Creative is the studio of Rohan Kamble: professional photography, cinematography, aerial imaging and 360° aerial tours.',
+    'Ronin Creative brings together photography and drone expertise to capture compelling visuals from perspectives that stand apart.',
   /** Public address of the live site, without a trailing slash. Set VITE_SITE_URL to fill it. */
   url: (import.meta.env.VITE_SITE_URL ?? '').replace(/\/$/, ''),
   locale: 'en_IN',
   /** City or region the studio works from, for example "Pune, Maharashtra". */
   location: '',
   contact: {
-    email: '',
-    /** Display format, for example "+91 98765 43210". */
-    phone: '',
-    /** Digits only with the country code, for example "919876543210". */
-    whatsapp: '',
+    email: 'creativesbyronin@gmail.com',
+    /** Display format, main number first. WhatsApp is available on every number here. */
+    phones: ['+91 97675 58441', '+91 98814 48441'],
   },
   /** Full profile URLs. An empty value hides the link. */
   social: {
-    instagram: '',
+    instagram: 'https://www.instagram.com/ronin_creative',
     youtube: '',
     linkedin: '',
   },
@@ -46,18 +44,22 @@ export const socialLabels: Record<SocialNetwork, string> = {
   linkedin: 'LinkedIn',
 };
 
-/** The contact endpoint of a future API. Empty means the form falls back to email. */
+/** The contact endpoint of a future API. When set, it is used instead of Web3Forms. */
 export const contactEndpoint: string = import.meta.env.VITE_CONTACT_ENDPOINT ?? '';
 
-/** True when an enquiry has somewhere to go: an endpoint, or an address to write to. */
-export const hasContactChannel = Boolean(siteConfig.contact.email || contactEndpoint);
+/**
+ * Web3Forms access key: enquiries are delivered to the inbox it belongs to.
+ * Web3Forms designs this key to be public, so it is safe in client-side code.
+ */
+export const web3formsKey = 'c34a7ada-7227-4a98-a632-738ad8e30866';
 
-export function whatsappHref(): string | null {
-  const digits = siteConfig.contact.whatsapp.replace(/\D/g, '');
-  return digits ? `https://wa.me/${digits}` : null;
+/** True when an enquiry has somewhere to go: a form service, an endpoint or an address to write to. */
+export const hasContactChannel = Boolean(web3formsKey || contactEndpoint || siteConfig.contact.email);
+
+export function whatsappHref(phone: string): string {
+  return `https://wa.me/${phone.replace(/\D/g, '')}`;
 }
 
-export function phoneHref(): string | null {
-  const digits = siteConfig.contact.phone.replace(/[^\d+]/g, '');
-  return digits ? `tel:${digits}` : null;
+export function phoneHref(phone: string): string {
+  return `tel:${phone.replace(/[^\d+]/g, '')}`;
 }

@@ -9,6 +9,7 @@ import { PanoShowcase } from '@/components/three-d/PanoShowcase';
 import { pageSeo } from '@/data/seo';
 import { useProjects, useServices } from '@/hooks/useContent';
 import { useSeo } from '@/hooks/useSeo';
+import { getMedia } from '@/lib/media';
 import type { Project, Service } from '@/types';
 
 const RELATED_COUNT = 3;
@@ -27,6 +28,7 @@ function ServiceSection({ service, projects, index }: { service: Service; projec
   // Every picture is the same size and ratio; the side alternates, so the page zigzags.
   const pictureRight = index % 2 === 1;
   const titleId = `${service.id}-title`;
+  const picture = getMedia(service.image);
 
   return (
     <section id={service.id} className="section scroll-mt-header" aria-labelledby={titleId}>
@@ -40,6 +42,14 @@ function ServiceSection({ service, projects, index }: { service: Service; projec
               priority={index === 0}
               frameClassName="aspect-[3/2]"
             />
+            {picture?.captionCredit && picture.credit ? (
+              <p className="mt-xs text-sm text-muted">
+                Image: {picture.credit.author}, {picture.credit.licence}.{' '}
+                <a className="link text-muted" href={picture.credit.source} target="_blank" rel="noreferrer">
+                  Source
+                </a>
+              </p>
+            ) : null}
           </Reveal>
           <Reveal
             index={1}
@@ -48,14 +58,14 @@ function ServiceSection({ service, projects, index }: { service: Service; projec
             <h2 id={titleId}>{service.title}</h2>
             <p className="text-md">{service.description}</p>
             <Link to={`/contact?service=${service.id}`} className="btn btn--line">
-              Ask about this service
+              Ask About This Service
             </Link>
           </Reveal>
         </div>
 
         <div className="mt-2xl grid grid-cols-1 gap-x-col gap-y-xl lg:grid-cols-12">
           <Reveal className="lg:col-span-7">
-            <h3>What it covers</h3>
+            <h3>What It Covers</h3>
             <ul className={`ruled mt-md grid grid-cols-1 gap-x-col text-md ${service.offerings.length % 2 === 0 ? 'sm:grid-cols-2' : ''}`}>
               {service.offerings.map((offering) => (
                 <li key={offering}>{offering}</li>
@@ -63,7 +73,7 @@ function ServiceSection({ service, projects, index }: { service: Service; projec
             </ul>
           </Reveal>
           <Reveal index={1} className="lg:col-span-5">
-            <h3>What you receive</h3>
+            <h3>What You Receive</h3>
             <ul className="ruled mt-md text-md">
               {service.deliverables.map((deliverable) => (
                 <li key={deliverable}>{deliverable}</li>
@@ -76,7 +86,7 @@ function ServiceSection({ service, projects, index }: { service: Service; projec
 
         {related.length > 0 ? (
           <div className="mt-2xl">
-            <h3>Related work</h3>
+            <h3>Related Work</h3>
             <div className="mt-lg grid grid-cols-1 gap-x-col gap-y-xl sm:grid-cols-3">
               {related.map((project, relatedIndex) => (
                 <Reveal key={project.slug} index={relatedIndex}>
@@ -99,7 +109,7 @@ export function Component() {
   return (
     <>
       <PageHero
-        title="Photography, film, flight and 360°."
+        title="Flight, 360° and Photography."
         lead="Each service can be booked alone, or combined with the others in one visit."
       >
         {services.data ? (
@@ -127,7 +137,7 @@ export function Component() {
         <div className="shell flex flex-col items-start gap-md pb-3xl">
           <p className="lead">The services could not be loaded.</p>
           <button type="button" className="btn btn--line" onClick={() => void services.refetch()}>
-            Load the services again
+            Load the Services Again
           </button>
         </div>
       ) : null}
@@ -141,7 +151,7 @@ export function Component() {
       ) : null}
 
       <CtaClose
-        title="Not sure which service fits? Describe the project."
+        title="Not Sure Which Service Fits? Describe the Project."
         line="Say what you need pictures of and what they are for. Rohan suggests the mix of ground and aerial work."
       />
     </>

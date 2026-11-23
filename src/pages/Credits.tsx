@@ -23,8 +23,8 @@ export function Component() {
   return (
     <>
       <PageHero
-        title="Photograph credits"
-        lead="The pictures on this site are licensed placeholders from Wikimedia Commons, shown until Ronin Creative’s own work replaces them."
+        title="Photograph Credits"
+        lead="Placeholder pictures on this site are credited here with their sources, and are shown until Ronin Creative’s own work replaces them."
       />
 
       <section className="pt-2xl pb-3xl" aria-label="Credits">
@@ -42,7 +42,7 @@ export function Component() {
                   <p className="col-start-2 text-sm text-ink-2 sm:col-start-3">
                     {item.credit?.author}, {item.credit?.licence}.{' '}
                     <a className="link" href={item.credit?.source} target="_blank" rel="noreferrer">
-                      Source file
+                      Source File
                     </a>
                   </p>
                 </li>
@@ -52,7 +52,7 @@ export function Component() {
 
           {panoramas.length > 0 ? (
             <>
-              <h2 className="display-s mt-3xl">360° panoramas</h2>
+              <h2 className="display-s mt-3xl">360° Panoramas</h2>
               <ul className="rows mt-xl">
                 {panoramas.map((panorama) => (
                   <li key={panorama.id} className={rowClass}>
@@ -70,7 +70,7 @@ export function Component() {
                     <p className="col-start-2 text-sm text-ink-2 sm:col-start-3">
                       {panorama.credit?.author}, {panorama.credit?.licence}.{' '}
                       <a className="link" href={panorama.credit?.source} target="_blank" rel="noreferrer">
-                        Source file
+                        Source File
                       </a>
                     </p>
                   </li>

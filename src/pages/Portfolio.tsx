@@ -42,16 +42,26 @@ export function Component() {
     [projects, filter],
   );
 
-  const lightboxItems = useMemo<LightboxItem[]>(
-    () =>
-      visible.map((project) => ({
-        media: project.cover,
-        title: project.title,
-        href: `/portfolio/${project.slug}`,
-        hrefLabel: 'See the project',
-      })),
-    [visible],
-  );
+  // Every picture of every shown project, in order, so the viewer can step through them all.
+  const { lightboxItems, coverIndex } = useMemo(() => {
+    const items: LightboxItem[] = [];
+    const covers = new Map<string, number>();
+    for (const project of visible) {
+      const pictures = [...new Set([project.cover, ...(project.gallery ?? [])])].filter((key) => getMedia(key));
+      covers.set(project.slug, items.length);
+      pictures.forEach((media, position) => {
+        items.push({
+          media,
+          title: project.title,
+          detail: pictures.length > 1 ? `Picture ${position + 1} of ${pictures.length}` : undefined,
+          href: `/portfolio/${project.slug}`,
+          hrefLabel: 'See the Project',
+          group: project.slug,
+        });
+      });
+    }
+    return { lightboxItems: items, coverIndex: covers };
+  }, [visible]);
 
   const setFilter = useCallback(
     (next: Filter) => {
@@ -63,7 +73,7 @@ export function Component() {
 
   const hasPlaceholders = (projects ?? []).some((project) => project.placeholder);
   const filters: Array<{ id: Filter; label: string }> = [
-    { id: 'all', label: 'All work' },
+    { id: 'all', label: 'All Work' },
     ...categoryOrder.map((category) => ({ id: category, label: categoryLabels[category] })),
   ];
 
@@ -71,7 +81,7 @@ export function Component() {
     <>
       <PageHero
         title="Portfolio"
-        lead="Photography, film, aerial work and 360° tours. Open a picture to see it full screen."
+        lead="Aerial work, 360° tours and photography. Open a picture to see it full screen."
       />
 
       <section className="pt-2xl pb-3xl" aria-labelledby="projects-title">
@@ -111,7 +121,7 @@ export function Component() {
             <div className="mt-xl flex flex-col items-start gap-md">
               <p className="lead">The projects could not be loaded.</p>
               <button type="button" className="btn btn--line" onClick={() => void refetch()}>
-                Load the projects again
+                Load the Projects Again
               </button>
             </div>
           ) : null}
@@ -121,7 +131,7 @@ export function Component() {
               <p className="lead">No {filter === 'all' ? '' : categoryLabels[filter].toLowerCase()} projects are published yet.</p>
               {filter === 'all' ? null : (
                 <button type="button" className="btn btn--line" onClick={() => setFilter('all')}>
-                  Show all work
+                  Show All Work
                 </button>
               )}
             </div>
@@ -141,7 +151,7 @@ export function Component() {
                     type="button"
                     className="tile zoom"
                     aria-label={`Open ${project.title} full screen`}
-                    onClick={() => setOpenIndex(index)}
+                    onClick={() => setOpenIndex(coverIndex.get(project.slug) ?? 0)}
                   >
                     <figure className="frame" style={tileRatio(project)} data-slot={`project-${project.slug}`}>
                       <Picture
@@ -159,7 +169,7 @@ export function Component() {
                     </h3>
                     <span className="label shrink-0">
                       {categoryLabels[project.category]}
-                      {project.placeholder ? ' · placeholder' : null}
+                      {project.placeholder ? ' · Placeholder' : null}
                     </span>
                   </div>
                 </article>
@@ -172,7 +182,7 @@ export function Component() {
       <Lightbox items={lightboxItems} index={openIndex} onIndexChange={setOpenIndex} onClose={() => setOpenIndex(null)} />
 
       <CtaClose
-        title="Want your project on this page?"
+        title="Want Your Project on This Page?"
         line="Say what you are planning and where. Rohan replies with how he would shoot it."
       />
     </>

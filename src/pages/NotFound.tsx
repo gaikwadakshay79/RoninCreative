@@ -9,7 +9,7 @@ interface NotFoundContentProps {
 /** Shared by the 404 route and by a project page whose slug matches nothing. */
 export function NotFoundContent({ thing = 'page' }: NotFoundContentProps) {
   useSeo({
-    title: thing === 'project' ? 'Project not found' : 'Page not found',
+    title: thing === 'project' ? 'Project Not Found' : 'Page Not Found',
     description: 'This address does not match anything on the Ronin Creative site.',
     path: '/404',
     noindex: true,
@@ -18,7 +18,7 @@ export function NotFoundContent({ thing = 'page' }: NotFoundContentProps) {
   return (
     <section className="section section--first min-h-[70svh]" data-enter>
       <div className="shell flex flex-col items-start gap-lg">
-        <h1 className="enter">This {thing} is out of frame.</h1>
+        <h1 className="enter">This {thing === 'project' ? 'Project' : 'Page'} Is Out of Frame.</h1>
         <p className="lead enter">
           {thing === 'project'
             ? 'No project lives at this address. It may have been renamed or taken down.'
@@ -26,10 +26,10 @@ export function NotFoundContent({ thing = 'page' }: NotFoundContentProps) {
         </p>
         <div className="enter flex flex-wrap gap-sm">
           <Link to="/portfolio" className="btn">
-            See the portfolio
+            See the Portfolio
           </Link>
           <Link to="/" className="btn btn--line">
-            Go to the home page
+            Go to the Home Page
           </Link>
         </div>
       </div>

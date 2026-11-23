@@ -18,19 +18,21 @@ const structuredData = {
   founder: { '@type': 'Person', name: siteConfig.founder, jobTitle: siteConfig.founderRole },
   ...(siteConfig.url ? { url: siteConfig.url, logo: `${siteConfig.url}/brand/logo.png`, image: `${siteConfig.url}/brand/logo.png` } : {}),
   ...(siteConfig.contact.email ? { email: siteConfig.contact.email } : {}),
+  ...(siteConfig.contact.phones[0] ? { telephone: siteConfig.contact.phones[0].replace(/\s/g, '') } : {}),
+  ...(siteConfig.social.instagram ? { sameAs: [siteConfig.social.instagram] } : {}),
 };
 
 const principles = [
   {
-    title: 'Visual storytelling',
+    title: 'Visual Storytelling',
     line: 'Location, light and shot list follow from the story.',
   },
   {
-    title: 'Precision aerial imaging',
+    title: 'Precision Aerial Imaging',
     line: 'Route, height and frame overlap are planned on the ground.',
   },
   {
-    title: 'One finished set',
+    title: 'One Finished Set',
     line: 'Ground, aerial and 360° work are edited as one project.',
   },
 ];
@@ -51,9 +53,9 @@ function FeaturedWork() {
     <section className="section" aria-labelledby="work-title">
       <div className="shell">
         <Reveal className="flex flex-wrap items-end justify-between gap-md">
-          <h2 id="work-title">Selected work</h2>
+          <h2 id="work-title">Selected Work</h2>
           <Link to="/portfolio" className="link text-md">
-            See the full portfolio
+            See the Full Portfolio
           </Link>
         </Reveal>
 
@@ -70,7 +72,7 @@ function FeaturedWork() {
             <div className="col-span-full flex flex-col items-start gap-md">
               <p className="lead">The projects could not be loaded.</p>
               <button type="button" className="btn btn--line" onClick={() => void refetch()}>
-                Load the projects again
+                Load the Projects Again
               </button>
             </div>
           ) : null}
@@ -98,7 +100,7 @@ function ServicesPreview() {
       <div className="shell">
         <Reveal className="grid grid-cols-1 gap-x-col gap-y-md lg:grid-cols-12 lg:items-end">
           <h2 id="services-title" className="lg:col-span-6">
-            Stills, film, flight and 360°
+            Flight, 360° and Stills
           </h2>
           <p className="lead lg:col-span-5 lg:col-start-8">
             Booked alone, or combined in one visit.
@@ -132,30 +134,27 @@ export function Component() {
         size="full"
         media={siteConfig.hero.image}
         video={siteConfig.hero.video || undefined}
-        title="Every perspective tells a story."
-        lead="Photography, cinematography, aerial imaging and 360° aerial tours."
+        title="Every Perspective Tells a Story."
+        lead="Aerial cinematography, 360° aerial tours and photography."
       >
         <Link to="/portfolio" className="btn">
-          Explore our work
+          Explore Our Work
         </Link>
         <Link to="/contact" className="btn btn--line">
-          Start a project
+          Start a Project
         </Link>
       </PageHero>
 
       <section className="section intro" aria-labelledby="intro-title">
         <Reveal className="shell grid grid-cols-1 gap-x-col gap-y-xl lg:grid-cols-12">
           <h2 id="intro-title" className="statement lg:col-span-7">
-            One studio for the ground and the air.
+            One Studio for the Ground and the Air.
           </h2>
           <div className="flex flex-col items-start gap-lg lg:col-span-4 lg:col-start-9 lg:pt-xs">
-            <p className="lead">
-              {siteConfig.name} is the studio of {siteConfig.founder}, a professional photographer, cinematographer and
-              licensed drone pilot.
-            </p>
+            <p className="lead">{siteConfig.description}</p>
             <p className="text-md">{siteConfig.supportingLine}</p>
             <Link to="/about" className="link text-md">
-              Read about the studio
+              Read About the Studio
             </Link>
           </div>
         </Reveal>
@@ -168,7 +167,7 @@ export function Component() {
         <div className="shell">
           <Reveal className="grid grid-cols-1 gap-x-col gap-y-md lg:grid-cols-12 lg:items-end">
             <h2 id="philosophy-title" className="lg:col-span-6">
-              The story first, then the flight plan
+              The Story First, Then the Flight Plan
             </h2>
             <p className="lead lg:col-span-5 lg:col-start-8">Every commission starts with what the pictures have to say.</p>
           </Reveal>
@@ -196,13 +195,13 @@ export function Component() {
           </Reveal>
           <Reveal index={1} className="flex flex-col items-start gap-lg lg:col-span-6 lg:col-start-7">
             <h2 id="founder-title">{siteConfig.founder}</h2>
-            <p className="lead">{siteConfig.founderRole}.</p>
+            <p className="lead">{siteConfig.founderRole}</p>
             <p className="prose text-md">
-              Rohan founded {siteConfig.name} to bring photography, cinematography and licensed drone work into one
-              practice, so a project can move from the ground to the air without changing hands.
+              Rohan founded {siteConfig.name} to bring photography and licensed drone work into one practice, so a
+              project can move from the ground to the air without changing hands.
             </p>
             <Link to="/about" className="btn btn--line">
-              Read about Rohan
+              Read About Rohan
             </Link>
           </Reveal>
         </div>

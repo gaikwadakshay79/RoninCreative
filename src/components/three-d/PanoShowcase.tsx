@@ -19,7 +19,7 @@ export function PanoShowcase() {
       <div className="mt-2xl flex flex-col items-start gap-md">
         <p className="lead">The panoramas could not be loaded.</p>
         <button type="button" className="btn btn--line" onClick={() => void refetch()}>
-          Load the panoramas again
+          Load the Panoramas Again
         </button>
       </div>
     );
@@ -39,7 +39,7 @@ export function PanoShowcase() {
 
   return (
     <Reveal className="mt-2xl">
-      <h3>Try a 360° view</h3>
+      <h3>Try a 360° View</h3>
       <div className="mt-lg">
         <PanoViewer panoramas={panoramas} />
       </div>
@@ -47,7 +47,7 @@ export function PanoShowcase() {
         <p className="label mt-md">
           {demoNote}, not Ronin Creative’s own work.{' '}
           <Link to="/credits" className="link text-muted">
-            See the credits
+            See the Credits
           </Link>
         </p>
       ) : null}

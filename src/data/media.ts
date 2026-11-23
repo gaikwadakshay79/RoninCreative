@@ -6,9 +6,10 @@ import type { MediaItem, MediaKey } from '@/types';
  * The key is the file name in media/originals/ without its extension. Sizes
  * come from src/data/media.manifest.json, which `npm run media` writes.
  *
- * Entries with `placeholder: true` are licensed stand-ins from Wikimedia
- * Commons under the licence in their credit, not Ronin Creative's work. The
- * `panshet-*` stills are Rohan's own, cut from the Splendid Valley Retreat
+ * Entries with `placeholder: true` are stand-ins, not Ronin Creative's work.
+ * Most come from Wikimedia Commons under the licence in their credit;
+ * `drone-flight` is a DJI image taken from UAV Coach, with no licence on
+ * record. The `panshet-*` stills are Rohan's own, cut from the Splendid Valley Retreat
  * tour by `npm run tour-images`. To replace a stand-in with the studio's own
  * photograph:
  *
@@ -20,13 +21,14 @@ import type { MediaItem, MediaKey } from '@/types';
  */
 export const mediaLibrary: Record<MediaKey, MediaItem> = {
   'drone-flight': {
-    alt: 'A white camera drone hovering over water under a pale sky',
-    position: '35% 45%',
+    alt: 'A grey DJI Air 3 camera drone in flight in front of blurred snow-capped mountains',
+    position: '55% 50%',
     placeholder: true,
+    captionCredit: true,
     credit: {
-      author: 'Josh Sorenson',
-      licence: 'CC0',
-      source: 'https://commons.wikimedia.org/wiki/File:Quadcopter_camera_drone_in_flight.jpg',
+      author: 'DJI',
+      licence: 'via UAV Coach',
+      source: 'https://uavcoach.com/dji-air-3/',
     },
   },
   'aerial-village': {
@@ -161,15 +163,6 @@ export const mediaLibrary: Record<MediaKey, MediaItem> = {
       source: 'https://commons.wikimedia.org/wiki/File:Photographer-camera.jpg',
     },
   },
-  'cine-camera': {
-    alt: 'A cinema camera on a rig with a matte box, rails and a top handle',
-    placeholder: true,
-    credit: {
-      author: 'Smashing Film',
-      licence: 'CC BY-SA 4.0',
-      source: 'https://commons.wikimedia.org/wiki/File:Blackmagic_Production_Camera_4K_(improved).jpg',
-    },
-  },
   'photo-studio': {
     alt: 'A photo studio set, with softbox lights arranged around a product table',
     placeholder: true,
@@ -233,15 +226,6 @@ export const mediaLibrary: Record<MediaKey, MediaItem> = {
       author: 'PinkBeachPlanet',
       licence: 'CC BY-SA 4.0',
       source: 'https://commons.wikimedia.org/wiki/File:Beach-Please-2022-crowd-stage-lights-night-performance.jpg',
-    },
-  },
-  'event-dancers': {
-    alt: 'Dancers in silhouette in front of red, blue and yellow circles of light on a stage',
-    placeholder: true,
-    credit: {
-      author: 'Virtual-Pano',
-      licence: 'CC BY-SA 4.0',
-      source: 'https://commons.wikimedia.org/wiki/File:783_3_(%2B_3)_dancers_performing_on_stage_V-P.jpg',
     },
   },
   'event-drums': {

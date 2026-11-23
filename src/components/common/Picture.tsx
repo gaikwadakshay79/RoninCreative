@@ -12,6 +12,8 @@ export interface PictureProps {
   alt?: string;
   className?: string;
   imgClassName?: string;
+  /** True where the whole picture is shown, so the crop position must not shift it. */
+  uncropped?: boolean;
 }
 
 /**
@@ -19,11 +21,12 @@ export interface PictureProps {
  * fallback, explicit dimensions (no layout shift) and lazy loading unless it
  * is the page's priority image.
  */
-export function Picture({ media, sizes, priority = false, alt, className, imgClassName }: PictureProps) {
+export function Picture({ media, sizes, priority = false, alt, className, imgClassName, uncropped = false }: PictureProps) {
   const resolved = getMedia(media);
   if (!resolved) return null;
 
-  const style: CSSProperties | undefined = resolved.position ? { objectPosition: resolved.position } : undefined;
+  const style: CSSProperties | undefined =
+    resolved.position && !uncropped ? { objectPosition: resolved.position } : undefined;
 
   return (
     <picture className={className}>

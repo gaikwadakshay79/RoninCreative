@@ -13,7 +13,7 @@ interface PageHeroProps {
   /** `full` fills the first screen. `short` leaves the next section in view. */
   size?: 'full' | 'short';
   /**
-   * Optional film played over the photograph: a path under /public to a short
+   * Optional video played over the photograph: a path under /public to a short
    * MP4 or WebM. It runs muted, looped and inline, with the photograph as its
    * poster, never under reduced motion, and with a pause button.
    */
@@ -106,7 +106,7 @@ export function PageHero({ title, lead, media, size = 'full', video, children }:
               <button
                 type="button"
                 className="icon-btn icon-btn--solid ml-auto"
-                aria-label={paused ? 'Play the background film' : 'Pause the background film'}
+                aria-label={paused ? 'Play the background video' : 'Pause the background video'}
                 aria-pressed={paused}
                 onClick={toggleVideo}
               >

@@ -19,7 +19,7 @@ const RELATED_COUNT = 3;
 
 function ProjectSeo({ project }: { project: Project }) {
   useSeo({
-    title: `${project.title}, ${categoryLabels[project.category].toLowerCase()} project`,
+    title: `${project.title}, ${categoryLabels[project.category]} Project`,
     description: project.summary,
     path: `/portfolio/${project.slug}`,
     image: project.cover,
@@ -72,9 +72,9 @@ export function Component() {
     return (
       <section className="section section--first">
         <div className="shell flex flex-col items-start gap-lg">
-          <h1 className="display-s">This project did not load.</h1>
+          <h1 className="display-s">This Project Did Not Load.</h1>
           <button type="button" className="btn btn--line" onClick={() => void project.refetch()}>
-            Load the project again
+            Load the Project Again
           </button>
         </div>
       </section>
@@ -176,7 +176,7 @@ export function Component() {
       {panorama ? (
         <section className="section section--s" aria-labelledby="pano-title">
           <div className="shell">
-            <h2 id="pano-title">Look around in 360°</h2>
+            <h2 id="pano-title">Look Around in 360°</h2>
             <p className="lead mt-md">Drag to turn the view. The thumbnails switch between viewpoints.</p>
             <div className="mt-xl">
               <PanoViewer panoramas={[panorama]} showProjects={false} />
@@ -188,7 +188,7 @@ export function Component() {
       {related.length > 0 ? (
         <section className="section" aria-labelledby="related-title">
           <div className="shell">
-            <h2 id="related-title">Related projects</h2>
+            <h2 id="related-title">Related Projects</h2>
             <div className="mt-2xl grid grid-cols-1 gap-x-col gap-y-xl sm:grid-cols-3">
               {related.map((item, index) => (
                 <Reveal key={item.slug} index={index}>
@@ -205,7 +205,7 @@ export function Component() {
           <div className="shell">
             <Link to={`/portfolio/${next.slug}`} className="zoom grid grid-cols-1 items-center gap-x-col gap-y-lg no-underline lg:grid-cols-12">
               <div className="flex flex-col gap-sm lg:col-span-6">
-                <span className="label">Next project</span>
+                <span className="label">Next Project</span>
                 <span className="statement">{next.title}</span>
               </div>
               <figure className="frame aspect-[16/9] lg:col-span-5 lg:col-start-8">

@@ -8,6 +8,12 @@
       "port": 5173
     },
     {
+      "name": "ronin-lan",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "--host", "0.0.0.0", "--port", "5173", "--strictPort"],
+      "port": 5173
+    },
+    {
       "name": "ronin-preview",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "preview", "--", "--port", "4173", "--strictPort"],

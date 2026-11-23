@@ -1,5 +1,6 @@
-import { Mail, MessageCircle, Phone } from 'lucide-react';
+import { Mail, Phone } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { WhatsAppIcon } from '@/components/brand/BrandIcons';
 import { phoneHref, siteConfig, whatsappHref } from '@/config/site';
 
 interface ContactLinksProps {
@@ -7,28 +8,48 @@ interface ContactLinksProps {
   variant: 'full' | 'compact';
 }
 
-interface Channel {
-  id: string;
-  label: string;
+interface ChannelLink {
   value: string;
-  href: string | null;
-  icon: ReactNode;
+  href: string;
+  ariaLabel?: string;
   external?: boolean;
 }
 
+interface Channel {
+  id: string;
+  label: string;
+  links: ChannelLink[];
+  icon: ReactNode;
+}
+
+const externalProps = { target: '_blank', rel: 'noreferrer' } as const;
+
 function channels(): Channel[] {
-  const { email, phone, whatsapp } = siteConfig.contact;
+  const { email, phones } = siteConfig.contact;
   const icon = { size: 20, strokeWidth: 1.5, 'aria-hidden': true } as const;
   return [
-    { id: 'email', label: 'Email', value: email, href: email ? `mailto:${email}` : null, icon: <Mail {...icon} /> },
-    { id: 'phone', label: 'Phone', value: phone, href: phoneHref(), icon: <Phone {...icon} /> },
+    {
+      id: 'email',
+      label: 'Email',
+      links: email ? [{ value: email, href: `mailto:${email}` }] : [],
+      icon: <Mail {...icon} />,
+    },
+    {
+      id: 'phone',
+      label: 'Phone',
+      links: phones.map((phone) => ({ value: phone, href: phoneHref(phone), ariaLabel: `Call ${phone}` })),
+      icon: <Phone {...icon} />,
+    },
     {
       id: 'whatsapp',
       label: 'WhatsApp',
-      value: whatsapp ? 'Message on WhatsApp' : '',
-      href: whatsappHref(),
-      icon: <MessageCircle {...icon} />,
-      external: true,
+      links: phones.map((phone) => ({
+        value: phone,
+        href: whatsappHref(phone),
+        ariaLabel: `Message ${phone} on WhatsApp`,
+        external: true,
+      })),
+      icon: <WhatsAppIcon className="text-accent" />,
     },
   ];
 }
@@ -38,23 +59,36 @@ function channels(): Channel[] {
  * shows as a blank to fill, never as a dead link or an invented value.
  */
 export function ContactLinks({ variant }: ContactLinksProps) {
-  const all = channels();
-
   if (variant === 'compact') {
-    const configured = all.filter((channel) => channel.href);
-    if (configured.length === 0) {
+    const { email, phones } = siteConfig.contact;
+    if (!email && phones.length === 0) {
       return <p className="text-md text-muted">Contact details are being added.</p>;
     }
     return (
       <ul className="flex flex-col gap-xs">
-        {configured.map((channel) => (
-          <li key={channel.id}>
+        {email ? (
+          <li>
+            <a className="link text-md break-words" href={`mailto:${email}`}>
+              {email}
+            </a>
+          </li>
+        ) : null}
+        {phones.map((phone) => (
+          <li key={phone} className="flex flex-wrap items-center gap-x-xs text-md">
+            <a className="link" href={phoneHref(phone)} aria-label={`Call ${phone}`}>
+              {phone}
+            </a>
+            <span className="text-muted" aria-hidden="true">
+              ·
+            </span>
             <a
-              className="link text-md"
-              href={channel.href ?? undefined}
-              {...(channel.external ? { target: '_blank', rel: 'noreferrer' } : {})}
+              className="link link--icon"
+              href={whatsappHref(phone)}
+              aria-label={`Message ${phone} on WhatsApp`}
+              {...externalProps}
             >
-              {channel.value}
+              <WhatsAppIcon size={18} className="shrink-0 text-accent" />
+              WhatsApp
             </a>
           </li>
         ))}
@@ -64,21 +98,25 @@ export function ContactLinks({ variant }: ContactLinksProps) {
 
   return (
     <dl className="rows">
-      {all.map((channel) => (
+      {channels().map((channel) => (
         <div key={channel.id} className="flex items-center gap-md py-md">
           <span className="text-muted">{channel.icon}</span>
           <dt className="w-24 shrink-0 text-sm font-normal text-ink">{channel.label}</dt>
-          <dd className="m-0 min-w-0 text-md">
-            {channel.href ? (
-              <a
-                className="link break-words"
-                href={channel.href}
-                {...(channel.external ? { target: '_blank', rel: 'noreferrer' } : {})}
-              >
-                {channel.value}
-              </a>
+          <dd className="m-0 flex min-w-0 flex-col gap-2xs text-md">
+            {channel.links.length > 0 ? (
+              channel.links.map((link) => (
+                <a
+                  key={link.href}
+                  className="link break-words"
+                  href={link.href}
+                  aria-label={link.ariaLabel}
+                  {...(link.external ? externalProps : {})}
+                >
+                  {link.value}
+                </a>
+              ))
             ) : (
-              <span className="fill">To be added</span>
+              <span className="fill">To Be Added</span>
             )}
           </dd>
         </div>

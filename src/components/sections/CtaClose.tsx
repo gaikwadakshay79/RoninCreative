@@ -11,10 +11,10 @@ interface CtaCloseProps {
 
 /** The close of a page: one statement and the one action the site drives. */
 export function CtaClose({
-  title = "Have a vision? Let's bring it into focus.",
+  title = "Have a Vision? Let's Bring It Into Focus.",
   line = 'Say what you are planning and where. Rohan replies with how he would shoot it.',
   service,
-  actionLabel = 'Start a project',
+  actionLabel = 'Start a Project',
 }: CtaCloseProps) {
   const to = service ? `/contact?service=${encodeURIComponent(service)}` : '/contact';
 

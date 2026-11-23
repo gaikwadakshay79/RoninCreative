@@ -8,4 +8,4 @@ export const primaryNav: NavItem[] = [
   { label: 'Contact', to: '/contact' },
 ];
 
-export const contactCta: NavItem = { label: "Let's talk", to: '/contact' };
+export const contactCta: NavItem = { label: "Let's Talk", to: '/contact' };

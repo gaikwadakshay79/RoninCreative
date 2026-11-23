@@ -1,6 +1,6 @@
 # Ronin Creative
 
-The website of Ronin Creative, the studio of Rohan Kamble: professional photography, cinematography, aerial imaging and 360° aerial tours. It is a static site (no backend, no database) built on Hallmark's Vantage theme.
+The website of Ronin Creative, the studio of Rohan K.: drone photography and aerial cinematography, 360° aerial experiences, infrastructure and real estate imaging, and professional photography. It is a static site (no backend, no database) built on Hallmark's Vantage theme.
 
 Pages: Home, About, Services, Portfolio, Project detail, Contact, Credits and a 404 page.
 
@@ -52,7 +52,7 @@ Copy `.env.example` to `.env.local`. Every value is optional.
 | `VITE_SITE_URL` | Public address of the site, no trailing slash, including any sub-folder. Turns on canonical URLs, share images and `sitemap.xml`. Until it is set, none of those are written. |
 | `VITE_BASE_PATH` | Folder the site is served from. Empty means the root of a domain. A GitHub Pages project site needs its repository name, for example `/RoninCreative/`. The deploy workflow sets it by itself. |
 | `VITE_API_BASE_URL` | Base URL of a future content API. Empty means content comes from `src/data`. |
-| `VITE_CONTACT_ENDPOINT` | URL that accepts the contact form as a JSON POST. Empty means the email fallback. |
+| `VITE_CONTACT_ENDPOINT` | URL that accepts the contact form as a JSON POST, used instead of Web3Forms. Empty means Web3Forms. |
 
 ## Updating business information
 
@@ -62,7 +62,7 @@ To switch a service off before launch, set `enabled: false` in `src/data/service
 
 ## Replacing portfolio images
 
-Every picture on the site today is a licensed placeholder from Wikimedia Commons, credited on `/credits`. None is Rohan's work.
+Apart from the Panshet stills, every picture on the site is a placeholder credited on `/credits` and is not Rohan's work. Most are licensed from Wikimedia Commons. The `drone-flight` image is DJI's, taken from UAV Coach, and needs permission or replacing before public launch.
 
 Each picture has a key, which is its file name in `media/originals/`.
 
@@ -82,12 +82,12 @@ Add an entry to `src/data/projects.ts`:
 {
   slug: 'riverside-villa',            // the address: /portfolio/riverside-villa
   title: 'Riverside villa',
-  category: 'architecture',           // photography | cinematography | aerial | architecture | 360-tours | events
+  category: 'architecture',           // photography | aerial | architecture | 360-tours | events
   summary: 'One line for cards and link previews.',
   overview: ['First paragraph.', 'Second paragraph.'],   // optional
   cover: 'riverside-villa-cover',     // media key
   gallery: ['riverside-villa-1', 'riverside-villa-2'],  // optional
-  video: { src: '/videos/villa.mp4', poster: 'riverside-villa-cover', title: 'The film' }, // optional
+  video: { src: '/videos/villa.mp4', poster: 'riverside-villa-cover', title: 'Aerial footage' }, // optional
   panorama: 'villa',                  // optional: id of an entry in src/data/panoramas.ts, shown in a 360° viewer on the project page
   location: 'Pune',                   // optional
   year: 2026,                         // optional
@@ -147,7 +147,8 @@ Each entry is one project: a row of buttons above the viewer names them (shown e
 
 The form validates with Ant Design and sends through one adapter, `src/lib/api/contact.ts`:
 
-- `VITE_CONTACT_ENDPOINT` set: the enquiry is posted there as JSON (`name`, `email`, `phone`, `service`, `serviceLabel`, `location`, `message`, `source`). Form services such as Formspree, Basin or your own API fit. Change the request shape in `sendToEndpoint` only.
+- By default the enquiry is sent through [Web3Forms](https://web3forms.com), which emails it to the inbox of the access key `web3formsKey` in `src/config/site.ts`. The key is public by design. Replies go to the visitor's email address.
+- `VITE_CONTACT_ENDPOINT` set: the enquiry is posted there as JSON instead (`name`, `email`, `phone`, `service`, `serviceLabel`, `location`, `message`, `source`). Change the request shape in `sendToEndpoint` only.
 - Otherwise, with `siteConfig.contact.email` set: the visitor's email app opens with the enquiry written out.
 - Neither set (the current state): the form checks entries and says plainly that it is not connected. It never claims a message was sent.
 
@@ -163,8 +164,8 @@ Ant Design's styles sit in the `antd` cascade layer, below the site's own compon
 
 ## Before launch
 
-- Fill in `src/config/site.ts` (email, phone, WhatsApp, socials, location) and set `VITE_SITE_URL`.
+- Fill in the location in `src/config/site.ts` and set `VITE_SITE_URL`.
 - Replace every placeholder photograph and project with Rohan's own work, including the founder portrait.
 - Confirm the list of services and the wording about the drone licence.
 - Set north for each Panshet scene in `src/data/panoramas.ts` so the compass is right.
-- Optionally add a hero film: a short muted loop under 2 MB, path in `siteConfig.hero.video`.
+- Optionally add a hero video: a short muted aerial loop under 2 MB, path in `siteConfig.hero.video`.

@@ -1,6 +1,6 @@
 import { App, Form, Input, Select } from 'antd';
 import { Info } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { hasContactChannel, siteConfig } from '@/config/site';
 import { useServices, useSubmitInquiry } from '@/hooks/useContent';
 import { ContactNotConfiguredError } from '@/lib/api/contact';
@@ -39,11 +39,13 @@ export function InquiryForm({ initialService }: InquiryFormProps) {
   const services = useServices();
   const submit = useSubmitInquiry();
   const [status, setStatus] = useState<Status>(null);
+  /** A box people never see. Spam bots tick it, and their enquiry is dropped. */
+  const botcheck = useRef<HTMLInputElement>(null);
 
   const options = useMemo(
     () => [
       ...(services.data ?? []).map((service) => ({ value: service.id as string, label: service.title })),
-      { value: 'other', label: 'Something else' },
+      { value: 'other', label: 'Something Else' },
     ],
     [services.data],
   );
@@ -58,6 +60,11 @@ export function InquiryForm({ initialService }: InquiryFormProps) {
 
   const onFinish = (values: FormValues) => {
     setStatus(null);
+    if (botcheck.current?.checked) {
+      form.resetFields();
+      setStatus({ tone: 'neutral', text: `Your enquiry is in. ${siteConfig.founder} will reply by email.` });
+      return;
+    }
     const payload: InquiryPayload = {
       name: values.name.trim(),
       email: values.email.trim(),
@@ -76,7 +83,7 @@ export function InquiryForm({ initialService }: InquiryFormProps) {
             form.resetFields();
             setStatus({ tone: 'neutral', text: `Your enquiry is in. ${siteConfig.founder} will reply by email.` });
             notification.success({
-              message: 'Your enquiry is in',
+              message: 'Your Enquiry Is In',
               description: `${siteConfig.founder} will reply by email.`,
             });
           } else {
@@ -93,7 +100,7 @@ export function InquiryForm({ initialService }: InquiryFormProps) {
           }
           const text = `The enquiry was not sent. ${error.message} Your entries are still in the form.`;
           setStatus({ tone: 'error', text });
-          notification.error({ message: 'The enquiry was not sent', description: error.message });
+          notification.error({ message: 'The Enquiry Was Not Sent', description: error.message });
         },
       },
     );
@@ -123,7 +130,7 @@ export function InquiryForm({ initialService }: InquiryFormProps) {
       <div className="grid grid-cols-1 gap-x-col sm:grid-cols-2">
         <Form.Item
           name="name"
-          label="Full name"
+          label="Full Name"
           rules={[{ required: true, whitespace: true, message: 'Write your full name.' }]}
         >
           <Input name="name" autoComplete="name" maxLength={120} />
@@ -142,7 +149,7 @@ export function InquiryForm({ initialService }: InquiryFormProps) {
 
         <Form.Item
           name="phone"
-          label="Phone number"
+          label="Phone Number"
           rules={[
             {
               pattern: /^[+()\d\s.-]{7,20}$/,
@@ -155,25 +162,25 @@ export function InquiryForm({ initialService }: InquiryFormProps) {
 
         <Form.Item
           name="service"
-          label="Service you are interested in"
+          label="Service You Are Interested In"
           rules={[{ required: true, message: 'Choose the service closest to what you need.' }]}
         >
           <Select
             options={options}
             loading={services.isPending}
-            placeholder="Choose a service"
-            aria-label="Service you are interested in"
+            placeholder="Choose a Service"
+            aria-label="Service You Are Interested In"
           />
         </Form.Item>
       </div>
 
-      <Form.Item name="location" label="Project location">
+      <Form.Item name="location" label="Project Location">
         <Input name="location" autoComplete="address-level2" maxLength={160} />
       </Form.Item>
 
       <Form.Item
         name="message"
-        label="Project description"
+        label="Project Description"
         rules={[
           { required: true, whitespace: true, message: 'Describe the project in a sentence or two.' },
           { min: 20, message: 'Add a little more detail: at least 20 characters.' },
@@ -182,9 +189,11 @@ export function InquiryForm({ initialService }: InquiryFormProps) {
         <Input.TextArea name="message" rows={6} maxLength={2000} showCount />
       </Form.Item>
 
+      <input ref={botcheck} type="checkbox" name="botcheck" className="visually-hidden" tabIndex={-1} aria-hidden="true" />
+
       <div className="mt-lg flex flex-col items-start gap-md">
         <button type="submit" className="btn" disabled={submit.isPending} aria-busy={submit.isPending}>
-          {submit.isPending ? 'Sending the enquiry…' : 'Send the enquiry'}
+          {submit.isPending ? 'Sending the Enquiry…' : 'Send the Enquiry'}
         </button>
         <p
           className={`min-h-[1lh] text-sm ${status?.tone === 'error' ? 'text-error' : 'text-ink-2'}`}

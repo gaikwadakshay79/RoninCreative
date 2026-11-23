@@ -185,39 +185,16 @@
       1600
     ]
   },
-  "cine-camera": {
-    "width": 2560,
-    "height": 1438,
-    "widths": [
-      480,
-      800,
-      1200,
-      1600,
-      2400
-    ]
-  },
   "drone-flight": {
-    "width": 2560,
-    "height": 1707,
+    "width": 1200,
+    "height": 628,
     "widths": [
       480,
       800,
-      1200,
-      1600,
-      2400
+      1200
     ]
   },
   "drone-kit": {
-    "width": 1920,
-    "height": 1280,
-    "widths": [
-      480,
-      800,
-      1200,
-      1600
-    ]
-  },
-  "event-dancers": {
     "width": 1920,
     "height": 1280,
     "widths": [

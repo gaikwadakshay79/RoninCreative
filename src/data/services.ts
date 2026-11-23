@@ -13,52 +13,14 @@ import type { Service } from '@/types';
  */
 export const services: Service[] = [
   {
-    id: 'photography',
-    title: 'Professional photography',
-    summary: 'Portraits, products, architecture and events.',
-    description:
-      'Still photography for people, brands and spaces. Each shoot starts with what the pictures are for, then the light, the location and the frames are planned around that use.',
-    offerings: [
-      'Portrait photography',
-      'Commercial photography',
-      'Product photography',
-      'Architectural photography',
-      'Event photography',
-    ],
-    deliverables: [
-      'Edited, colour-corrected images',
-      'High-resolution files for print',
-      'Web-sized files for sites and social media',
-    ],
-    image: 'photo-camera',
-    related: ['photography', 'architecture', 'events'],
-    enabled: true,
-  },
-  {
-    id: 'cinematography',
-    title: 'Cinematography and video production',
-    summary: 'Brand, promotional and event films, shot and edited.',
-    description:
-      'Moving pictures for brands, places and occasions. Ronin Creative plans the shots, films on the ground and from the air, and edits the footage into a finished film.',
-    offerings: ['Brand films', 'Promotional videos', 'Event films', 'Creative cinematography', 'Professional editing'],
-    deliverables: [
-      'A finished, colour-graded film',
-      'Shorter cuts for social media',
-      'Aerial sequences where the location allows',
-    ],
-    image: 'cine-camera',
-    related: ['cinematography', 'events'],
-    enabled: true,
-  },
-  {
     id: 'drone',
-    title: 'Drone photography and videography',
-    summary: 'Aerial stills and film by a licensed pilot.',
+    title: 'Drone Photography and Aerial Cinematography',
+    summary: 'Aerial stills and cinematic footage by a licensed pilot.',
     description:
-      'Rohan Kamble is a licensed drone pilot. Each flight is planned around the location, the light and the airspace rules that apply there, then flown for stills, film or both.',
+      'Rohan K. is a licensed drone pilot. Each flight is planned around the location, the light and the airspace rules that apply there, then flown for stills, footage or both.',
     offerings: [
       'Aerial photography',
-      'Cinematic aerial filming',
+      'Aerial cinematography',
       'Real estate aerial imagery',
       'Commercial property showcases',
       'Landscape photography',
@@ -75,7 +37,7 @@ export const services: Service[] = [
   },
   {
     id: 'aerial-360',
-    title: '360° aerial experiences',
+    title: '360° Aerial Experiences',
     summary: 'Aerial panoramas a viewer can look around in.',
     description:
       'A full panorama captured from one point in the air. Viewers turn the scene themselves on a phone or a laptop, which suits properties, campuses and large sites.',
@@ -96,7 +58,7 @@ export const services: Service[] = [
   },
   {
     id: 'infrastructure',
-    title: 'Infrastructure and real estate imaging',
+    title: 'Infrastructure and Real Estate Imaging',
     summary: 'Progress records and marketing imagery for sites and buildings.',
     description:
       'Repeat visits record how a project changes, and finished buildings are photographed for sale and letting. Ground and aerial views are captured in the same visit.',
@@ -114,6 +76,28 @@ export const services: Service[] = [
     ],
     image: 'aerial-construction',
     related: ['aerial', 'architecture'],
+    enabled: true,
+  },
+  {
+    id: 'photography',
+    title: 'Professional Photography',
+    summary: 'Portraits, products, architecture and events.',
+    description:
+      'Still photography for people, brands and spaces. Each shoot starts with what the pictures are for, then the light, the location and the frames are planned around that use.',
+    offerings: [
+      'Portrait photography',
+      'Commercial photography',
+      'Product photography',
+      'Architectural photography',
+      'Event photography',
+    ],
+    deliverables: [
+      'Edited, colour-corrected images',
+      'High-resolution files for print',
+      'Web-sized files for sites and social media',
+    ],
+    image: 'photo-camera',
+    related: ['photography', 'architecture', 'events'],
     enabled: true,
   },
 ];

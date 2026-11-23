@@ -5,7 +5,7 @@ import type { Project, ProjectCategory } from '@/types';
  *
  * Entries with `placeholder: true` are PLACEHOLDER STUDIES built on licensed
  * stand-in photographs. They show how real projects will look and read; none
- * of them is a client commission or Rohan Kamble's work. Entries with
+ * of them is a client commission or Rohan K.'s work. Entries with
  * `placeholder: false` are his own.
  *
  * To publish a real project: add its pictures to media/originals/, run
@@ -15,7 +15,6 @@ import type { Project, ProjectCategory } from '@/types';
  */
 export const categoryLabels: Record<ProjectCategory, string> = {
   photography: 'Photography',
-  cinematography: 'Cinematography',
   aerial: 'Aerial',
   architecture: 'Architecture',
   '360-tours': '360° Tours',
@@ -23,11 +22,10 @@ export const categoryLabels: Record<ProjectCategory, string> = {
 };
 
 export const categoryOrder: ProjectCategory[] = [
-  'photography',
-  'cinematography',
   'aerial',
-  'architecture',
   '360-tours',
+  'architecture',
+  'photography',
   'events',
 ];
 
@@ -51,7 +49,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'coastline-straight-down',
-    title: 'Coastline, straight down',
+    title: 'Coastline, Straight Down',
     category: 'aerial',
     summary: 'A top-down pass along a rocky shore, with forest on one side and open water on the other.',
     overview: [
@@ -66,7 +64,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'glass-office-at-dusk',
-    title: 'Glass office at dusk',
+    title: 'Glass Office at Dusk',
     category: 'architecture',
     summary: 'A corner office building at blue hour, its floors lit from inside.',
     overview: [
@@ -81,7 +79,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'construction-site-overview',
-    title: 'Construction site overview',
+    title: 'Construction Site Overview',
     category: 'aerial',
     summary: 'A large structure mid-build, recorded from the air with its roads and surroundings.',
     overview: [
@@ -96,22 +94,22 @@ export const projects: Project[] = [
   },
   {
     slug: 'festival-main-stage',
-    title: 'Festival main stage',
+    title: 'Festival Main Stage',
     category: 'events',
     summary: 'A night crowd under crossing beams of stage light.',
     overview: [
       'Event coverage follows the running order: the room before doors, the headline moments, the crowd from the back.',
-      'Stills and film are shot side by side.',
+      'Wide frames and close details are covered through the set.',
     ],
     cover: 'event-stage',
     gallery: ['event-drums'],
-    services: ['photography', 'cinematography'],
+    services: ['photography'],
     featured: true,
     placeholder: true,
   },
   {
     slug: 'terraced-vineyards',
-    title: 'Terraced vineyards',
+    title: 'Terraced Vineyards',
     category: 'aerial',
     summary: 'Curving rows of vines across a hillside, seen from a low oblique angle.',
     cover: 'aerial-vineyard',
@@ -121,16 +119,16 @@ export const projects: Project[] = [
   },
   {
     slug: 'crater-road',
-    title: 'Road into the crater',
+    title: 'Road Into the Crater',
     category: 'aerial',
     summary: 'A switchback road climbing a cliff while cloud spills over the rim.',
     cover: 'hero-home',
-    services: ['drone', 'cinematography'],
+    services: ['drone'],
     placeholder: true,
   },
   {
     slug: 'city-crossing',
-    title: 'City crossing from above',
+    title: 'City Crossing From Above',
     category: 'aerial',
     summary: 'Painted road markings and a single taxi, framed from directly overhead.',
     cover: 'aerial-crossing',
@@ -139,7 +137,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'skyline-at-sunset',
-    title: 'Skyline at sunset',
+    title: 'Skyline at Sunset',
     category: 'aerial',
     summary: 'A city centre against low sun, from the height of a panorama flight.',
     cover: 'aerial-skyline',
@@ -148,7 +146,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'cable-stay-pylon',
-    title: 'Cable-stay pylon at night',
+    title: 'Cable-Stay Pylon at Night',
     category: 'architecture',
     summary: 'A bridge pylon and its fanned cables, lit against a black sky.',
     cover: 'arch-pylon',
@@ -156,26 +154,8 @@ export const projects: Project[] = [
     placeholder: true,
   },
   {
-    slug: 'three-spotlights',
-    title: 'Three spotlights',
-    category: 'cinematography',
-    summary: 'Dancers in silhouette against red, blue and yellow circles of light.',
-    cover: 'event-dancers',
-    services: ['cinematography'],
-    placeholder: true,
-  },
-  {
-    slug: 'camera-on-set',
-    title: 'Camera on set',
-    category: 'cinematography',
-    summary: 'A cinema camera rigged with a matte box and rails, ready for a take.',
-    cover: 'cine-camera',
-    services: ['cinematography'],
-    placeholder: true,
-  },
-  {
     slug: 'product-studio',
-    title: 'Product studio',
+    title: 'Product Studio',
     category: 'photography',
     summary: 'A lighting setup with softboxes around a product table.',
     cover: 'photo-studio',
@@ -184,7 +164,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'behind-the-lens',
-    title: 'Behind the lens',
+    title: 'Behind the Lens',
     category: 'photography',
     summary: 'A photographer framing a shot in warm backlight.',
     cover: 'photo-camera',
