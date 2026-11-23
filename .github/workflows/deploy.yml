@@ -9,14 +9,9 @@
 #
 # Optional repository variables (Settings > Secrets and variables > Actions >
 # Variables):
-#   PAGES_CUSTOM_DOMAIN    your own domain, for example ronincreative.in.
-#                          The site is then built for the root of that domain
-#                          and a CNAME file is published with it.
-#   SITE_URL               the full public address when it is neither of the
-#                          above, for example https://agbuilds.online/RoninCreative
-#                          (an account-wide custom domain puts every project
-#                          site under that domain). Used for canonical URLs,
-#                          share images and the sitemap.
+#   PAGES_CUSTOM_DOMAIN    overrides the live domain, ronincreative.in. The site
+#                          is built for the root of the domain and a CNAME file
+#                          is published with it, so a deploy cannot drop it.
 #   VITE_CONTACT_ENDPOINT  where the contact form posts (see the README).
 #   VITE_API_BASE_URL      a content API, if one is ever used (see the README).
 
@@ -51,32 +46,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # A project site lives at https://<owner>.github.io/<repo>/, a user site
-      # (<owner>.github.io) and a custom domain live at the root.
+      # The site lives at the root of its custom domain.
       - name: Work out the site's address
         env:
-          CUSTOM_DOMAIN: ${{ vars.PAGES_CUSTOM_DOMAIN }}
-          SITE_URL: ${{ vars.SITE_URL }}
-          REPO: ${{ github.event.repository.name }}
-          OWNER: ${{ github.repository_owner }}
+          CUSTOM_DOMAIN: ${{ vars.PAGES_CUSTOM_DOMAIN || 'ronincreative.in' }}
         run: |
-          owner=$(echo "$OWNER" | tr '[:upper:]' '[:lower:]')
-          repo_lower=$(echo "$REPO" | tr '[:upper:]' '[:lower:]')
-          if [ -n "$CUSTOM_DOMAIN" ]; then
-            base="/"
-            url="https://$CUSTOM_DOMAIN"
-          elif [ -n "$SITE_URL" ]; then
-            # The address is given outright; the base path is whatever follows the domain.
-            url="${SITE_URL%/}"
-            path=$(echo "$url" | sed -E 's#^https?://[^/]+##')
-            base="${path}/"
-          elif [ "$repo_lower" = "$owner.github.io" ]; then
-            base="/"
-            url="https://$owner.github.io"
-          else
-            base="/$REPO/"
-            url="https://$owner.github.io/$REPO"
-          fi
+          base="/"
+          url="https://$CUSTOM_DOMAIN"
           echo "VITE_BASE_PATH=$base" >> "$GITHUB_ENV"
           echo "VITE_SITE_URL=$url" >> "$GITHUB_ENV"
           echo "Building for $url (base path $base)"
@@ -95,11 +71,11 @@ jobs:
       - name: Publish dist to the deploy branch
         working-directory: dist
         env:
-          CUSTOM_DOMAIN: ${{ vars.PAGES_CUSTOM_DOMAIN }}
+          CUSTOM_DOMAIN: ${{ vars.PAGES_CUSTOM_DOMAIN || 'ronincreative.in' }}
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           touch .nojekyll
-          if [ -n "$CUSTOM_DOMAIN" ]; then echo "$CUSTOM_DOMAIN" > CNAME; fi
+          echo "$CUSTOM_DOMAIN" > CNAME
           git init --quiet --initial-branch=deploy
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

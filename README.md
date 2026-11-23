@@ -32,14 +32,13 @@ The build writes a separate `index.html` for every page and every project, each 
 
 One-time setup on GitHub, after the first run has created the branch: **Settings > Pages > Build and deployment**, Source **Deploy from a branch**, Branch **deploy**, folder **/ (root)**.
 
-The workflow works out the address by itself. A project repository is built for `https://<owner>.github.io/<repo>/`, with `VITE_BASE_PATH` and `VITE_SITE_URL` set to match, so pictures, links, canonical URLs and the sitemap are right under the sub-folder. It can also be started by hand from the Actions tab.
+The live site is `https://ronincreative.in`. The workflow builds for the root of that domain, sets `VITE_BASE_PATH` and `VITE_SITE_URL` to match, and publishes a `CNAME` file with every deploy so the domain stays attached. DNS is at BigRock: four GitHub A records on `@`, and `www` as a CNAME to `gaikwadakshay79.github.io`. The workflow can also be started by hand from the Actions tab.
 
 Optional repository variables (**Settings > Secrets and variables > Actions > Variables**):
 
 | Variable | Purpose |
 | --- | --- |
-| `PAGES_CUSTOM_DOMAIN` | Your own domain, for example `ronincreative.in`. The site is then built for the root of that domain and a `CNAME` file is published with it. |
-| `SITE_URL` | The full public address when it is neither the default nor a domain of this repository's own, for example `https://agbuilds.online/RoninCreative`. An account-wide custom domain puts every project site under that domain. Used for canonical URLs, share images and the sitemap. |
+| `PAGES_CUSTOM_DOMAIN` | Overrides the live domain, `ronincreative.in`. |
 | `VITE_CONTACT_ENDPOINT` | Where the contact form posts. |
 | `VITE_API_BASE_URL` | A content API, if one is ever used. |
 
